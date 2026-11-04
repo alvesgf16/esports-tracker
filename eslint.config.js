@@ -6,7 +6,7 @@ const jestPlugin = require('eslint-plugin-jest');
 
 const testFiles = [
   '**/*.{spec,test}.{ts,tsx,js,jsx}',
-  '**/*-test.{ts,tsx,js,jsx}',
+  '**/*.harness.{ts,tsx}',
   '**/__tests__/**/*.{ts,tsx,js,jsx}',
 ];
 

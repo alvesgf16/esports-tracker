@@ -21,6 +21,7 @@
     "react-native-worklets": "0.13.0"
   },
   "devDependencies": {
+    "@types/jest": "30.0.0",
     "@types/react": "~19.3.0",
     "eslint": "^9.39.5",
     "eslint-config-expo": "~58.0.4",
@@ -29,6 +30,8 @@
     "eslint-plugin-jest": "^29.17.0",
     "eslint-plugin-prettier": "^5.5.7",
     "eslint-plugin-unicorn": "^65.0.1",
+    "jest": "~30.5.2",
+    "jest-expo": "~58.0.14",
     "jscpd": "^5.4.2",
     "knip": "^6.44.1",
     "prettier": "^3.9.10",
@@ -40,8 +43,16 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
     "knip": "knip",
     "jscpd": "jscpd ."
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)"
+    ]
   },
   "private": true
 }
