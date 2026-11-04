@@ -1,10 +1,6 @@
-import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
-
-import Colors from '@/constants/colors';
+import { Pressable, ScrollView, Text } from 'react-native';
 
 import type { ChipModel } from '../contracts';
-
-const palette = Colors.dark;
 
 type Props = {
   chips: ChipModel[];
@@ -23,8 +19,8 @@ export default function GameChips({ chips, selected, onSelect }: Props) {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={styles.scroller}
-      contentContainerStyle={styles.row}
+      className="grow-0"
+      contentContainerClassName="items-center gap-2 px-4 py-2.5"
     >
       {chips.map((chip) => (
         <FilterChip
@@ -40,46 +36,20 @@ export default function GameChips({ chips, selected, onSelect }: Props) {
 
 function FilterChip({ chip, selected, onSelect }: ChipProps) {
   const active = chip.id === selected;
+  const chipTone = active ? 'bg-tint' : 'bg-chip';
+  const labelTone = active ? 'text-on-tint' : 'text-foreground';
+
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={chip.label}
       accessibilityState={{ selected: active }}
       onPress={() => onSelect(chip.id)}
-      style={[styles.chip, active && styles.chipActive]}
+      className={`rounded-full px-3.5 py-2 ${chipTone}`}
     >
-      <Text style={[styles.label, active && styles.labelActive]}>
+      <Text className={`text-[13px] font-semibold ${labelTone}`}>
         {chip.label}
       </Text>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  scroller: {
-    flexGrow: 0,
-  },
-  row: {
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
-  chip: {
-    backgroundColor: palette.chip,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-  },
-  chipActive: {
-    backgroundColor: palette.tint,
-  },
-  label: {
-    color: palette.text,
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  labelActive: {
-    color: '#111318',
-  },
-});

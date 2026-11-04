@@ -1,10 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
-
-import Colors from '@/constants/colors';
+import { Text, View } from 'react-native';
 
 import type { MatchCardModel } from '../contracts';
-
-const palette = Colors.dark;
 
 type Props = {
   match: MatchCardModel;
@@ -12,7 +8,7 @@ type Props = {
 
 export default function MatchCard({ match }: Props) {
   return (
-    <View style={styles.card}>
+    <View className="flex-row items-center gap-3.5 rounded-card bg-card px-3.5 py-3.5">
       <KickoffColumn match={match} />
       <MatchBody match={match} />
     </View>
@@ -20,71 +16,32 @@ export default function MatchCard({ match }: Props) {
 }
 
 function KickoffColumn({ match }: Props) {
+  const kickoffTone = match.isLive ? 'text-live' : 'text-foreground';
+
   return (
-    <View style={styles.timeCol}>
-      <Text style={[styles.kickoff, match.isLive && styles.liveText]}>
+    <View className="w-[72px]">
+      <Text className={`text-base font-bold ${kickoffTone}`}>
         {match.kickoffLabel}
       </Text>
-      <Text style={styles.countdown}>{match.countdownLabel}</Text>
+      <Text className="mt-1 text-xs font-semibold text-muted">
+        {match.countdownLabel}
+      </Text>
     </View>
   );
 }
 
 function MatchBody({ match }: Props) {
   return (
-    <View style={styles.body}>
-      <Text style={styles.team} numberOfLines={1}>
+    <View className="flex-1 gap-1">
+      <Text className="text-base font-semibold text-foreground" numberOfLines={1}>
         {match.teamA}
       </Text>
-      <Text style={styles.team} numberOfLines={1}>
+      <Text className="text-base font-semibold text-foreground" numberOfLines={1}>
         {match.teamB}
       </Text>
-      <Text style={styles.meta} numberOfLines={1}>
+      <Text className="mt-1 text-xs text-muted" numberOfLines={1}>
         {match.meta}
       </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: palette.card,
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 14,
-    gap: 14,
-  },
-  timeCol: {
-    width: 72,
-  },
-  kickoff: {
-    color: palette.text,
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  liveText: {
-    color: palette.live,
-  },
-  countdown: {
-    marginTop: 4,
-    color: palette.muted,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  body: {
-    flex: 1,
-    gap: 4,
-  },
-  team: {
-    color: palette.text,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  meta: {
-    marginTop: 4,
-    color: palette.muted,
-    fontSize: 12,
-  },
-});

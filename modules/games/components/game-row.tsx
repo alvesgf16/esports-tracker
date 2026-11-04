@@ -1,10 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-
-import Colors from '@/constants/colors';
+import { Pressable, Text, View } from 'react-native';
 
 import type { GameRowModel } from '../contracts';
-
-const palette = Colors.dark;
 
 type Props = {
   row: GameRowModel;
@@ -17,39 +13,13 @@ export default function GameRow({ row, onPress }: Props) {
       accessibilityRole="button"
       accessibilityLabel={row.accessibilityLabel}
       onPress={() => onPress(row.id)}
-      style={styles.row}
+      className="flex-row items-center justify-between rounded-card bg-card p-4"
     >
       <View>
-        <Text style={styles.name}>{row.name}</Text>
-        <Text style={styles.meta}>{row.upcomingLabel}</Text>
+        <Text className="text-base font-bold text-foreground">{row.name}</Text>
+        <Text className="mt-1 text-[13px] text-muted">{row.upcomingLabel}</Text>
       </View>
-      <Text style={styles.short}>{row.shortName}</Text>
+      <Text className="text-[13px] font-bold text-tint">{row.shortName}</Text>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    backgroundColor: palette.card,
-    borderRadius: 14,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  name: {
-    color: palette.text,
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  meta: {
-    color: palette.muted,
-    marginTop: 4,
-    fontSize: 13,
-  },
-  short: {
-    color: palette.tint,
-    fontSize: 13,
-    fontWeight: '700',
-  },
-});

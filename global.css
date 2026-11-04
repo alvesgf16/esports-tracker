@@ -1,2 +1,24 @@
 @import 'tailwindcss';
 @import 'uniwind';
+
+@theme {
+  --color-background: #0e1116;
+  --color-foreground: #f4f6f8;
+  --color-tint: #c8f542;
+  --color-on-tint: #111318;
+  --color-muted: #8b95a5;
+  --color-card: #171c24;
+  --color-border: #2a3140;
+  --color-live: #ff4d6a;
+  --color-chip: #222833;
+  --color-tab-icon: #6b7380;
+  --radius-card: 14px;
+}
+
+@theme static {
+  --color-background: #0e1116;
+  --color-foreground: #f4f6f8;
+  --color-border: #2a3140;
+  --color-tint: #c8f542;
+  --color-tab-icon: #6b7380;
+}

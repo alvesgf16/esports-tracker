@@ -1,11 +1,7 @@
-import { ScrollView, StyleSheet } from 'react-native';
-
-import Colors from '@/constants/colors';
+import { ScrollView } from 'react-native';
 
 import type { GameRowModel, GamesViewModel } from './contracts';
 import GameRow from './components/game-row';
-
-const palette = Colors.dark;
 
 type Props = {
   model: GamesViewModel;
@@ -14,21 +10,13 @@ type Props = {
 
 export default function GamesView({ model, onOpenSchedule }: Props) {
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <ScrollView
+      className="flex-1 bg-background"
+      contentContainerClassName="gap-2.5 p-4"
+    >
       {model.rows.map((row) => (
         <GameRow key={row.id} row={row} onPress={onOpenSchedule} />
       ))}
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: palette.background,
-  },
-  content: {
-    padding: 16,
-    gap: 10,
-  },
-});

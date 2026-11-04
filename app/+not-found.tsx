@@ -1,43 +1,21 @@
 import { Link, Stack } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { withUniwind } from 'uniwind';
 
-import Colors from '@/constants/colors';
-
-const palette = Colors.dark;
+const StyledLink = withUniwind(Link);
 
 export default function NotFoundScreen() {
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />
-      <View style={styles.container}>
-        <Text style={styles.title}>This screen does not exist.</Text>
-        <Link href="/" style={styles.link}>
-          <Text style={styles.linkText}>Back to schedule</Text>
-        </Link>
+      <View className="flex-1 items-center justify-center bg-background p-5">
+        <Text className="text-xl font-bold text-foreground">
+          This screen does not exist.
+        </Text>
+        <StyledLink href="/" className="mt-[15px] py-[15px]">
+          <Text className="text-sm text-tint">Back to schedule</Text>
+        </StyledLink>
       </View>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    backgroundColor: palette.background,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: palette.text,
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-  linkText: {
-    fontSize: 14,
-    color: palette.tint,
-  },
-});

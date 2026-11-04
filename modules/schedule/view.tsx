@@ -1,12 +1,8 @@
-import { StyleSheet, View } from 'react-native';
-
-import Colors from '@/constants/colors';
+import { View } from 'react-native';
 
 import type { ScheduleViewModel } from './contracts';
 import DayList from './components/day-list';
 import GameChips from './components/game-chips';
-
-const palette = Colors.dark;
 
 type Props = {
   model: ScheduleViewModel;
@@ -15,7 +11,7 @@ type Props = {
 
 export default function ScheduleView({ model, onSelectGame }: Props) {
   return (
-    <View style={styles.screen}>
+    <View className="flex-1 bg-background">
       <GameChips
         chips={model.chips}
         selected={model.selected}
@@ -25,10 +21,3 @@ export default function ScheduleView({ model, onSelectGame }: Props) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: palette.background,
-  },
-});
