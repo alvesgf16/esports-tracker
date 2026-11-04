@@ -1,4 +1,4 @@
-﻿# Clean Code inventory
+# Clean Code inventory
 
 Source: Robert C. Martin, _Clean Code_. Stack: **typescript** (Expo SDK 58 / React Native).
 
@@ -50,13 +50,13 @@ Prefer MIT/Apache tooling. Do **not** enable `eslint-plugin-sonarjs` (LGPL).
 
 | Role                     | Location                               | Imports                                                                                                   |
 | ------------------------ | -------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Builder / Router adapter | `app/`                                 | `modules/`, `data/sample` catalogs, `lib/use-now`, `constants/`, `expo-router`                            |
+| Builder / Router adapter | `app/`                                 | `modules/`, `data/sample` / `data/pandascore`, `lib/use-now`, `constants/`, `expo-router`                 |
 | View                     | `modules/*/view.tsx` (+ `components/`) | view-model types, `constants/` — no `expo-router`, no data queries                                        |
 | Presenter                | `modules/*/presenter.ts`               | use cases, gateways, entities, contracts, `lib/format-time` — no `react-native` / `expo-router` / `data/` |
 | Use cases                | `modules/*/use-cases/`                 | entities (and other use cases) — never `data/`                                                            |
 | Gateways                 | `modules/*/gateways.ts`                | entity types — ports implemented in `data/`                                                               |
 | Entities                 | `modules/*/entities.ts`                | other module entities only                                                                                |
-| Sample / API             | `data/sample/`                         | `entities` + `gateways` only                                                                              |
+| Sample / API             | `data/sample/`, `data/pandascore/`     | `entities` + `gateways` only                                                                              |
 | Clock                    | `lib/use-now.ts`, `lib/format-time.ts` | infrastructure; format-time free of modules                                                               |
 
 Module root: `view`, `presenter`, `entities`, `contracts`, `gateways`, harness, tests. Enforced with `no-restricted-imports` in `eslint.config.js` (Ch.8 / Ch.11).

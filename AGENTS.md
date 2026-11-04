@@ -1,4 +1,4 @@
-﻿This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
+This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
 
 ## Expo has changed — do not trust your training data
 
@@ -29,7 +29,7 @@ Run `npm run check` before declaring any task done. Commits are blocked unless i
 ## Navigation & Routing
 
 - Use **Expo Router** for all navigation. Routes live in `app/` — every file there is a screen / Builder, `_layout.tsx` files define navigators.
-- Feature logic uses React-adapted **VIPER** under `modules/` (View / Presenter / Entity / Router contracts) with Clean Architecture use cases and gateways. `app/` wires modules, injects sample catalogs from `data/sample/`, and adapts Expo Router; keep Presenters and use cases outside `app/`.
+- Feature logic uses React-adapted **VIPER** under `modules/` (View / Presenter / Entity / Router contracts) with Clean Architecture use cases and gateways. `app/` wires modules, injects catalogs from `data/sample/` or `data/pandascore/`, and adapts Expo Router; keep Presenters and use cases outside `app/`.
 - Import `Link`, `router`, and `useLocalSearchParams` from `expo-router` only in `app/`.
 - Docs: https://docs.expo.dev/router/introduction.md
 
