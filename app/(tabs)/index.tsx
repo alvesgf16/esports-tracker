@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { sampleGameCatalog } from '@/data/games';
-import { sampleMatchCatalog } from '@/data/matches';
+import { sampleGameCatalog } from '@/data/sample/games';
+import { sampleMatchCatalog } from '@/data/sample/matches';
 import { useNow } from '@/lib/use-now';
 import type { ScheduleRouter } from '@/modules/schedule/contracts';
 import type { GameFilter } from '@/modules/schedule/entities';

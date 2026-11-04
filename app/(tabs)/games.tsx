@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 
-import { sampleGameCatalog } from '@/data/games';
-import { sampleMatchCatalog } from '@/data/matches';
+import { sampleGameCatalog } from '@/data/sample/games';
+import { sampleMatchCatalog } from '@/data/sample/matches';
 import { useNow } from '@/lib/use-now';
 import type { GamesRouter } from '@/modules/games/contracts';
 import { presentGames } from '@/modules/games/presenter';

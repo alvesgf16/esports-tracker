@@ -53,7 +53,7 @@ Small, cohesive, single responsibility. This app is function- and type-first VIP
 
 Separate construction from use. Builders in `app/` wire View, Presenter, catalogs, and Router adapters. One-way dependencies:
 
-- `app/` → `modules/`, `data/` catalogs, `lib/use-now`, `constants/`, `expo-router`
+- `app/` → `modules/`, `data/sample` catalogs, `lib/use-now`, `constants/`, `expo-router`
 - Presenter → use cases, gateways, entities, contracts, `lib/format-time`
 - Use cases → entities (and other use cases); never `data/`
 - View → view-model types + `constants/`
