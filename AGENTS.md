@@ -18,6 +18,7 @@ npx expo start              # start the dev server
 npx expo lint               # lint
 npx tsc --noEmit            # typecheck
 npm test                    # unit tests (jest-expo)
+npm run test:coverage       # unit tests with coverage report in coverage/
 npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
 ```

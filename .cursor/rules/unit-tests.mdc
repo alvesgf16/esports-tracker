@@ -26,4 +26,4 @@ Put fixture clocks (`now`), sample `Match` builders, and module setup in `*.harn
 
 ## Coverage
 
-Prefer meaningful tests over chasing percentage alone. Wire coverage in CI when `jest-expo` is installed.
+Prefer meaningful tests over chasing percentage alone. Run `npm run test:coverage` for a report under `coverage/` (gitignored). Collection covers Interactor / Presenter / helpers and `data/`, excluding Views, contracts, harnesses, and specs.

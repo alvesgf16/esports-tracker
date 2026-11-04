@@ -41,7 +41,7 @@ Prefer MIT/Apache tooling. Do **not** enable `eslint-plugin-sonarjs` (LGPL).
 | Formatting (Ch.5) | Prettier + `eslint-plugin-prettier` / `eslint-config-prettier` |
 | Errors (Ch.7) | `no-empty`, `no-throw-literal`, `prefer-promise-reject-errors`, typed `@typescript-eslint/only-throw-error` |
 | Boundaries (Ch.8/11) | VIPER layer map above; `no-restricted-imports` in `eslint.config.js` |
-| Unit tests (Ch.9) | `jest-expo` + Jest 30 (`npm test`); `eslint-plugin-jest`; dual-standard size offs on specs/harness |
+| Unit tests (Ch.9) | `jest-expo` + Jest 30 (`npm test` / `npm run test:coverage`); `eslint-plugin-jest`; dual-standard size offs on specs/harness |
 | Classes (Ch.10) | `max-classes-per-file` 1, `max-lines` 100 |
 | Concurrency (Ch.13) | `@typescript-eslint/await-thenable`, `@typescript-eslint/require-await` (type-aware `projectService`) |
 | Smells (Ch.17) | `eslint-plugin-unicorn@65` (MIT, last ESLint 9-compatible; Expo pins ESLint 9), `jscpd`, `knip` |
@@ -79,7 +79,7 @@ These are noisy on React Native screens; keep the default gates until an intenti
 | 6 | Objects and Data Structures | Data vs object; LoD; DTOs; no Active Record on payloads | `guide` | `Match` / `Team` / `Game` stay data; behavior in Schedule Interactor / Presenter |
 | 7 | Error Handling | Exceptions over codes; no empty catch; context in errors | `automate`, `guide` | `no-empty`, `no-throw-literal`, `prefer-promise-reject-errors`, `only-throw-error` |
 | 8 | Boundaries | Wrap third-party; owned façade; learning tests at the edge | `automate`, `guide` | Live schedule API behind `data/` + Schedule Interactor; Expo Router adapters in `app/`; `no-restricted-imports` |
-| 9 | Unit Tests | FIRST; AAA; one concept; readable DSL / harness | `automate`, `guide` | `unit-tests.mdc`; Jest plugin + dual-standard offs; `npm test` via `jest-expo` |
+| 9 | Unit Tests | FIRST; AAA; one concept; readable DSL / harness | `automate`, `guide` | `unit-tests.mdc`; Jest plugin + dual-standard offs; `npm test` / `npm run test:coverage` via `jest-expo` |
 | 10 | Classes | SRP; small cohesive types | `automate`, `guide` | `max-classes-per-file` 1, `max-lines` 100 (skip blank/comments) |
 | 11 | Systems | Construction vs use; one-way dependencies | `automate`, `guide` | Builders in `app/` wire VIPER; `no-restricted-imports` enforces the layer map above |
 | 12 | Emergence | Runs tests; no duplication; expresses intent; fewest elements | `guide` | Duplication/dead-code tools under Ch.17 |

@@ -45,6 +45,7 @@
     "lint": "expo lint",
     "test": "jest",
     "test:watch": "jest --watchAll",
+    "test:coverage": "jest --coverage",
     "knip": "knip",
     "jscpd": "jscpd ."
   },
@@ -52,7 +53,19 @@
     "preset": "jest-expo",
     "transformIgnorePatterns": [
       "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg)"
-    ]
+    ],
+    "collectCoverageFrom": [
+      "modules/**/*.{ts,tsx}",
+      "data/**/*.{ts,tsx}",
+      "!**/*.{test,spec}.{ts,tsx}",
+      "!**/*.harness.ts",
+      "!**/components/**",
+      "!**/view.tsx",
+      "!**/contracts.ts",
+      "!**/types.ts"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"]
   },
   "private": true
 }
