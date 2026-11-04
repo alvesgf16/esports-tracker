@@ -1,8 +1,8 @@
-export type GameId = 'lol' | 'cs2' | 'valorant' | 'dota2' | 'r6' | 'mlbb';
+import type { GameId } from '@/modules/games/entities';
 
 export type GameFilter = GameId | 'all';
 
-type Team = {
+export type Team = {
   name: string;
   shortName: string;
 };

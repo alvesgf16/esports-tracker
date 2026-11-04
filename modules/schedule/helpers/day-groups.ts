@@ -1,4 +1,4 @@
-import type { Match } from '@/data/types';
+import type { Match } from '../entities';
 
 export type DayGroup = {
   key: string;

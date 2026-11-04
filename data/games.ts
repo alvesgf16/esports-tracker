@@ -1,10 +1,4 @@
-import type { GameId } from './types';
-
-export type Game = {
-  id: GameId;
-  name: string;
-  shortName: string;
-};
+import type { Game, GameId } from '@/modules/games/entities';
 
 export const GAMES: Game[] = [
   { id: 'lol', name: 'League of Legends', shortName: 'LoL' },

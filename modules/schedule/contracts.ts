@@ -1,4 +1,4 @@
-import type { GameFilter } from '@/data/types';
+import type { GameFilter } from './entities';
 
 export type ScheduleRouter = {
   setGameFilter: (game: GameFilter) => void;

@@ -1,5 +1,6 @@
-import { GAMES, type Game } from '@/data/games';
-import type { GameId } from '@/data/types';
+import { GAMES } from '@/data/games';
+
+import type { Game, GameId } from './entities';
 import {
   scheduleInteractor,
   type ScheduleInteractor,

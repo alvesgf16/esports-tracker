@@ -1,4 +1,4 @@
-import type { Game } from '@/data/games';
+import type { Game } from './entities';
 
 import type { GameRowModel, GamesViewModel } from './contracts';
 import type { GamesInteractor } from './interactor';

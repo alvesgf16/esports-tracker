@@ -1,5 +1,6 @@
-import type { Game } from '@/data/games';
-import type { Match } from '@/data/types';
+import type { Game } from '@/modules/games/entities';
+
+import type { Match } from './entities';
 
 import type { ScheduleInteractor } from './interactor';
 

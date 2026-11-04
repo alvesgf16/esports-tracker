@@ -1,5 +1,6 @@
 import { MATCHES } from '@/data/matches';
-import type { GameFilter, Match } from '@/data/types';
+
+import type { GameFilter, Match } from '../entities';
 
 import { matchStatus } from './match-status';
 

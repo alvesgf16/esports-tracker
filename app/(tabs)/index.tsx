@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import type { GameFilter } from '@/data/types';
+import type { GameFilter } from '@/modules/schedule/entities';
 import { useNow } from '@/lib/use-now';
 import type { ScheduleRouter } from '@/modules/schedule/contracts';
 import { scheduleInteractor } from '@/modules/schedule/interactor';

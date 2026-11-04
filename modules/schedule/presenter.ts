@@ -1,4 +1,4 @@
-import type { GameFilter, Match } from '@/data/types';
+import type { GameFilter, Match } from './entities';
 
 import type {
   ChipModel,

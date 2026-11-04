@@ -1,5 +1,7 @@
 import { GAMES } from '@/data/games';
-import type { GameFilter, GameId } from '@/data/types';
+import type { GameId } from '@/modules/games/entities';
+
+import type { GameFilter } from '../entities';
 
 export function parseFilter(
   value: string | string[] | undefined

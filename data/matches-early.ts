@@ -1,5 +1,6 @@
+import type { Match } from '@/modules/schedule/entities';
+
 import { sampleKickoff } from './sample-kickoff';
-import type { Match } from './types';
 
 /** First half of the sample board. Swap for a live schedule API later. */
 export const EARLY_MATCHES: Match[] = [

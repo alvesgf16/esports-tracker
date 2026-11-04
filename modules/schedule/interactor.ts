@@ -1,5 +1,7 @@
-import { getGame, GAMES, type Game } from '@/data/games';
-import type { GameFilter, GameId, Match } from '@/data/types';
+import { getGame, GAMES } from '@/data/games';
+import type { Game, GameId } from '@/modules/games/entities';
+
+import type { GameFilter, Match } from './entities';
 
 import { groupByDay, type DayGroup } from './helpers/day-groups';
 import { matchStatus, type MatchStatus } from './helpers/match-status';
