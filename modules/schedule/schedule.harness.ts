@@ -4,8 +4,10 @@ import type { GameCatalog } from '@/modules/games/gateways';
 import type { Match } from './entities';
 import type { MatchCatalog } from './gateways';
 
-/** Local noon on a fixed calendar day — avoids UTC/local day-boundary drift. */
-export const FIXED_NOW = new Date(2026, 2, 15, 12, 0, 0, 0).getTime();
+/** UTC noon on a fixed calendar day — stable across host time zones. */
+export const FIXED_NOW = Date.UTC(2026, 2, 15, 12, 0, 0, 0);
+
+export const TEST_TIME_ZONE = 'UTC';
 
 const HOUR_MS = 60 * 60 * 1000;
 

@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { deviceTimeZone } from '@/lib/device-time-zone';
 import { useNow } from '@/lib/use-now';
 import { useScheduleBoard } from '@/lib/use-schedule-board';
 import type { ScheduleRouter } from '@/modules/schedule/contracts';
@@ -13,20 +14,28 @@ export default function ScheduleScreen() {
   const router = useRouter();
   const { game } = useLocalSearchParams<{ game?: string }>();
   const scheduleRouter = createScheduleRouter(router);
-  const model = presentSchedule({
-    games: board.games,
-    matches: board.matches,
-    now,
-    gameParam: game,
-  });
 
   return (
     <ScheduleView
-      model={model}
+      model={scheduleModel(board, now, game)}
       notice={board.notice}
       onSelectGame={scheduleRouter.setGameFilter}
     />
   );
+}
+
+function scheduleModel(
+  board: ReturnType<typeof useScheduleBoard>,
+  now: number,
+  game: string | undefined
+) {
+  return presentSchedule({
+    games: board.games,
+    matches: board.matches,
+    now,
+    timeZone: deviceTimeZone(),
+    gameParam: game,
+  });
 }
 
 function createScheduleRouter(

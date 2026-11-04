@@ -3,28 +3,32 @@ import {
   FIXED_NOW,
   stubGameCatalog,
   stubMatchCatalog,
+  TEST_TIME_ZONE,
 } from './schedule.harness';
 import { presentSchedule } from './presenter';
 
+function present(
+  overrides: Partial<Parameters<typeof presentSchedule>[0]> = {}
+) {
+  return presentSchedule({
+    games: stubGameCatalog(),
+    matches: stubMatchCatalog(),
+    now: FIXED_NOW,
+    timeZone: TEST_TIME_ZONE,
+    gameParam: undefined,
+    ...overrides,
+  });
+}
+
 describe('presentSchedule', () => {
   it('defaults an invalid game param to all', () => {
-    const model = presentSchedule({
-      games: stubGameCatalog(),
-      matches: stubMatchCatalog(),
-      now: FIXED_NOW,
-      gameParam: 'chess',
-    });
+    const model = present({ gameParam: 'chess' });
 
     expect(model.selected).toBe('all');
   });
 
   it('builds chips from the game catalog', () => {
-    const model = presentSchedule({
-      games: stubGameCatalog(),
-      matches: stubMatchCatalog(),
-      now: FIXED_NOW,
-      gameParam: undefined,
-    });
+    const model = present();
 
     expect(model.chips).toEqual([
       { id: 'all', label: 'All' },
@@ -37,10 +41,8 @@ describe('presentSchedule', () => {
       id: 'live-1',
       startsAt: new Date(FIXED_NOW).toISOString(),
     });
-    const model = presentSchedule({
-      games: stubGameCatalog(),
+    const model = present({
       matches: stubMatchCatalog({ list: () => [match] }),
-      now: FIXED_NOW,
       gameParam: 'all',
     });
 
@@ -67,10 +69,8 @@ describe('presentSchedule', () => {
         { name: 'Gamma', shortName: 'GAM' },
       ],
     });
-    const model = presentSchedule({
-      games: stubGameCatalog(),
+    const model = present({
       matches: stubMatchCatalog({ list: () => [match] }),
-      now: FIXED_NOW,
       gameParam: 'all',
     });
 
@@ -82,12 +82,7 @@ describe('presentSchedule', () => {
   });
 
   it('uses the filtered empty copy when a game is selected', () => {
-    const model = presentSchedule({
-      games: stubGameCatalog(),
-      matches: stubMatchCatalog(),
-      now: FIXED_NOW,
-      gameParam: 'lol',
-    });
+    const model = present({ gameParam: 'lol' });
 
     expect(model.emptyMessage).toBe('No upcoming League of Legends matches.');
   });

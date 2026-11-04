@@ -20,6 +20,7 @@ type PresentInput = {
   games: GameCatalog;
   matches: MatchCatalog;
   now: number;
+  timeZone: string;
   gameParam: string | string[] | undefined;
 };
 
@@ -27,7 +28,7 @@ export function presentSchedule(input: PresentInput): ScheduleViewModel {
   const catalogGames = input.games.list();
   const selected = parseFilter(input.gameParam, catalogGames) ?? 'all';
   const matches = visibleMatches(input.matches.list(), selected, input.now);
-  const groups = groupByDay(matches, input.now);
+  const groups = groupByDay(matches, input.now, input.timeZone);
 
   return {
     selected,
@@ -66,7 +67,9 @@ function presentMatch(match: Match, input: PresentInput): MatchCardModel {
 
   return {
     id: match.id,
-    kickoffLabel: isLive ? 'LIVE' : formatKickoff(match.startsAt),
+    kickoffLabel: isLive
+      ? 'LIVE'
+      : formatKickoff(match.startsAt, input.timeZone),
     countdownLabel: isLive ? '' : formatCountdown(match.startsAt, input.now),
     isLive,
     teamA: sides.teamA,
