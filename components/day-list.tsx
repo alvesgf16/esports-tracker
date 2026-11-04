@@ -1,9 +1,9 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import MatchCard from '@/components/MatchCard';
-import Colors from '@/constants/Colors';
+import MatchCard from '@/components/match-card';
+import Colors from '@/constants/colors';
 import type { GameFilter } from '@/data/types';
-import { gameName } from '@/lib/gameFilter';
+import { gameName } from '@/lib/game-filter';
 import type { DayGroup } from '@/lib/schedule';
 
 const palette = Colors.dark;

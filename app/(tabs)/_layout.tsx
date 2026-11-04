@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import type { ColorValue } from 'react-native';
 
-import Colors from '@/constants/Colors';
+import Colors from '@/constants/colors';
 
 const palette = Colors.dark;
 

@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import Colors from '@/constants/Colors';
+import Colors from '@/constants/colors';
 import { getGame } from '@/data/games';
 import type { Match } from '@/data/types';
-import { formatCountdown, formatKickoff } from '@/lib/formatTime';
+import { formatCountdown, formatKickoff } from '@/lib/format-time';
 import { getMatchStatus } from '@/lib/schedule';
 
 const palette = Colors.dark;

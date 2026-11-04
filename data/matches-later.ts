@@ -1,4 +1,4 @@
-import { sampleKickoff } from './sampleKickoff';
+import { sampleKickoff } from './sample-kickoff';
 import type { Match } from './types';
 
 /** Second half of the sample board. Swap for a live schedule API later. */

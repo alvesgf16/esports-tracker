@@ -1,9 +1,9 @@
 import { ScrollView, StyleSheet } from 'react-native';
 
-import GameRow from '@/components/GameRow';
-import Colors from '@/constants/Colors';
+import GameRow from '@/components/game-row';
+import Colors from '@/constants/colors';
 import { GAMES } from '@/data/games';
-import { useNow } from '@/lib/useNow';
+import { useNow } from '@/lib/use-now';
 
 const palette = Colors.dark;
 

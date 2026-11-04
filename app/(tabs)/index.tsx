@@ -2,13 +2,13 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import DayList from '@/components/DayList';
-import GameChips from '@/components/GameChips';
-import Colors from '@/constants/Colors';
+import DayList from '@/components/day-list';
+import GameChips from '@/components/game-chips';
+import Colors from '@/constants/colors';
 import type { GameFilter } from '@/data/types';
-import { parseGameFilter } from '@/lib/gameFilter';
+import { parseGameFilter } from '@/lib/game-filter';
 import { getVisibleMatches, groupMatchesByDay } from '@/lib/schedule';
-import { useNow } from '@/lib/useNow';
+import { useNow } from '@/lib/use-now';
 
 const palette = Colors.dark;
 

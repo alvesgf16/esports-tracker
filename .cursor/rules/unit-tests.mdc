@@ -22,7 +22,7 @@ Production size/complexity gates stay strict. Spec, `*-test`, harness, and `__te
 
 ## Harness / DSL
 
-Put fixture clocks (`now`), sample `Match` builders, and screen setup in `*.harness.ts` (or `__tests__/helpers`) — not inline in every `it`. Prefer `rejects.toThrow` / RNTL queries over try/catch for expected failures. Schedule math in `lib/schedule.ts` should be unit-tested without rendering `MatchCard`.
+Put fixture clocks (`now`), sample `Match` builders, and screen setup in `*.harness.ts` (or `__tests__/helpers`) — not inline in every `it`. Prefer `rejects.toThrow` / RNTL queries over try/catch for expected failures. Schedule math in `lib/schedule.ts` should be unit-tested without rendering `match-card.tsx`.
 
 ## Coverage
 

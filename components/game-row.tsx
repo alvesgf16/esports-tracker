@@ -1,7 +1,7 @@
 import { Link } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import Colors from '@/constants/Colors';
+import Colors from '@/constants/colors';
 import type { Game } from '@/data/games';
 import { getVisibleMatches } from '@/lib/schedule';
 

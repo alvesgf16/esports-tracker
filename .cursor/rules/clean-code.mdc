@@ -9,7 +9,7 @@ Source: Robert C. Martin, _Clean Code_. Inventory: `docs/clean-code-inventory.md
 
 ## Meaningful Names (Ch.2)
 
-Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). Prefer problem-domain vocabulary in `data/`, `lib/`, and screens; solution-domain (Expo / React Native) words in `app/` routes, hooks, and UI.
+Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). File names are kebab-case (`match-card.tsx`, `use-now.ts`); Expo Router reserved names (`_layout`, `+html`, `(tabs)`) stay as the framework requires. Prefer problem-domain vocabulary in `data/`, `lib/`, and screens; solution-domain (Expo / React Native) words in `app/` routes, hooks, and UI.
 
 ### Domain vocabulary
 
@@ -17,7 +17,7 @@ Prefer intention-revealing, searchable, pronounceable names. One word per concep
 - `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter`
 - Kickoff, countdown, tournament, format (`Bo3` / `Bo5`)
 - Screens: schedule (`app/(tabs)/index.tsx`), games list (`app/(tabs)/games.tsx`)
-- Owned schedule façade: `lib/schedule.ts`; clock hook: `lib/useNow.ts`
+- Owned schedule façade: `lib/schedule.ts`; clock hook: `lib/use-now.ts`
 
 ## Functions (Ch.3)
 

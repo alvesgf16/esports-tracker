@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 
-import Colors from '@/constants/Colors';
+import Colors from '@/constants/colors';
 import { GAMES } from '@/data/games';
 import type { GameFilter } from '@/data/types';
 
