@@ -1,8 +1,8 @@
-# Clean Code inventory
+﻿# Clean Code inventory
 
 Source: Robert C. Martin, _Clean Code_. Stack: **typescript** (Expo SDK 58 / React Native).
 
-Lint entrypoint: `npm run lint` (`eslint .`). Typecheck: `npx tsc --noEmit`. Dead code: `npm run knip`. Duplication: `npm run jscpd`. Do not use `npx expo lint` as the gate — it only covers `app/`, `src/`, and `components/`.
+Lint entrypoint: `npm run lint` (`eslint .`). Typecheck: `npm run typecheck`. Combined gate: `npm run check` (lint + typecheck + tests; husky pre-commit). Dead code: `npm run knip`. Duplication: `npm run jscpd`. Do not use `npx expo lint` as the gate — it only covers `app/`, `src/`, and `components/`.
 
 ## Tags
 

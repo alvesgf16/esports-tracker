@@ -1,4 +1,4 @@
-This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
+﻿This is an Expo/React Native mobile application. Prioritize mobile-first patterns, performance, and cross-platform compatibility.
 
 ## Expo has changed — do not trust your training data
 
@@ -16,14 +16,15 @@ Use `bunx` instead of `npx` if the project uses bun (`bun.lock` present).
 npx expo install <package>  # ALWAYS use instead of npm/yarn/pnpm/bun add — resolves SDK-compatible versions
 npx expo start              # start the dev server
 npm run lint                # lint (eslint . — whole project, not expo lint)
-npx tsc --noEmit            # typecheck
+npm run typecheck           # tsc --noEmit
 npm test                    # unit tests (jest-expo)
+npm run check               # lint + typecheck + tests (also runs on git pre-commit via husky)
 npm run test:coverage       # unit tests with coverage report in coverage/
 npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
 ```
 
-Run lint, typecheck, and tests before declaring any task done.
+Run `npm run check` before declaring any task done. Commits are blocked unless it passes.
 
 ## Navigation & Routing
 
