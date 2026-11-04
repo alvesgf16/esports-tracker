@@ -9,20 +9,20 @@ Source: Robert C. Martin, _Clean Code_. Inventory: `docs/clean-code-inventory.md
 
 ## Meaningful Names (Ch.2)
 
-Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). File names are kebab-case (`match-card.tsx`, `use-now.ts`); Expo Router reserved names (`_layout`, `+html`, `(tabs)`) stay as the framework requires. Prefer problem-domain vocabulary in `data/`, `modules/` interactors/presenters; solution-domain (Expo / React Native) words in `app/` routes, hooks, and Views.
+Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). File names are kebab-case (`match-card.tsx`, `use-now.ts`); Expo Router reserved names (`_layout`, `+html`, `(tabs)`) stay as the framework requires. Prefer problem-domain vocabulary in `modules/` entities and use cases; solution-domain (Expo / React Native) words in `app/` routes, hooks, and Views.
 
 ### Domain vocabulary
 
-- `Game`, `GameId`, `Team`, `Match` — Entity DTOs in `data/types` / `data/games`
+- `Game`, `GameId`, `Team`, `Match` — Entity DTOs in `modules/*/entities.ts`
 - `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter`
 - Kickoff, countdown, tournament, format (`Bo3` / `Bo5`)
 - VIPER modules: Schedule (`modules/schedule/`), Games (`modules/games/`)
 - Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games)
-- Clock infrastructure: `lib/use-now.ts`
+- Clock infrastructure: `lib/use-now.ts`, `lib/format-time.ts`
 
 ## Functions (Ch.3)
 
-Small; do one thing; one abstraction level; stepdown (caller above callee). Prefer 0–2 args; at most 3 positional — more → a named argument object type. Avoid flag arguments. No hidden side effects. Command/query separation. Prefer extract within the VIPER role (Interactor / Presenter helpers) over growing past size gates. Keep Views thin: Interactor owns use cases, Presenter owns view models, View renders props.
+Small; do one thing; one abstraction level; stepdown (caller above callee). Prefer 0–2 args; at most 3 positional — more → a named argument object type. Avoid flag arguments. No hidden side effects. Command/query separation. Prefer extract within the VIPER / Clean Architecture role (use cases / Presenter helpers) over growing past size gates. Keep Views thin: use cases own application logic, Presenter owns view models, View renders props.
 
 ## Comments (Ch.4)
 
@@ -34,31 +34,33 @@ Prettier is the horizontal source of truth (`npm run lint` + `.prettierrc`). Ver
 
 ## Objects and Data Structures (Ch.6)
 
-Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status, countdown, and day grouping live in the Schedule Interactor / Presenter. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teamA.name`) is fine.
+Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status and day grouping live in Schedule use cases; countdown labels live in the Presenter via `lib/format-time`. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teamA.name`) is fine.
 
 ## Error Handling (Ch.7)
 
-Prefer exceptions over error codes for unexpected failures (`getGame` throwing on unknown `GameId` is the pattern). No empty catches. Provide context. Don’t use throw for expected validation — return a named outcome (`GameFilter | null`). Be deliberate with null/optional.
+Prefer exceptions over error codes for unexpected failures (`GameCatalog.get` throwing on unknown `GameId` is the pattern). No empty catches. Provide context. Don’t use throw for expected validation — return a named outcome (`GameFilter | null`). Be deliberate with null/optional.
 
 ## Boundaries (Ch.8)
 
-Wrap third-party APIs behind owned façades. Sample `MATCHES` is a stand-in: a live schedule API belongs behind `data/` + Schedule Interactor, not inside Views. Learning tests at the boundary. Expo Router (`Link`, `router`, `useLocalSearchParams`) stays in `app/` as Router adapters / Builders. Features depend on what you control (module contracts).
+Wrap third-party APIs behind owned façades. Sample `MATCHES` is a stand-in: a live schedule API belongs behind `data/` implementing module `gateways.ts`, injected by Builders — not inside Views or use cases. Learning tests at the boundary. Expo Router (`Link`, `router`, `useLocalSearchParams`) stays in `app/` as Router adapters / Builders. Features depend on what you control (module contracts).
 
 ## Classes (Ch.10)
 
-Small, cohesive, single responsibility. This app is function- and type-first VIPER (contracts + functions); don’t introduce classes unless they earn cohesion. Organize for change. Expo Router layout / `ErrorBoundary` conventions stay framework-owned when they conflict with purity.
+Small, cohesive, single responsibility. This app is function- and type-first VIPER + Clean Architecture (contracts + functions); don’t introduce classes unless they earn cohesion. Organize for change. Expo Router layout / `ErrorBoundary` conventions stay framework-owned when they conflict with purity.
 
 ## Systems (Ch.11)
 
-Separate construction from use. Builders in `app/` wire View, Presenter, Interactor, and Router adapters. One-way VIPER dependencies:
+Separate construction from use. Builders in `app/` wire View, Presenter, catalogs, and Router adapters. One-way dependencies:
 
-- `app/` → `modules/`, `lib/use-now`, `constants/`, `expo-router` (and Entity types when adapting)
-- Presenter → Interactor, Entity types, Router contract
-- Interactor → `data/` (Games Interactor may call Schedule Interactor)
+- `app/` → `modules/`, `data/` catalogs, `lib/use-now`, `constants/`, `expo-router`
+- Presenter → use cases, gateways, entities, contracts, `lib/format-time`
+- Use cases → entities (and other use cases); never `data/`
 - View → view-model types + `constants/`
-- `data/` → nothing in `app/`, `modules/`, or UI
+- `data/` → `entities` + `gateways` only (outer sample / API implementations)
 
-Keep Interactor / Presenter math testable without rendering a screen.
+Module root files: `view`, `presenter`, `entities`, `contracts`, `gateways`, harness, and their tests. Application logic lives in `use-cases/`; UI pieces in `components/`.
+
+Keep use-case / Presenter math testable without rendering a screen.
 
 ## Emergence (Ch.12)
 

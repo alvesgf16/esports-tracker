@@ -60,13 +60,15 @@
     ],
     "collectCoverageFrom": [
       "modules/**/*.{ts,tsx}",
+      "lib/format-time.ts",
       "data/**/*.{ts,tsx}",
       "!**/*.{test,spec}.{ts,tsx}",
       "!**/*.harness.ts",
       "!**/components/**",
       "!**/view.tsx",
       "!**/contracts.ts",
-      "!**/types.ts"
+      "!**/entities.ts",
+      "!**/gateways.ts"
     ],
     "coverageDirectory": "coverage",
     "coverageReporters": [

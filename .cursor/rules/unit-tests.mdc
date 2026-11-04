@@ -22,8 +22,8 @@ Production size/complexity gates stay strict. Spec, `*.test`, harness, and `__te
 
 ## Harness / DSL
 
-Put fixture clocks (`now`), sample `Match` builders, and module setup in `*.harness.ts` (or `__tests__/helpers`) — not inline in every `it`. Prefer `rejects.toThrow` / RNTL queries over try/catch for expected failures. Schedule Interactor / Presenter logic under `modules/schedule/` should be unit-tested without rendering Views.
+Put fixture clocks (`now`), sample `Match` builders, and stub catalogs in `*.harness.ts` (or `__tests__/helpers`) — not inline in every `it`. Prefer `rejects.toThrow` / RNTL queries over try/catch for expected failures. Schedule use cases / Presenter logic under `modules/schedule/` should be unit-tested without rendering Views. Use-case tests pass fixture entities — they must not import `data/` sample catalogs.
 
 ## Coverage
 
-Prefer meaningful tests over chasing percentage alone. Run `npm run test:coverage` for a report under `coverage/` (gitignored). Collection covers Interactor / Presenter / helpers and `data/`, excluding Views, contracts, harnesses, and specs.
+Prefer meaningful tests over chasing percentage alone. Run `npm run test:coverage` for a report under `coverage/` (gitignored). Collection covers use cases / Presenter / `lib/format-time` and `data/`, excluding Views, contracts, entities, gateways, harnesses, and specs.
