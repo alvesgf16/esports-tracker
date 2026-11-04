@@ -1,0 +1,14 @@
+{
+  "id": 1246497,
+  "name": "Grand final: TBD vs TBD",
+  "status": "not_started",
+  "match_type": "best_of",
+  "number_of_games": 3,
+  "begin_at": "2026-11-05T17:30:00Z",
+  "scheduled_at": "2026-11-05T17:30:00Z",
+  "opponents": [],
+  "league": { "name": "CCT Europe" },
+  "tournament": { "name": "Playoffs" },
+  "videogame": { "name": "Counter-Strike", "slug": "cs-go" },
+  "videogame_title": { "name": "Counter-Strike 2" }
+}

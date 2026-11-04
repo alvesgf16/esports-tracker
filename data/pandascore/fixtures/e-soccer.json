@@ -1,0 +1,17 @@
+{
+  "id": 800001,
+  "name": "Team A vs Team B",
+  "status": "not_started",
+  "match_type": "best_of",
+  "number_of_games": 3,
+  "begin_at": "2026-11-04T20:00:00Z",
+  "scheduled_at": "2026-11-04T20:00:00Z",
+  "opponents": [
+    { "type": "Team", "opponent": { "name": "Team A", "acronym": "A" } },
+    { "type": "Team", "opponent": { "name": "Team B", "acronym": "B" } }
+  ],
+  "league": { "name": "eSoccer League" },
+  "tournament": { "name": "Cup" },
+  "videogame": { "name": "eSoccer", "slug": "e-soccer" },
+  "videogame_title": { "name": null }
+}

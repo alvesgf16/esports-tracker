@@ -1,0 +1,23 @@
+{
+  "id": 1246500,
+  "name": "G2 Esports vs Fnatic",
+  "status": "not_started",
+  "match_type": "best_of",
+  "number_of_games": 5,
+  "begin_at": "2026-11-04T19:00:00Z",
+  "scheduled_at": "2026-11-04T19:00:00Z",
+  "opponents": [
+    {
+      "type": "Team",
+      "opponent": { "name": "G2 Esports", "acronym": "G2" }
+    },
+    {
+      "type": "Team",
+      "opponent": { "name": "Fnatic", "acronym": "FNC" }
+    }
+  ],
+  "league": { "name": "LEC" },
+  "tournament": { "name": "Spring Playoffs" },
+  "videogame": { "name": "LoL", "slug": "league-of-legends" },
+  "videogame_title": { "name": null }
+}
