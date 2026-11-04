@@ -57,7 +57,7 @@
     "check": "npm run lint && npm run typecheck && npm test",
     "knip": "knip",
     "jscpd": "jscpd .",
-    "uniwind:types": "uniwind generate-artifacts --css ./global.css --dts ./app/uniwind-types.d.ts",
+    "uniwind:types": "uniwind generate-artifacts --css ./global.css --dts ./uniwind-types.d.ts",
     "prepare": "husky"
   },
   "jest": {

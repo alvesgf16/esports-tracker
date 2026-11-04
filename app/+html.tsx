@@ -1,22 +1,27 @@
-import { ScrollViewStyleReset } from 'expo-router/html';
+import {
+  ScrollViewStyleReset,
+  useServerDocumentContext,
+} from 'expo-router/html';
 import type { ReactNode } from 'react';
 
-// This file is web-only and used to configure the root HTML for every
-// web page during static rendering.
-// The contents of this function only run in Node.js environments and
-// do not have access to the DOM or browser APIs.
+// Web-only root HTML for server rendering. Runs in Node.js only.
 export default function Root({ children }: { children: ReactNode }) {
+  const document = useServerDocumentContext();
+
   return (
-    <html lang="en">
+    <html lang="en" {...document.htmlAttributes}>
       <head>
-        <HeadTags />
+        <DocumentHead headNodes={document.headNodes} />
       </head>
-      <body>{children}</body>
+      <body {...document.bodyAttributes}>
+        {children}
+        {document.bodyNodes}
+      </body>
     </html>
   );
 }
 
-function HeadTags() {
+function DocumentHead({ headNodes }: { headNodes: ReactNode }) {
   return (
     <>
       <meta charSet="utf-8" />
@@ -27,6 +32,7 @@ function HeadTags() {
       />
       <ScrollViewStyleReset />
       <style dangerouslySetInnerHTML={{ __html: responsiveBackground }} />
+      {headNodes}
     </>
   );
 }
