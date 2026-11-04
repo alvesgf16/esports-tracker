@@ -40,13 +40,24 @@ Prefer MIT/Apache tooling. Do **not** enable `eslint-plugin-sonarjs` (LGPL).
 | Comments (Ch.4) | `no-warning-comments` — ban `fixme` / `xxx` / `hack`; `TODO` allowed |
 | Formatting (Ch.5) | Prettier + `eslint-plugin-prettier` / `eslint-config-prettier` |
 | Errors (Ch.7) | `no-empty`, `no-throw-literal`, `prefer-promise-reject-errors`, typed `@typescript-eslint/only-throw-error` |
-| Boundaries (Ch.8/11) | **guide** until a documented layer map exists; `no-restricted-imports` is an exception-candidate |
+| Boundaries (Ch.8/11) | VIPER layer map above; `no-restricted-imports` in `eslint.config.js` |
 | Unit tests (Ch.9) | `jest-expo` + Jest when tests are added; `eslint-plugin-jest`; dual-standard size offs on specs |
 | Classes (Ch.10) | `max-classes-per-file` 1, `max-lines` 100 |
 | Concurrency (Ch.13) | `@typescript-eslint/await-thenable`, `@typescript-eslint/require-await` (type-aware `projectService`) |
 | Smells (Ch.17) | `eslint-plugin-unicorn@65` (MIT, last ESLint 9-compatible; Expo pins ESLint 9), `jscpd`, `knip` |
 
-Folders today (`app/`, `components/`, `lib/`, `data/`, `constants/`) are conventional Expo layout, not a frozen architecture. Do not add import-direction bans until that map is explicit.
+### VIPER layer map (React-adapted)
+
+| Role | Location | Imports |
+| --- | --- | --- |
+| Builder / Router adapter | `app/` | `modules/`, `lib/use-now`, `constants/`, `expo-router` |
+| View | `modules/*/view.tsx` (+ dumb subviews) | view-model types, `constants/` — no `expo-router`, no data queries |
+| Presenter | `modules/*/presenter.ts` | Interactor, Entity types, Router contract — no `react-native` / `expo-router` |
+| Interactor | `modules/*/interactor.ts` (+ helpers) | `data/` (Games may call Schedule Interactor) |
+| Entity | `data/` | no `app/`, `modules/`, UI |
+| Clock | `lib/use-now.ts` | infrastructure used by Builders |
+
+Enforced with `no-restricted-imports` in `eslint.config.js` (Ch.8 / Ch.11).
 
 ### Exception-candidates (not accepted)
 
@@ -55,7 +66,6 @@ These are noisy on React Native screens; keep the default gates until an intenti
 | Candidate | Principle | Why it might be allowed |
 | --- | --- | --- |
 | Screen / card files over `max-lines-per-function` 20 | Ch.3 / Ch.10 | JSX + colocated `StyleSheet.create` inflate function and file length |
-| `no-restricted-imports` for `data` ↛ `app`/`components` | Ch.8 / Ch.11 | Layer map is implied, not documented |
 
 ## Chapter matrix
 
@@ -66,12 +76,12 @@ These are noisy on React Native screens; keep the default gates until an intenti
 | 3 | Functions | Small; one abstraction level; few args; CQS; no flag args | `automate`, `guide` | `complexity` 5, `max-depth` 2, `max-params` 3, `max-lines-per-function` 20 (skip blank/comments) |
 | 4 | Comments | Why not what; prefer rename/extract; no FIXME/XXX/HACK | `automate`, `guide` | `no-warning-comments` for fixme/xxx/hack |
 | 5 | Formatting | Newspaper; vertical openness/density; team formatter | `automate`, `guide` | Prettier (`.prettierrc`); no style-lint wars |
-| 6 | Objects and Data Structures | Data vs object; LoD; DTOs; no Active Record on payloads | `guide` | `Match` / `Team` / `Game` stay data; behavior in `lib/schedule` |
+| 6 | Objects and Data Structures | Data vs object; LoD; DTOs; no Active Record on payloads | `guide` | `Match` / `Team` / `Game` stay data; behavior in Schedule Interactor / Presenter |
 | 7 | Error Handling | Exceptions over codes; no empty catch; context in errors | `automate`, `guide` | `no-empty`, `no-throw-literal`, `prefer-promise-reject-errors`, `only-throw-error` |
-| 8 | Boundaries | Wrap third-party; owned façade; learning tests at the edge | `guide` | Future live schedule API behind `data/` + `lib/schedule`; Expo Router stays in `app/` |
+| 8 | Boundaries | Wrap third-party; owned façade; learning tests at the edge | `automate`, `guide` | Live schedule API behind `data/` + Schedule Interactor; Expo Router adapters in `app/`; `no-restricted-imports` |
 | 9 | Unit Tests | FIRST; AAA; one concept; readable DSL / harness | `automate`, `guide` | `unit-tests.mdc`; Jest plugin + dual-standard offs; `jest-expo` not installed yet |
 | 10 | Classes | SRP; small cohesive types | `automate`, `guide` | `max-classes-per-file` 1, `max-lines` 100 (skip blank/comments) |
-| 11 | Systems | Construction vs use; one-way dependencies | `guide` | Screens compose; `lib` does not import `app/` or `components/` — enforce later with `no-restricted-imports` |
+| 11 | Systems | Construction vs use; one-way dependencies | `automate`, `guide` | Builders in `app/` wire VIPER; `no-restricted-imports` enforces the layer map above |
 | 12 | Emergence | Runs tests; no duplication; expresses intent; fewest elements | `guide` | Duplication/dead-code tools under Ch.17 |
 | 13 | Concurrency | Clear async boundaries; no false thread myths | `automate`, `guide` | `await-thenable`, `require-await`; RN JS thread + Reanimated worklets stay guide |
 | 14 | Successive Refinement | Draft → refine → green → commit; no broken main | `guide` | Feature branch; commit when asked; CI/hooks only if already present |

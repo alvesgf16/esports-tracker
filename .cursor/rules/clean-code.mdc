@@ -9,19 +9,20 @@ Source: Robert C. Martin, _Clean Code_. Inventory: `docs/clean-code-inventory.md
 
 ## Meaningful Names (Ch.2)
 
-Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). File names are kebab-case (`match-card.tsx`, `use-now.ts`); Expo Router reserved names (`_layout`, `+html`, `(tabs)`) stay as the framework requires. Prefer problem-domain vocabulary in `data/`, `lib/`, and screens; solution-domain (Expo / React Native) words in `app/` routes, hooks, and UI.
+Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). File names are kebab-case (`match-card.tsx`, `use-now.ts`); Expo Router reserved names (`_layout`, `+html`, `(tabs)`) stay as the framework requires. Prefer problem-domain vocabulary in `data/`, `modules/` interactors/presenters; solution-domain (Expo / React Native) words in `app/` routes, hooks, and Views.
 
 ### Domain vocabulary
 
-- `Game`, `GameId`, `Team`, `Match` — schedule payload types in `data/types`
+- `Game`, `GameId`, `Team`, `Match` — Entity DTOs in `data/types` / `data/games`
 - `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter`
 - Kickoff, countdown, tournament, format (`Bo3` / `Bo5`)
-- Screens: schedule (`app/(tabs)/index.tsx`), games list (`app/(tabs)/games.tsx`)
-- Owned schedule façade: `lib/schedule.ts`; clock hook: `lib/use-now.ts`
+- VIPER modules: Schedule (`modules/schedule/`), Games (`modules/games/`)
+- Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games)
+- Clock infrastructure: `lib/use-now.ts`
 
 ## Functions (Ch.3)
 
-Small; do one thing; one abstraction level; stepdown (caller above callee). Prefer 0–2 args; at most 3 positional — more → a named argument object type. Avoid flag arguments. No hidden side effects. Command/query separation. Prefer extract to `lib/` over growing past size gates. Keep JSX screens thin: filter/group in `lib/schedule`, render in `components/`.
+Small; do one thing; one abstraction level; stepdown (caller above callee). Prefer 0–2 args; at most 3 positional — more → a named argument object type. Avoid flag arguments. No hidden side effects. Command/query separation. Prefer extract within the VIPER role (Interactor / Presenter helpers) over growing past size gates. Keep Views thin: Interactor owns use cases, Presenter owns view models, View renders props.
 
 ## Comments (Ch.4)
 
@@ -33,7 +34,7 @@ Prettier is the horizontal source of truth (`npx expo lint` + `.prettierrc`). Ve
 
 ## Objects and Data Structures (Ch.6)
 
-Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status, countdown, and day grouping live in `lib/schedule`. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teamA.name`) is fine.
+Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status, countdown, and day grouping live in the Schedule Interactor / Presenter. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teamA.name`) is fine.
 
 ## Error Handling (Ch.7)
 
@@ -41,15 +42,23 @@ Prefer exceptions over error codes for unexpected failures (`getGame` throwing o
 
 ## Boundaries (Ch.8)
 
-Wrap third-party APIs behind owned façades. Sample `MATCHES` is a stand-in: a live schedule API belongs behind `data/` + `lib/schedule`, not inside screens. Learning tests at the boundary. Expo Router (`Link`, `router`, `useLocalSearchParams`) stays in `app/`. Features depend on what you control.
+Wrap third-party APIs behind owned façades. Sample `MATCHES` is a stand-in: a live schedule API belongs behind `data/` + Schedule Interactor, not inside Views. Learning tests at the boundary. Expo Router (`Link`, `router`, `useLocalSearchParams`) stays in `app/` as Router adapters / Builders. Features depend on what you control (module contracts).
 
 ## Classes (Ch.10)
 
-Small, cohesive, single responsibility. This app is function- and type-first; don’t introduce classes unless they earn cohesion. Organize for change. Expo Router layout / `ErrorBoundary` conventions stay framework-owned when they conflict with purity.
+Small, cohesive, single responsibility. This app is function- and type-first VIPER (contracts + functions); don’t introduce classes unless they earn cohesion. Organize for change. Expo Router layout / `ErrorBoundary` conventions stay framework-owned when they conflict with purity.
 
 ## Systems (Ch.11)
 
-Separate construction from use. One-way module dependencies: `app/` → `components/` / `lib/` / `data/`; `lib/` may use `data/`; `data/` does not import UI. Keep schedule math testable without rendering a screen.
+Separate construction from use. Builders in `app/` wire View, Presenter, Interactor, and Router adapters. One-way VIPER dependencies:
+
+- `app/` → `modules/`, `lib/use-now`, `constants/`, `expo-router` (and Entity types when adapting)
+- Presenter → Interactor, Entity types, Router contract
+- Interactor → `data/` (Games Interactor may call Schedule Interactor)
+- View → view-model types + `constants/`
+- `data/` → nothing in `app/`, `modules/`, or UI
+
+Keep Interactor / Presenter math testable without rendering a screen.
 
 ## Emergence (Ch.12)
 
@@ -57,7 +66,7 @@ Runs all the tests; no duplication; expresses intent; fewest elements that still
 
 ## Concurrency (Ch.13)
 
-Prefer clear async boundaries. `useNow` owns the interval clock; don’t scatter `setInterval` in cards. Snapshot times (`now`) when status can go stale. Reanimated worklets are a different runtime — don’t pretend they share React state. OS thread material is N/A unless native modules truly use threads.
+Prefer clear async boundaries. `useNow` owns the interval clock in Builders; don’t scatter `setInterval` in cards. Snapshot times (`now`) when status can go stale. Reanimated worklets are a different runtime — don’t pretend they share React state. OS thread material is N/A unless native modules truly use threads.
 
 ## Successive Refinement (Ch.14)
 

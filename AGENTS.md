@@ -25,8 +25,9 @@ Run lint and typecheck before declaring any task done.
 
 ## Navigation & Routing
 
-- Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.
-- Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
+- Use **Expo Router** for all navigation. Routes live in `app/` — every file there is a screen / Builder, `_layout.tsx` files define navigators.
+- Feature logic uses React-adapted **VIPER** under `modules/` (View / Interactor / Presenter / Entity / Router contracts). `app/` wires modules and adapts Expo Router; keep Interactors and Presenters outside `app/`.
+- Import `Link`, `router`, and `useLocalSearchParams` from `expo-router` only in `app/`.
 - Docs: https://docs.expo.dev/router/introduction.md
 
 ## Building with EAS

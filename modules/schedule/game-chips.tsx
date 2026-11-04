@@ -1,33 +1,24 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 
 import Colors from '@/constants/colors';
-import { GAMES } from '@/data/games';
-import type { GameFilter } from '@/data/types';
+
+import type { ChipModel } from './contracts';
 
 const palette = Colors.dark;
 
 type Props = {
-  selected: GameFilter;
-  onSelect: (game: GameFilter) => void;
-};
-
-type Chip = {
-  id: GameFilter;
-  label: string;
+  chips: ChipModel[];
+  selected: ChipModel['id'];
+  onSelect: (game: ChipModel['id']) => void;
 };
 
 type ChipProps = {
-  chip: Chip;
-  selected: GameFilter;
-  onSelect: (game: GameFilter) => void;
+  chip: ChipModel;
+  selected: ChipModel['id'];
+  onSelect: (game: ChipModel['id']) => void;
 };
 
-const FILTERS: Chip[] = [
-  { id: 'all', label: 'All' },
-  ...GAMES.map((game) => ({ id: game.id, label: game.shortName })),
-];
-
-export default function GameChips({ selected, onSelect }: Props) {
+export default function GameChips({ chips, selected, onSelect }: Props) {
   return (
     <ScrollView
       horizontal
@@ -35,10 +26,10 @@ export default function GameChips({ selected, onSelect }: Props) {
       style={styles.scroller}
       contentContainerStyle={styles.row}
     >
-      {FILTERS.map((filter) => (
+      {chips.map((chip) => (
         <FilterChip
-          key={filter.id}
-          chip={filter}
+          key={chip.id}
+          chip={chip}
           selected={selected}
           onSelect={onSelect}
         />

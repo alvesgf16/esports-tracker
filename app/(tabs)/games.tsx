@@ -1,31 +1,28 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useMemo } from 'react';
 
-import GameRow from '@/components/game-row';
-import Colors from '@/constants/colors';
-import { GAMES } from '@/data/games';
 import { useNow } from '@/lib/use-now';
-
-const palette = Colors.dark;
+import type { GamesRouter } from '@/modules/games/contracts';
+import { gamesInteractor } from '@/modules/games/interactor';
+import { presentGames } from '@/modules/games/presenter';
+import GamesView from '@/modules/games/view';
 
 export default function GamesScreen() {
   const now = useNow();
-
-  return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      {GAMES.map((game) => (
-        <GameRow key={game.id} game={game} now={now} />
-      ))}
-    </ScrollView>
+  const router = useRouter();
+  const gamesRouter = useMemo(() => createGamesRouter(router), [router]);
+  const model = useMemo(
+    () => presentGames({ interactor: gamesInteractor, now }),
+    [now]
   );
+
+  return <GamesView model={model} onOpenSchedule={gamesRouter.openSchedule} />;
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: palette.background,
-  },
-  content: {
-    padding: 16,
-    gap: 10,
-  },
-});
+function createGamesRouter(router: ReturnType<typeof useRouter>): GamesRouter {
+  return {
+    openSchedule: (gameId) => {
+      router.push(`/?game=${gameId}`);
+    },
+  };
+}

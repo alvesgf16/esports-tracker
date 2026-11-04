@@ -1,63 +1,46 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import Colors from '@/constants/colors';
-import { getGame } from '@/data/games';
-import type { Match } from '@/data/types';
-import { formatCountdown, formatKickoff } from '@/lib/format-time';
-import { getMatchStatus } from '@/lib/schedule';
+
+import type { MatchCardModel } from './contracts';
 
 const palette = Colors.dark;
 
 type Props = {
-  match: Match;
-  now: number;
+  match: MatchCardModel;
 };
 
-type KickoffProps = {
-  startsAt: string;
-  now: number;
-  isLive: boolean;
-};
-
-type BodyProps = {
-  match: Match;
-  shortName: string;
-};
-
-export default function MatchCard({ match, now }: Props) {
-  const game = getGame(match.game);
-  const isLive = getMatchStatus(match.startsAt, now) === 'live';
-
+export default function MatchCard({ match }: Props) {
   return (
     <View style={styles.card}>
-      <KickoffColumn startsAt={match.startsAt} now={now} isLive={isLive} />
-      <MatchBody match={match} shortName={game.shortName} />
+      <KickoffColumn match={match} />
+      <MatchBody match={match} />
     </View>
   );
 }
 
-function KickoffColumn({ startsAt, now, isLive }: KickoffProps) {
+function KickoffColumn({ match }: Props) {
   return (
     <View style={styles.timeCol}>
-      <Text style={[styles.kickoff, isLive && styles.liveText]}>
-        {isLive ? 'LIVE' : formatKickoff(startsAt)}
+      <Text style={[styles.kickoff, match.isLive && styles.liveText]}>
+        {match.kickoffLabel}
       </Text>
-      <Text style={styles.countdown}>{formatCountdown(startsAt, now)}</Text>
+      <Text style={styles.countdown}>{match.countdownLabel}</Text>
     </View>
   );
 }
 
-function MatchBody({ match, shortName }: BodyProps) {
+function MatchBody({ match }: Props) {
   return (
     <View style={styles.body}>
       <Text style={styles.team} numberOfLines={1}>
-        {match.teamA.name}
+        {match.teamA}
       </Text>
       <Text style={styles.team} numberOfLines={1}>
-        {match.teamB.name}
+        {match.teamB}
       </Text>
       <Text style={styles.meta} numberOfLines={1}>
-        {shortName} · {match.tournament} · {match.format}
+        {match.meta}
       </Text>
     </View>
   );

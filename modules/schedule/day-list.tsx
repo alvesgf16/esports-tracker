@@ -1,44 +1,35 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import MatchCard from '@/components/match-card';
 import Colors from '@/constants/colors';
-import type { GameFilter } from '@/data/types';
-import { gameName } from '@/lib/game-filter';
-import type { DayGroup } from '@/lib/schedule';
+
+import type { DaySectionModel } from './contracts';
+import MatchCard from './match-card';
 
 const palette = Colors.dark;
 
 type Props = {
-  groups: DayGroup[];
-  now: number;
-  selected: GameFilter;
+  groups: DaySectionModel[];
+  emptyMessage: string;
 };
 
-export default function DayList({ groups, now, selected }: Props) {
+export default function DayList({ groups, emptyMessage }: Props) {
   return (
     <ScrollView style={styles.listWrap} contentContainerStyle={styles.list}>
       {groups.length === 0 ? (
-        <EmptySchedule selected={selected} />
+        <Text style={styles.empty}>{emptyMessage}</Text>
       ) : (
-        groups.map((group) => (
-          <DaySection key={group.key} group={group} now={now} />
-        ))
+        groups.map((group) => <DaySection key={group.key} group={group} />)
       )}
     </ScrollView>
   );
 }
 
-function EmptySchedule({ selected }: { selected: GameFilter }) {
-  const label = selected === 'all' ? '' : `${gameName(selected)} `;
-  return <Text style={styles.empty}>No upcoming {label}matches.</Text>;
-}
-
-function DaySection({ group, now }: { group: DayGroup; now: number }) {
+function DaySection({ group }: { group: DaySectionModel }) {
   return (
     <View style={styles.group}>
       <Text style={styles.section}>{group.label}</Text>
       {group.matches.map((match) => (
-        <MatchCard key={match.id} match={match} now={now} />
+        <MatchCard key={match.id} match={match} />
       ))}
     </View>
   );

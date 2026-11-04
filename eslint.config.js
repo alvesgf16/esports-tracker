@@ -140,5 +140,153 @@ module.exports = defineConfig([
       'jest/no-identical-title': 'error',
     },
   },
+  // VIPER layer map — Clean Code Ch.8 / Ch.11
+  {
+    files: ['modules/**/presenter.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'expo-router',
+              message: 'Presenters must not import Expo Router.',
+            },
+            {
+              name: 'react-native',
+              message: 'Presenters must not import React Native.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['@/app', '@/app/*'],
+              message: 'Presenters must not import app routes.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['modules/**/interactor.ts', 'modules/**/match-status.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'expo-router',
+              message: 'Interactors must not import Expo Router.',
+            },
+            {
+              name: 'react-native',
+              message: 'Interactors must not import React Native.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['@/app', '@/app/*', '@/constants', '@/constants/*'],
+              message: 'Interactors talk to data/entities only.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: [
+      'modules/**/visible-matches.ts',
+      'modules/**/day-groups.ts',
+      'modules/**/parse-filter.ts',
+      'modules/**/format-time.ts',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'expo-router',
+              message: 'Module helpers must not import Expo Router.',
+            },
+            {
+              name: 'react-native',
+              message: 'Module helpers must not import React Native.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['@/app', '@/app/*'],
+              message: 'Module helpers must not import app routes.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['modules/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'expo-router',
+              message: 'Views must not import Expo Router; use Router adapters in app/.',
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                '@/data/games',
+                '@/data/matches',
+                '@/data/matches-*',
+                '@/data/sample-kickoff',
+                '@/app',
+                '@/app/*',
+              ],
+              message: 'Views render view models only; no data queries or app routes.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['data/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'expo-router',
+              message: 'Entities must not import Expo Router.',
+            },
+            {
+              name: 'react-native',
+              message: 'Entities must not import React Native.',
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                '@/app',
+                '@/app/*',
+                '@/modules',
+                '@/modules/*',
+                '@/constants',
+                '@/constants/*',
+                '@/lib',
+                '@/lib/*',
+              ],
+              message: 'data/ is the Entity layer; it must not import UI or modules.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   eslintPluginPrettierRecommended,
 ]);

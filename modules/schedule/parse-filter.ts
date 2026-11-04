@@ -1,7 +1,7 @@
 import { GAMES } from '@/data/games';
 import type { GameFilter, GameId } from '@/data/types';
 
-export function parseGameFilter(
+export function parseFilter(
   value: string | string[] | undefined
 ): GameFilter | null {
   const game = Array.isArray(value) ? value[0] : value;
