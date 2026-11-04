@@ -2,7 +2,7 @@
 
 Source: Robert C. Martin, _Clean Code_. Stack: **typescript** (Expo SDK 58 / React Native).
 
-Lint entrypoint: `npx expo lint` (`package.json` script `lint`). Typecheck: `npx tsc --noEmit`. Dead code: `npm run knip`. Duplication: `npm run jscpd`.
+Lint entrypoint: `npm run lint` (`eslint .`). Typecheck: `npx tsc --noEmit`. Dead code: `npm run knip`. Duplication: `npm run jscpd`. Do not use `npx expo lint` as the gate — it only covers `app/`, `src/`, and `components/`.
 
 ## Tags
 
@@ -16,7 +16,7 @@ Lint entrypoint: `npx expo lint` (`package.json` script `lint`). Typecheck: `npx
 
 | Layer | Location | Role |
 | --- | --- | --- |
-| Automated gates | `eslint.config.js` + Prettier, via `npx expo lint` | Chapter `automate` rows |
+| Automated gates | `eslint.config.js` + Prettier, via `npm run lint` | Chapter `automate` rows |
 | Agent / human judgment | `.cursor/rules/clean-code.mdc` | Meaningful Names through Smells |
 | Unit-test judgment | `.cursor/rules/unit-tests.mdc` | FIRST / AAA / dual standard (`*.spec.*` / `*.test.*`) |
 | Agent entrypoint | `AGENTS.md` | Pointer to this inventory only |

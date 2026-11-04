@@ -30,7 +30,7 @@ Prefer rename/extract over narrative comments. Keep legal, intent, clarification
 
 ## Formatting (Ch.5)
 
-Prettier is the horizontal source of truth (`npx expo lint` + `.prettierrc`). Vertical: newspaper metaphor, single blank between concepts, density within a thought, dependents below callers, conceptual affinity. Blank line around `if`/`for`, before `return`, and after a declaration group before the next kind of statement (`padding-line-between-statements`). Do not fight Prettier with other style ESLint.
+Prettier is the horizontal source of truth (`npm run lint` + `.prettierrc`). Vertical: newspaper metaphor, single blank between concepts, density within a thought, dependents below callers, conceptual affinity. Blank line around `if`/`for`, before `return`, and after a declaration group before the next kind of statement (`padding-line-between-statements`). Do not fight Prettier with other style ESLint.
 
 ## Objects and Data Structures (Ch.6)
 

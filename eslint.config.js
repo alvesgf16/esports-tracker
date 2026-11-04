@@ -1,6 +1,7 @@
 const { defineConfig, globalIgnores } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
+const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const unicorn = require('eslint-plugin-unicorn').default;
 const jestPlugin = require('eslint-plugin-jest');
 
@@ -20,6 +21,8 @@ module.exports = defineConfig([
     'web-build/*',
     'coverage/*',
     '**/uniwind-types.d.ts',
+    'expo-env.d.ts',
+    'eslint.config.js',
   ]),
   {
     // eslint-plugin-import otherwise loads the `typescript` package as a resolver
@@ -37,21 +40,17 @@ module.exports = defineConfig([
   },
   {
     files: ['**/*.{ts,tsx}'],
+    plugins: {
+      '@typescript-eslint': typescriptEslint,
+    },
     languageOptions: {
       parserOptions: {
         projectService: true,
         tsconfigRootDir: __dirname,
       },
     },
-  },
-  {
-    plugins: {
-      unicorn,
-    },
     rules: {
       // Clean Code Ch.2
-      'id-length': ['error', { min: 2, exceptions: ['_', 'x', 'y', 'i', 'j'] }],
-      'id-denylist': ['error', 'l', 'O', 'I', 'cb', 'err'],
       '@typescript-eslint/naming-convention': [
         'error',
         {
@@ -86,6 +85,23 @@ module.exports = defineConfig([
         },
       ],
 
+      // Clean Code Ch.7
+      '@typescript-eslint/only-throw-error': 'error',
+
+      // Clean Code Ch.13
+      '@typescript-eslint/await-thenable': 'error',
+      '@typescript-eslint/require-await': 'error',
+    },
+  },
+  {
+    plugins: {
+      unicorn,
+    },
+    rules: {
+      // Clean Code Ch.2
+      'id-length': ['error', { min: 2, exceptions: ['_', 'x', 'y', 'i', 'j'] }],
+      'id-denylist': ['error', 'l', 'O', 'I', 'cb', 'err'],
+
       // Clean Code Ch.3
       complexity: ['error', 5],
       'max-depth': ['error', 2],
@@ -119,7 +135,6 @@ module.exports = defineConfig([
       'no-empty': ['error', { allowEmptyCatch: false }],
       'no-throw-literal': 'error',
       'prefer-promise-reject-errors': 'error',
-      '@typescript-eslint/only-throw-error': 'error',
 
       // Clean Code Ch.10
       'max-classes-per-file': ['error', 1],
@@ -127,10 +142,6 @@ module.exports = defineConfig([
         'error',
         { max: 100, skipBlankLines: true, skipComments: true },
       ],
-
-      // Clean Code Ch.13
-      '@typescript-eslint/await-thenable': 'error',
-      '@typescript-eslint/require-await': 'error',
 
       // Clean Code Ch.17 (MIT unicorn; not sonarjs)
       'unicorn/no-nested-ternary': 'error',

@@ -33,21 +33,19 @@ function KickoffColumn({ match }: Props) {
 function MatchBody({ match }: Props) {
   return (
     <View className="flex-1 gap-1">
-      <Text
-        className="text-base font-semibold text-foreground"
-        numberOfLines={1}
-      >
-        {match.teamA}
-      </Text>
-      <Text
-        className="text-base font-semibold text-foreground"
-        numberOfLines={1}
-      >
-        {match.teamB}
-      </Text>
+      <TeamName name={match.teamA} />
+      <TeamName name={match.teamB} />
       <Text className="mt-1 text-xs text-muted" numberOfLines={1}>
         {match.meta}
       </Text>
     </View>
+  );
+}
+
+function TeamName({ name }: { name: string }) {
+  return (
+    <Text className="text-base font-semibold text-foreground" numberOfLines={1}>
+      {name}
+    </Text>
   );
 }
