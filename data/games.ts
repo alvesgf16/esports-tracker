@@ -1,4 +1,5 @@
-import type { Game, GameId } from '@/modules/games/entities';
+import type { Game } from '@/modules/games/entities';
+import type { GameCatalog } from '@/modules/games/gateways';
 
 export const GAMES: Game[] = [
   { id: 'lol', name: 'League of Legends', shortName: 'LoL' },
@@ -9,12 +10,15 @@ export const GAMES: Game[] = [
   { id: 'mlbb', name: 'Mobile Legends', shortName: 'MLBB' },
 ];
 
-export function getGame(id: GameId): Game {
-  const game = GAMES.find((item) => item.id === id);
+export const sampleGameCatalog: GameCatalog = {
+  list: () => GAMES,
+  get: (id) => {
+    const game = GAMES.find((item) => item.id === id);
 
-  if (!game) {
-    throw new Error(`Unknown game: ${id}`);
-  }
+    if (!game) {
+      throw new Error(`Unknown game: ${id}`);
+    }
 
-  return game;
-}
+    return game;
+  },
+};

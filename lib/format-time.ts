@@ -1,5 +1,3 @@
-import type { MatchStatus } from './match-status';
-
 export function formatKickoff(startsAt: string): string {
   return new Date(startsAt).toLocaleTimeString(undefined, {
     hour: 'numeric',
@@ -7,15 +5,7 @@ export function formatKickoff(startsAt: string): string {
   });
 }
 
-export function formatCountdown(
-  startsAt: string,
-  now: number,
-  status: MatchStatus
-): string {
-  if (status === 'live') {
-    return 'LIVE';
-  }
-
+export function formatCountdown(startsAt: string, now: number): string {
   return formatRemaining(Math.max(0, new Date(startsAt).getTime() - now));
 }
 

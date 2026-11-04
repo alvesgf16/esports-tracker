@@ -1,13 +1,26 @@
-import { stubGamesInteractor } from './games.harness';
+import type { MatchCatalog } from '@/modules/schedule/gateways';
+import {
+  aMatch,
+  FIXED_NOW,
+  hoursFromNow,
+} from '@/modules/schedule/schedule.harness';
+
+import { stubGameCatalog } from './games.harness';
 import { presentGames } from './presenter';
 
 describe('presentGames', () => {
   it('maps upcoming counts into row labels', () => {
+    const matches: MatchCatalog = {
+      list: () => [
+        aMatch({ id: '1', game: 'lol', startsAt: hoursFromNow(2) }),
+        aMatch({ id: '2', game: 'lol', startsAt: hoursFromNow(4) }),
+        aMatch({ id: '3', game: 'lol', startsAt: hoursFromNow(6) }),
+      ],
+    };
     const model = presentGames({
-      interactor: stubGamesInteractor({
-        upcomingCount: (gameId) => (gameId === 'lol' ? 3 : 0),
-      }),
-      now: 0,
+      games: stubGameCatalog(),
+      matches,
+      now: FIXED_NOW,
     });
 
     expect(model.rows).toEqual([

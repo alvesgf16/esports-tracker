@@ -166,7 +166,7 @@ module.exports = defineConfig([
       'jest/no-identical-title': 'error',
     },
   },
-  // VIPER layer map — Clean Code Ch.8 / Ch.11
+  // VIPER + Clean Architecture — Clean Code Ch.8 / Ch.11
   {
     files: ['modules/**/presenter.ts'],
     rules: {
@@ -185,8 +185,9 @@ module.exports = defineConfig([
           ],
           patterns: [
             {
-              group: ['@/app', '@/app/*'],
-              message: 'Presenters must not import app routes.',
+              group: ['@/app', '@/app/*', '@/data', '@/data/*'],
+              message:
+                'Presenters use entities, gateways, and use cases; Builders inject data/.',
             },
           ],
         },
@@ -194,7 +195,7 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['modules/**/interactor.ts'],
+    files: ['modules/**/use-cases/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -202,72 +203,25 @@ module.exports = defineConfig([
           paths: [
             {
               name: 'expo-router',
-              message: 'Interactors must not import Expo Router.',
+              message: 'Use cases must not import Expo Router.',
             },
             {
               name: 'react-native',
-              message: 'Interactors must not import React Native.',
-            },
-          ],
-          patterns: [
-            {
-              group: ['@/app', '@/app/*', '@/constants', '@/constants/*'],
-              message: 'Interactors talk to data/entities only.',
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    files: ['modules/**/helpers/**/*.{ts,tsx}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          paths: [
-            {
-              name: 'expo-router',
-              message: 'Module helpers must not import Expo Router.',
-            },
-            {
-              name: 'react-native',
-              message: 'Module helpers must not import React Native.',
-            },
-          ],
-          patterns: [
-            {
-              group: ['@/app', '@/app/*'],
-              message: 'Module helpers must not import app routes.',
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    files: ['modules/**/*.tsx'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          paths: [
-            {
-              name: 'expo-router',
-              message: 'Views must not import Expo Router; use Router adapters in app/.',
+              message: 'Use cases must not import React Native.',
             },
           ],
           patterns: [
             {
               group: [
-                '@/data/games',
-                '@/data/matches',
-                '@/data/matches-*',
-                '@/data/sample-kickoff',
                 '@/app',
                 '@/app/*',
+                '@/data',
+                '@/data/*',
+                '@/constants',
+                '@/constants/*',
               ],
-              message: 'Views render view models only; no data queries or app routes.',
+              message:
+                'Use cases take entities as input; they must not import data/.',
             },
           ],
         },
@@ -275,7 +229,7 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['data/**/*.{ts,tsx}'],
+    files: ['modules/**/entities.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -295,14 +249,113 @@ module.exports = defineConfig([
               group: [
                 '@/app',
                 '@/app/*',
+                '@/data',
+                '@/data/*',
+                '@/lib',
+                '@/lib/*',
+                '@/constants',
+                '@/constants/*',
+              ],
+              message: 'Entities are domain DTOs only.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['lib/format-time.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'expo-router',
+              message: 'Clock helpers must not import Expo Router.',
+            },
+            {
+              name: 'react-native',
+              message: 'Clock helpers must not import React Native.',
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                '@/app',
+                '@/app/*',
+                '@/data',
+                '@/data/*',
                 '@/modules',
                 '@/modules/*',
+              ],
+              message: 'lib/format-time must stay free of modules and data/.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['modules/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'expo-router',
+              message:
+                'Views must not import Expo Router; use Router adapters in app/.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['@/data', '@/data/*', '@/app', '@/app/*'],
+              message:
+                'Views render view models only; no data queries or app routes.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['data/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'expo-router',
+              message: 'data/ must not import Expo Router.',
+            },
+            {
+              name: 'react-native',
+              message: 'data/ must not import React Native.',
+            },
+          ],
+          patterns: [
+            {
+              group: [
+                '@/app',
+                '@/app/*',
                 '@/constants',
                 '@/constants/*',
                 '@/lib',
                 '@/lib/*',
+                '@/modules/*/view',
+                '@/modules/*/presenter',
+                '@/modules/*/contracts',
+                '@/modules/*/components',
+                '@/modules/*/components/*',
+                '@/modules/*/use-cases',
+                '@/modules/*/use-cases/*',
+                '@/modules/*/*.harness',
               ],
-              message: 'data/ is the Entity layer; it must not import UI or modules.',
+              message:
+                'data/ implements gateways; import entities and gateways only.',
             },
           ],
         },

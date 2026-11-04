@@ -1,27 +1,27 @@
-import type { Game } from './entities';
+import type { Match } from '@/modules/schedule/entities';
+import type { MatchCatalog } from '@/modules/schedule/gateways';
 
 import type { GameRowModel, GamesViewModel } from './contracts';
-import type { GamesInteractor } from './interactor';
+import type { Game } from './entities';
+import type { GameCatalog } from './gateways';
+import { upcomingCount } from './use-cases/upcoming-count';
 
 type PresentInput = {
-  interactor: GamesInteractor;
+  games: GameCatalog;
+  matches: MatchCatalog;
   now: number;
 };
 
 export function presentGames(input: PresentInput): GamesViewModel {
   return {
-    rows: input.interactor
-      .listGames()
-      .map((game) => presentRow(game, input.interactor, input.now)),
+    rows: input.games
+      .list()
+      .map((game) => presentRow(game, input.matches.list(), input.now)),
   };
 }
 
-function presentRow(
-  game: Game,
-  interactor: GamesInteractor,
-  now: number
-): GameRowModel {
-  const count = interactor.upcomingCount(game.id, now);
+function presentRow(game: Game, matches: Match[], now: number): GameRowModel {
+  const count = upcomingCount(matches, game.id, now);
   const upcomingLabel =
     count === 0 ? 'No upcoming matches' : `${count} upcoming`;
 

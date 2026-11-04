@@ -1,10 +1,16 @@
-import { aMatch, FIXED_NOW, stubScheduleInteractor } from './schedule.harness';
+import {
+  aMatch,
+  FIXED_NOW,
+  stubGameCatalog,
+  stubMatchCatalog,
+} from './schedule.harness';
 import { presentSchedule } from './presenter';
 
 describe('presentSchedule', () => {
   it('defaults an invalid game param to all', () => {
     const model = presentSchedule({
-      interactor: stubScheduleInteractor({ parseFilter: () => null }),
+      games: stubGameCatalog(),
+      matches: stubMatchCatalog(),
       now: FIXED_NOW,
       gameParam: 'chess',
     });
@@ -14,7 +20,8 @@ describe('presentSchedule', () => {
 
   it('builds chips from the game catalog', () => {
     const model = presentSchedule({
-      interactor: stubScheduleInteractor(),
+      games: stubGameCatalog(),
+      matches: stubMatchCatalog(),
       now: FIXED_NOW,
       gameParam: undefined,
     });
@@ -31,11 +38,8 @@ describe('presentSchedule', () => {
       startsAt: new Date(FIXED_NOW).toISOString(),
     });
     const model = presentSchedule({
-      interactor: stubScheduleInteractor({
-        visibleMatches: () => [match],
-        groupByDay: () => [{ key: 'today', label: 'Today', matches: [match] }],
-        matchStatus: () => 'live',
-      }),
+      games: stubGameCatalog(),
+      matches: stubMatchCatalog({ list: () => [match] }),
       now: FIXED_NOW,
       gameParam: 'all',
     });
@@ -53,10 +57,8 @@ describe('presentSchedule', () => {
 
   it('uses the filtered empty copy when a game is selected', () => {
     const model = presentSchedule({
-      interactor: stubScheduleInteractor({
-        parseFilter: () => 'lol',
-        gameName: () => 'League of Legends',
-      }),
+      games: stubGameCatalog(),
+      matches: stubMatchCatalog(),
       now: FIXED_NOW,
       gameParam: 'lol',
     });

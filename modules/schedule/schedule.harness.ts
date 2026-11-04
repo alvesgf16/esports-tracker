@@ -1,8 +1,8 @@
 import type { Game } from '@/modules/games/entities';
+import type { GameCatalog } from '@/modules/games/gateways';
 
 import type { Match } from './entities';
-
-import type { ScheduleInteractor } from './interactor';
+import type { MatchCatalog } from './gateways';
 
 /** Local noon on a fixed calendar day — avoids UTC/local day-boundary drift. */
 export const FIXED_NOW = new Date(2026, 2, 15, 12, 0, 0, 0).getTime();
@@ -32,17 +32,21 @@ const lol: Game = {
   shortName: 'LoL',
 };
 
-export function stubScheduleInteractor(
-  overrides: Partial<ScheduleInteractor> = {}
-): ScheduleInteractor {
+export function stubGameCatalog(
+  overrides: Partial<GameCatalog> = {}
+): GameCatalog {
   return {
-    parseFilter: () => 'all',
-    matchStatus: () => 'upcoming',
-    visibleMatches: () => [],
-    groupByDay: () => [],
-    gameName: () => lol.name,
-    listGames: () => [lol],
-    getGame: () => lol,
+    list: () => [lol],
+    get: () => lol,
+    ...overrides,
+  };
+}
+
+export function stubMatchCatalog(
+  overrides: Partial<MatchCatalog> = {}
+): MatchCatalog {
+  return {
+    list: () => [],
     ...overrides,
   };
 }

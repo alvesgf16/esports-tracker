@@ -1,9 +1,10 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import type { GameFilter } from '@/modules/schedule/entities';
+import { sampleGameCatalog } from '@/data/games';
+import { sampleMatchCatalog } from '@/data/matches';
 import { useNow } from '@/lib/use-now';
 import type { ScheduleRouter } from '@/modules/schedule/contracts';
-import { scheduleInteractor } from '@/modules/schedule/interactor';
+import type { GameFilter } from '@/modules/schedule/entities';
 import { presentSchedule } from '@/modules/schedule/presenter';
 import ScheduleView from '@/modules/schedule/view';
 
@@ -13,7 +14,8 @@ export default function ScheduleScreen() {
   const { game } = useLocalSearchParams<{ game?: string }>();
   const scheduleRouter = createScheduleRouter(router);
   const model = presentSchedule({
-    interactor: scheduleInteractor,
+    games: sampleGameCatalog,
+    matches: sampleMatchCatalog,
     now,
     gameParam: game,
   });
