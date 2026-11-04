@@ -1,5 +1,4 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo } from 'react';
 
 import type { GameFilter } from '@/data/types';
 import { useNow } from '@/lib/use-now';
@@ -12,16 +11,12 @@ export default function ScheduleScreen() {
   const now = useNow();
   const router = useRouter();
   const { game } = useLocalSearchParams<{ game?: string }>();
-  const scheduleRouter = useMemo(() => createScheduleRouter(router), [router]);
-  const model = useMemo(
-    () =>
-      presentSchedule({
-        interactor: scheduleInteractor,
-        now,
-        gameParam: game,
-      }),
-    [game, now]
-  );
+  const scheduleRouter = createScheduleRouter(router);
+  const model = presentSchedule({
+    interactor: scheduleInteractor,
+    now,
+    gameParam: game,
+  });
 
   return (
     <ScheduleView model={model} onSelectGame={scheduleRouter.setGameFilter} />

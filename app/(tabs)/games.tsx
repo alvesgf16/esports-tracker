@@ -1,5 +1,4 @@
 import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
 
 import { useNow } from '@/lib/use-now';
 import type { GamesRouter } from '@/modules/games/contracts';
@@ -10,11 +9,8 @@ import GamesView from '@/modules/games/view';
 export default function GamesScreen() {
   const now = useNow();
   const router = useRouter();
-  const gamesRouter = useMemo(() => createGamesRouter(router), [router]);
-  const model = useMemo(
-    () => presentGames({ interactor: gamesInteractor, now }),
-    [now]
-  );
+  const gamesRouter = createGamesRouter(router);
+  const model = presentGames({ interactor: gamesInteractor, now });
 
   return <GamesView model={model} onOpenSchedule={gamesRouter.openSchedule} />;
 }
