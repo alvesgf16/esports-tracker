@@ -1,5 +1,5 @@
 import { MATCHES } from '@/data/matches';
-import type { GameId, Match } from '@/data/types';
+import type { GameFilter, Match } from '@/data/types';
 
 export type MatchStatus = 'live' | 'soon' | 'upcoming' | 'finished';
 
@@ -12,7 +12,10 @@ export type DayGroup = {
 const LIVE_WINDOW_MS = 3 * 60 * 60 * 1000;
 const SOON_WINDOW_MS = 60 * 60 * 1000;
 
-export function getMatchStatus(startsAt: string, now = Date.now()): MatchStatus {
+export function getMatchStatus(
+  startsAt: string,
+  now = Date.now()
+): MatchStatus {
   const start = new Date(startsAt).getTime();
   const delta = start - now;
 
@@ -28,72 +31,60 @@ export function getMatchStatus(startsAt: string, now = Date.now()): MatchStatus 
   return 'upcoming';
 }
 
-export function getVisibleMatches(game: GameId | 'all', now = Date.now()): Match[] {
-  return MATCHES.filter((match) => {
-    if (game !== 'all' && match.game !== game) {
-      return false;
-    }
-    return getMatchStatus(match.startsAt, now) !== 'finished';
-  }).sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
+export function getVisibleMatches(game: GameFilter, now = Date.now()): Match[] {
+  return MATCHES.filter((match) => isVisibleMatch(match, game, now)).sort(
+    byKickoff
+  );
 }
 
-export function groupMatchesByDay(matches: Match[], now = Date.now()): DayGroup[] {
+export function groupMatchesByDay(
+  matches: Match[],
+  now = Date.now()
+): DayGroup[] {
   const today = startOfDay(new Date(now));
-  const tomorrow = addDays(today, 1);
-  const groups = new Map<string, DayGroup>();
+  const buckets = {
+    groups: new Map<string, DayGroup>(),
+    today,
+    tomorrow: addDays(today, 1),
+  };
 
   for (const match of matches) {
-    const start = new Date(match.startsAt);
-    const day = startOfDay(start);
-    const key = day.toISOString();
-    const existing = groups.get(key);
-
-    if (existing) {
-      existing.matches.push(match);
-      continue;
-    }
-
-    groups.set(key, {
-      key,
-      label: dayLabel(day, today, tomorrow),
-      matches: [match],
-    });
+    addToDayGroup(match, buckets);
   }
 
-  return [...groups.values()];
+  return [...buckets.groups.values()];
 }
 
-export function formatKickoff(startsAt: string): string {
-  return new Date(startsAt).toLocaleTimeString(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
+function isVisibleMatch(match: Match, game: GameFilter, now: number): boolean {
+  if (game !== 'all' && match.game !== game) {
+    return false;
+  }
+  return getMatchStatus(match.startsAt, now) !== 'finished';
+}
+
+function byKickoff(left: Match, right: Match): number {
+  return new Date(left.startsAt).getTime() - new Date(right.startsAt).getTime();
+}
+
+type DayBuckets = {
+  groups: Map<string, DayGroup>;
+  today: Date;
+  tomorrow: Date;
+};
+
+function addToDayGroup(match: Match, buckets: DayBuckets): void {
+  const day = startOfDay(new Date(match.startsAt));
+  const key = day.toISOString();
+  const existing = buckets.groups.get(key);
+  if (existing) {
+    existing.matches.push(match);
+    return;
+  }
+  buckets.groups.set(key, {
+    key,
+    label: dayLabel(day, buckets.today, buckets.tomorrow),
+    matches: [match],
   });
-}
-
-export function formatCountdown(startsAt: string, now = Date.now()): string {
-  const status = getMatchStatus(startsAt, now);
-  if (status === 'live') {
-    return 'LIVE';
-  }
-
-  const delta = Math.max(0, new Date(startsAt).getTime() - now);
-  const totalMinutes = Math.round(delta / 60000);
-
-  if (totalMinutes < 1) {
-    return 'Starting';
-  }
-  if (totalMinutes < 60) {
-    return `${totalMinutes}m`;
-  }
-
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  if (hours < 24) {
-    return minutes === 0 ? `${hours}h` : `${hours}h ${minutes}m`;
-  }
-
-  const days = Math.floor(hours / 24);
-  return `${days}d`;
 }
 
 function startOfDay(date: Date): Date {

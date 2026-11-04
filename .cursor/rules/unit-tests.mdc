@@ -1,0 +1,29 @@
+---
+description: Unit test judgment (FIRST, AAA, harness DSL). Clean Code Ch.9.
+globs: "**/*.{spec,test}.{ts,tsx}"
+alwaysApply: false
+---
+
+# Unit Tests (Clean Code Ch.9)
+
+Expo’s unit-test story is **Jest** via `jest-expo` (SDK 58 needs Jest 30) and `@testing-library/react-native` for components. `jest-expo` also picks up `*-test.ts` / `*-test.tsx`.
+
+## FIRST
+
+Fast, Independent, Repeatable, Self-validating, Timely.
+
+## AAA
+
+Arrange / Act / Assert. One concept per test. Names say behavior (`getMatchStatus returns live inside the live window`).
+
+## Dual standard
+
+Production size/complexity gates stay strict. Spec, `*-test`, harness, and `__tests__` files may relax max-lines / complexity / max-classes — keep naming and “no empty catch” discipline.
+
+## Harness / DSL
+
+Put fixture clocks (`now`), sample `Match` builders, and screen setup in `*.harness.ts` (or `__tests__/helpers`) — not inline in every `it`. Prefer `rejects.toThrow` / RNTL queries over try/catch for expected failures. Schedule math in `lib/schedule.ts` should be unit-tested without rendering `MatchCard`.
+
+## Coverage
+
+Prefer meaningful tests over chasing percentage alone. Wire coverage in CI when `jest-expo` is installed.

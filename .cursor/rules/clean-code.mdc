@@ -1,0 +1,68 @@
+---
+description: Clean Code judgment guidance (Meaningful Names through Smells; Unit Tests may live in unit-tests.mdc)
+alwaysApply: true
+---
+
+# Clean Code
+
+Source: Robert C. Martin, _Clean Code_. Inventory: `docs/clean-code-inventory.md`.
+
+## Meaningful Names (Ch.2)
+
+Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). Prefer problem-domain vocabulary in `data/`, `lib/`, and screens; solution-domain (Expo / React Native) words in `app/` routes, hooks, and UI.
+
+### Domain vocabulary
+
+- `Game`, `GameId`, `Team`, `Match` — schedule payload types in `data/types`
+- `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter`
+- Kickoff, countdown, tournament, format (`Bo3` / `Bo5`)
+- Screens: schedule (`app/(tabs)/index.tsx`), games list (`app/(tabs)/games.tsx`)
+- Owned schedule façade: `lib/schedule.ts`; clock hook: `lib/useNow.ts`
+
+## Functions (Ch.3)
+
+Small; do one thing; one abstraction level; stepdown (caller above callee). Prefer 0–2 args; at most 3 positional — more → a named argument object type. Avoid flag arguments. No hidden side effects. Command/query separation. Prefer extract to `lib/` over growing past size gates. Keep JSX screens thin: filter/group in `lib/schedule`, render in `components/`.
+
+## Comments (Ch.4)
+
+Prefer rename/extract over narrative comments. Keep legal, intent, clarification, and warning comments. Ban `FIXME` / `XXX` / `HACK`; temporary `TODO` OK with why. Delete commented-out code.
+
+## Formatting (Ch.5)
+
+Prettier is the horizontal source of truth (`npx expo lint` + `.prettierrc`). Vertical: newspaper metaphor, single blank between concepts, density within a thought, dependents below callers, conceptual affinity. Do not fight Prettier with style ESLint.
+
+## Objects and Data Structures (Ch.6)
+
+Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status, countdown, and day grouping live in `lib/schedule`. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teamA.name`) is fine.
+
+## Error Handling (Ch.7)
+
+Prefer exceptions over error codes for unexpected failures (`getGame` throwing on unknown `GameId` is the pattern). No empty catches. Provide context. Don’t use throw for expected validation — return a named outcome (`GameFilter | null`). Be deliberate with null/optional.
+
+## Boundaries (Ch.8)
+
+Wrap third-party APIs behind owned façades. Sample `MATCHES` is a stand-in: a live schedule API belongs behind `data/` + `lib/schedule`, not inside screens. Learning tests at the boundary. Expo Router (`Link`, `router`, `useLocalSearchParams`) stays in `app/`. Features depend on what you control.
+
+## Classes (Ch.10)
+
+Small, cohesive, single responsibility. This app is function- and type-first; don’t introduce classes unless they earn cohesion. Organize for change. Expo Router layout / `ErrorBoundary` conventions stay framework-owned when they conflict with purity.
+
+## Systems (Ch.11)
+
+Separate construction from use. One-way module dependencies: `app/` → `components/` / `lib/` / `data/`; `lib/` may use `data/`; `data/` does not import UI. Keep schedule math testable without rendering a screen.
+
+## Emergence (Ch.12)
+
+Runs all the tests; no duplication; expresses intent; fewest elements that still pass tests and keep SRP.
+
+## Concurrency (Ch.13)
+
+Prefer clear async boundaries. `useNow` owns the interval clock; don’t scatter `setInterval` in cards. Snapshot times (`now`) when status can go stale. Reanimated worklets are a different runtime — don’t pretend they share React state. OS thread material is N/A unless native modules truly use threads.
+
+## Successive Refinement (Ch.14)
+
+Make it work, then refine with the bar green. Feature branch; no broken main. Commit when the human asks.
+
+## Smells and Heuristics (Ch.17)
+
+Prefer MIT clone/dead-code tooling (`eslint-plugin-unicorn`; optional `jscpd` / `knip`). Avoid nested ternaries and lonely ifs when a clearer structure exists. Keep cyclomatic gates under Functions (Ch.3).

@@ -1,0 +1,16 @@
+{
+  "minTokens": 50,
+  "minLines": 5,
+  "format": ["typescript", "javascript", "tsx", "jsx"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/.expo/**",
+    "**/dist/**",
+    "**/ios/**",
+    "**/android/**",
+    "**/web-build/**",
+    "**/coverage/**",
+    "**/report/**"
+  ],
+  "reporters": ["console"]
+}

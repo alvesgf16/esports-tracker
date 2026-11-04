@@ -1,6 +1,8 @@
 export type GameId = 'lol' | 'cs2' | 'valorant' | 'dota2' | 'r6' | 'mlbb';
 
-export type Team = {
+export type GameFilter = GameId | 'all';
+
+type Team = {
   name: string;
   shortName: string;
 };

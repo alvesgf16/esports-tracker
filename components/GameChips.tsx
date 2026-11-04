@@ -2,18 +2,27 @@ import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { GAMES } from '@/data/games';
-import type { GameId } from '@/data/types';
+import type { GameFilter } from '@/data/types';
 
 const palette = Colors.dark;
-
-export type GameFilter = GameId | 'all';
 
 type Props = {
   selected: GameFilter;
   onSelect: (game: GameFilter) => void;
 };
 
-const FILTERS: { id: GameFilter; label: string }[] = [
+type Chip = {
+  id: GameFilter;
+  label: string;
+};
+
+type ChipProps = {
+  chip: Chip;
+  selected: GameFilter;
+  onSelect: (game: GameFilter) => void;
+};
+
+const FILTERS: Chip[] = [
   { id: 'all', label: 'All' },
   ...GAMES.map((game) => ({ id: game.id, label: game.shortName })),
 ];
@@ -24,22 +33,34 @@ export default function GameChips({ selected, onSelect }: Props) {
       horizontal
       showsHorizontalScrollIndicator={false}
       style={styles.scroller}
-      contentContainerStyle={styles.row}>
-      {FILTERS.map((filter) => {
-        const active = filter.id === selected;
-        return (
-          <Pressable
-            key={filter.id}
-            accessibilityRole="button"
-            accessibilityLabel={filter.label}
-            accessibilityState={{ selected: active }}
-            onPress={() => onSelect(filter.id)}
-            style={[styles.chip, active && styles.chipActive]}>
-            <Text style={[styles.label, active && styles.labelActive]}>{filter.label}</Text>
-          </Pressable>
-        );
-      })}
+      contentContainerStyle={styles.row}
+    >
+      {FILTERS.map((filter) => (
+        <FilterChip
+          key={filter.id}
+          chip={filter}
+          selected={selected}
+          onSelect={onSelect}
+        />
+      ))}
     </ScrollView>
+  );
+}
+
+function FilterChip({ chip, selected, onSelect }: ChipProps) {
+  const active = chip.id === selected;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={chip.label}
+      accessibilityState={{ selected: active }}
+      onPress={() => onSelect(chip.id)}
+      style={[styles.chip, active && styles.chipActive]}
+    >
+      <Text style={[styles.label, active && styles.labelActive]}>
+        {chip.label}
+      </Text>
+    </Pressable>
   );
 }
 

@@ -11,7 +11,6 @@
     "expo-splash-screen": "~58.0.13",
     "expo-status-bar": "~58.0.4",
     "expo-symbols": "~58.0.4",
-    "expo-web-browser": "~58.0.7",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.1",
@@ -23,13 +22,26 @@
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-expo": "~58.0.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^3.10.1",
+    "eslint-plugin-jest": "^29.17.0",
+    "eslint-plugin-prettier": "^5.5.7",
+    "eslint-plugin-unicorn": "^65.0.1",
+    "jscpd": "^5.4.2",
+    "knip": "^6.44.1",
+    "prettier": "^3.9.10",
     "typescript": "~6.0.3"
   },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "expo lint",
+    "knip": "knip",
+    "jscpd": "jscpd ."
   },
   "private": true
 }
