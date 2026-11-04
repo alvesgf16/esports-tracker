@@ -6,6 +6,7 @@ android
 web-build
 coverage
 package-lock.json
+**/uniwind-types.d.ts
 *.png
 *.jpg
 *.webp

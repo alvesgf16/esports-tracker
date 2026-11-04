@@ -19,6 +19,7 @@ module.exports = defineConfig([
     'android/*',
     'web-build/*',
     'coverage/*',
+    '**/uniwind-types.d.ts',
   ]),
   {
     // eslint-plugin-import otherwise loads the `typescript` package as a resolver

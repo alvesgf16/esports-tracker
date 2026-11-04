@@ -2,6 +2,8 @@ import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
+import '../global.css';
+
 export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
