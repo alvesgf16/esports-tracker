@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import Colors from '@/constants/colors';
 
-import type { GameRowModel } from './contracts';
+import type { GameRowModel } from '../contracts';
 
 const palette = Colors.dark;
 

@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import Colors from '@/constants/colors';
 
-import type { DaySectionModel } from './contracts';
+import type { DaySectionModel } from '../contracts';
 import MatchCard from './match-card';
 
 const palette = Colors.dark;

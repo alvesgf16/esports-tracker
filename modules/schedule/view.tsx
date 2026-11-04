@@ -3,8 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import Colors from '@/constants/colors';
 
 import type { ScheduleViewModel } from './contracts';
-import DayList from './day-list';
-import GameChips from './game-chips';
+import DayList from './components/day-list';
+import GameChips from './components/game-chips';
 
 const palette = Colors.dark;
 

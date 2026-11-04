@@ -51,9 +51,9 @@ Prefer MIT/Apache tooling. Do **not** enable `eslint-plugin-sonarjs` (LGPL).
 | Role | Location | Imports |
 | --- | --- | --- |
 | Builder / Router adapter | `app/` | `modules/`, `lib/use-now`, `constants/`, `expo-router` |
-| View | `modules/*/view.tsx` (+ dumb subviews) | view-model types, `constants/` — no `expo-router`, no data queries |
+| View | `modules/*/view.tsx` (+ `components/`) | view-model types, `constants/` — no `expo-router`, no data queries |
 | Presenter | `modules/*/presenter.ts` | Interactor, Entity types, Router contract — no `react-native` / `expo-router` |
-| Interactor | `modules/*/interactor.ts` (+ helpers) | `data/` (Games may call Schedule Interactor) |
+| Interactor | `modules/*/interactor.ts` (+ `helpers/`) | `data/` (Games may call Schedule Interactor) |
 | Entity | `data/` | no `app/`, `modules/`, UI |
 | Clock | `lib/use-now.ts` | infrastructure used by Builders |
 

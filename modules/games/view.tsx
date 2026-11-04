@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import Colors from '@/constants/colors';
 
 import type { GameRowModel, GamesViewModel } from './contracts';
-import GameRow from './game-row';
+import GameRow from './components/game-row';
 
 const palette = Colors.dark;
 

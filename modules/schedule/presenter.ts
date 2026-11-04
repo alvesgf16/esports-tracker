@@ -6,7 +6,7 @@ import type {
   MatchCardModel,
   ScheduleViewModel,
 } from './contracts';
-import { formatCountdown, formatKickoff } from './format-time';
+import { formatCountdown, formatKickoff } from './helpers/format-time';
 import type { ScheduleInteractor } from './interactor';
 
 type PresentInput = {

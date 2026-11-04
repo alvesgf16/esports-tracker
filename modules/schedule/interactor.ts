@@ -1,10 +1,10 @@
 import { getGame, GAMES, type Game } from '@/data/games';
 import type { GameFilter, GameId, Match } from '@/data/types';
 
-import { groupByDay, type DayGroup } from './day-groups';
-import { matchStatus, type MatchStatus } from './match-status';
-import { gameName, parseFilter } from './parse-filter';
-import { visibleMatches } from './visible-matches';
+import { groupByDay, type DayGroup } from './helpers/day-groups';
+import { matchStatus, type MatchStatus } from './helpers/match-status';
+import { gameName, parseFilter } from './helpers/parse-filter';
+import { visibleMatches } from './helpers/visible-matches';
 
 export type ScheduleInteractor = {
   parseFilter: (value: string | string[] | undefined) => GameFilter | null;

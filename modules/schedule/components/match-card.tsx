@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import Colors from '@/constants/colors';
 
-import type { MatchCardModel } from './contracts';
+import type { MatchCardModel } from '../contracts';
 
 const palette = Colors.dark;
 

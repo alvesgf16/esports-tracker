@@ -168,7 +168,7 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['modules/**/interactor.ts', 'modules/**/match-status.ts'],
+    files: ['modules/**/interactor.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -194,12 +194,7 @@ module.exports = defineConfig([
     },
   },
   {
-    files: [
-      'modules/**/visible-matches.ts',
-      'modules/**/day-groups.ts',
-      'modules/**/parse-filter.ts',
-      'modules/**/format-time.ts',
-    ],
+    files: ['modules/**/helpers/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [
         'error',

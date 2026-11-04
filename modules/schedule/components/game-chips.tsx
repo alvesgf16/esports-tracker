@@ -2,7 +2,7 @@ import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 
 import Colors from '@/constants/colors';
 
-import type { ChipModel } from './contracts';
+import type { ChipModel } from '../contracts';
 
 const palette = Colors.dark;
 
