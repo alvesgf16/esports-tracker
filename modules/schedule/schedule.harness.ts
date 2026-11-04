@@ -17,11 +17,14 @@ export function aMatch(overrides: Partial<Match> = {}): Match {
   return {
     id: 'm1',
     game: 'lol',
-    tournament: 'LEC Spring',
+    name: 'Alpha vs Beta',
+    tournament: 'LEC · Spring',
     format: 'Bo3',
     startsAt: hoursFromNow(2),
-    teamA: { name: 'Alpha', shortName: 'ALP' },
-    teamB: { name: 'Beta', shortName: 'BET' },
+    teams: [
+      { name: 'Alpha', shortName: 'ALP' },
+      { name: 'Beta', shortName: 'BET' },
+    ],
     ...overrides,
   };
 }

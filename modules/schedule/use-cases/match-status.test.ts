@@ -17,4 +17,14 @@ describe('matchStatus', () => {
   it('returns upcoming more than an hour before kickoff', () => {
     expect(matchStatus(hoursFromNow(2), FIXED_NOW)).toBe('upcoming');
   });
+
+  it('returns live when progress is running past the live window', () => {
+    expect(matchStatus(hoursFromNow(-4), FIXED_NOW, 'running')).toBe('live');
+  });
+
+  it('returns finished when progress is finished inside the live window', () => {
+    expect(matchStatus(hoursFromNow(-1), FIXED_NOW, 'finished')).toBe(
+      'finished'
+    );
+  });
 });

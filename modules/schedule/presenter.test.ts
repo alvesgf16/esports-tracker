@@ -51,7 +51,33 @@ describe('presentSchedule', () => {
       isLive: true,
       teamA: 'Alpha',
       teamB: 'Beta',
-      meta: 'LoL · LEC Spring · Bo3',
+      meta: 'LoL · LEC · Spring · Bo3',
+    });
+  });
+
+  it('maps a lobby match into name and team count', () => {
+    const match = aMatch({
+      id: 'lobby-1',
+      name: 'Group A — Match 3',
+      tournament: 'PGS · Global Series',
+      format: 'Maps',
+      teams: [
+        { name: 'Alpha', shortName: 'ALP' },
+        { name: 'Beta', shortName: 'BET' },
+        { name: 'Gamma', shortName: 'GAM' },
+      ],
+    });
+    const model = presentSchedule({
+      games: stubGameCatalog(),
+      matches: stubMatchCatalog({ list: () => [match] }),
+      now: FIXED_NOW,
+      gameParam: 'all',
+    });
+
+    expect(model.groups[0].matches[0]).toMatchObject({
+      teamA: 'Group A — Match 3',
+      teamB: '3 teams',
+      meta: 'LoL · PGS · Global Series · Maps',
     });
   });
 

@@ -8,7 +8,7 @@ import type {
   MatchCardModel,
   ScheduleViewModel,
 } from './contracts';
-import type { GameFilter, Match } from './entities';
+import type { GameFilter, Match, Team } from './entities';
 import type { MatchCatalog } from './gateways';
 import { groupByDay } from './use-cases/day-groups';
 import { gameName } from './use-cases/game-name';
@@ -59,9 +59,10 @@ function presentDay(
 }
 
 function presentMatch(match: Match, input: PresentInput): MatchCardModel {
-  const status = matchStatus(match.startsAt, input.now);
+  const status = matchStatus(match.startsAt, input.now, match.progress);
   const game = input.games.get(match.game);
   const isLive = status === 'live';
+  const sides = presentSides(match);
 
   return {
     id: match.id,
@@ -70,10 +71,28 @@ function presentMatch(match: Match, input: PresentInput): MatchCardModel {
       ? 'LIVE'
       : formatCountdown(match.startsAt, input.now),
     isLive,
-    teamA: match.teamA.name,
-    teamB: match.teamB.name,
+    teamA: sides.teamA,
+    teamB: sides.teamB,
     meta: `${game.shortName} · ${match.tournament} · ${match.format}`,
   };
+}
+
+function presentSides(match: Match): { teamA: string; teamB: string } {
+  if (match.teams.length > 2) {
+    return {
+      teamA: match.name,
+      teamB: `${match.teams.length} teams`,
+    };
+  }
+
+  return {
+    teamA: teamName(match.teams[0]),
+    teamB: teamName(match.teams[1]),
+  };
+}
+
+function teamName(team: Team | undefined): string {
+  return team?.name ?? 'TBD';
 }
 
 function emptyMessage(selected: GameFilter, games: Game[]): string {

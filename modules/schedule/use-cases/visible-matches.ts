@@ -16,7 +16,7 @@ function isVisibleMatch(match: Match, game: GameFilter, now: number): boolean {
     return false;
   }
 
-  return matchStatus(match.startsAt, now) !== 'finished';
+  return matchStatus(match.startsAt, now, match.progress) !== 'finished';
 }
 
 function byKickoff(left: Match, right: Match): number {

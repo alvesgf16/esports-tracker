@@ -13,9 +13,10 @@ Prefer intention-revealing, searchable, pronounceable names. One word per concep
 
 ### Domain vocabulary
 
-- `Game`, `GameId`, `Team`, `Match` — Entity DTOs in `modules/*/entities.ts`
+- `Game`, `GameId` (opaque string), `Team`, `Match` — Entity DTOs in `modules/*/entities.ts`
+- `Match.teams`, optional `Match.progress` (`not_started` / `running` / `finished`)
 - `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter`
-- Kickoff, countdown, tournament, format (`Bo3` / `Bo5`)
+- Kickoff, countdown, tournament (`league · stage`), format (`Bo3` / `Ft3`)
 - VIPER modules: Schedule (`modules/schedule/`), Games (`modules/games/`)
 - Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games)
 - Clock infrastructure: `lib/use-now.ts`, `lib/format-time.ts`
@@ -34,7 +35,7 @@ Prettier is the horizontal source of truth (`npm run lint` + `.prettierrc`). Ver
 
 ## Objects and Data Structures (Ch.6)
 
-Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status and day grouping live in Schedule use cases; countdown labels live in the Presenter via `lib/format-time`. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teamA.name`) is fine.
+Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status and day grouping live in Schedule use cases; countdown labels live in the Presenter via `lib/format-time`. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teams[0].name`) is fine.
 
 ## Error Handling (Ch.7)
 

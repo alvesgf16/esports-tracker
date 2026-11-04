@@ -1,9 +1,23 @@
+import type { MatchProgress } from '../entities';
+
 export type MatchStatus = 'live' | 'soon' | 'upcoming' | 'finished';
 
 const LIVE_WINDOW_MS = 3 * 60 * 60 * 1000;
 const SOON_WINDOW_MS = 60 * 60 * 1000;
 
-export function matchStatus(startsAt: string, now = Date.now()): MatchStatus {
+export function matchStatus(
+  startsAt: string,
+  now = Date.now(),
+  progress?: MatchProgress
+): MatchStatus {
+  if (progress === 'running') {
+    return 'live';
+  }
+
+  if (progress === 'finished') {
+    return 'finished';
+  }
+
   const delta = new Date(startsAt).getTime() - now;
 
   if (delta > 0) {
