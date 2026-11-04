@@ -47,7 +47,7 @@ describe('presentSchedule', () => {
     expect(model.groups[0].matches[0]).toMatchObject({
       id: 'live-1',
       kickoffLabel: 'LIVE',
-      countdownLabel: 'LIVE',
+      countdownLabel: '',
       isLive: true,
       teamA: 'Alpha',
       teamB: 'Beta',

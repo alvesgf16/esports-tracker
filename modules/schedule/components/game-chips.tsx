@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import type { ChipModel } from '../contracts';
 
@@ -14,12 +14,22 @@ type ChipProps = {
   onSelect: (game: ChipModel['id']) => void;
 };
 
+const chipStripStyle = { flexGrow: 0 };
+
 export default function GameChips({ chips, selected, onSelect }: Props) {
+  return (
+    <View className="shrink-0">
+      <ChipStrip chips={chips} selected={selected} onSelect={onSelect} />
+    </View>
+  );
+}
+
+function ChipStrip({ chips, selected, onSelect }: Props) {
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      className="grow-0"
+      style={chipStripStyle}
       contentContainerClassName="items-center gap-2 px-4 py-2.5"
     >
       {chips.map((chip) => (

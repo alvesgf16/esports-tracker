@@ -23,9 +23,11 @@ function KickoffColumn({ match }: Props) {
       <Text className={`text-base font-bold ${kickoffTone}`}>
         {match.kickoffLabel}
       </Text>
-      <Text className="mt-1 text-xs font-semibold text-muted">
-        {match.countdownLabel}
-      </Text>
+      {match.countdownLabel ? (
+        <Text className="mt-1 text-xs font-semibold text-muted">
+          {match.countdownLabel}
+        </Text>
+      ) : null}
     </View>
   );
 }

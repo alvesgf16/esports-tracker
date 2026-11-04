@@ -67,9 +67,7 @@ function presentMatch(match: Match, input: PresentInput): MatchCardModel {
   return {
     id: match.id,
     kickoffLabel: isLive ? 'LIVE' : formatKickoff(match.startsAt),
-    countdownLabel: isLive
-      ? 'LIVE'
-      : formatCountdown(match.startsAt, input.now),
+    countdownLabel: isLive ? '' : formatCountdown(match.startsAt, input.now),
     isLive,
     teamA: sides.teamA,
     teamB: sides.teamB,

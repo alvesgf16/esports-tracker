@@ -1,7 +1,7 @@
 import type { Match } from '@/modules/schedule/entities';
 
 import { duel } from './sample-teams';
-import { sampleKickoff } from './sample-kickoff';
+import { sampleKickoff, sampleMinutesFromNow } from './sample-kickoff';
 
 /** Near-term board: live, soon, progress overrides, and standard duels. */
 export const EARLY_MATCHES: Match[] = [
@@ -11,7 +11,7 @@ export const EARLY_MATCHES: Match[] = [
     name: 'G2 Esports vs Fnatic',
     tournament: 'LEC · Spring Playoffs',
     format: 'Bo5',
-    startsAt: sampleKickoff(-1),
+    startsAt: sampleMinutesFromNow(-45),
     teams: duel(['G2 Esports', 'G2'], ['Fnatic', 'FNC']),
   },
   {
@@ -20,7 +20,7 @@ export const EARLY_MATCHES: Match[] = [
     name: 'Natus Vincere vs Vitality',
     tournament: 'BLAST · Open Final',
     format: 'Bo3',
-    startsAt: sampleKickoff(-4),
+    startsAt: sampleMinutesFromNow(-4 * 60),
     teams: duel(['Natus Vincere', 'NAVI'], ['Vitality', 'VIT']),
     progress: 'running',
   },
@@ -30,7 +30,7 @@ export const EARLY_MATCHES: Match[] = [
     name: 'Sentinels vs Cloud9',
     tournament: 'VCT · Americas',
     format: 'Bo3',
-    startsAt: sampleKickoff(-1, 30),
+    startsAt: sampleMinutesFromNow(-50),
     teams: duel(['Sentinels', 'SEN'], ['Cloud9', 'C9']),
     progress: 'finished',
   },
@@ -40,7 +40,7 @@ export const EARLY_MATCHES: Match[] = [
     name: 'Team Spirit vs Team Liquid',
     tournament: 'ESL One · Group Stage',
     format: 'Bo3',
-    startsAt: sampleKickoff(0, 30),
+    startsAt: sampleMinutesFromNow(30),
     teams: duel(['Team Spirit', 'TSpirit'], ['Team Liquid', 'Liquid']),
     progress: 'not_started',
   },
