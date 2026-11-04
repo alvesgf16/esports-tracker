@@ -2,7 +2,7 @@ import type { Game } from '@/data/games';
 
 import type { GamesInteractor } from './interactor';
 
-export const sampleGames: Game[] = [
+const sampleGames: Game[] = [
   { id: 'lol', name: 'League of Legends', shortName: 'LoL' },
   { id: 'cs2', name: 'Counter-Strike 2', shortName: 'CS2' },
 ];
