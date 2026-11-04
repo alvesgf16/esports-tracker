@@ -17,8 +17,10 @@ export const GAMES: Game[] = [
 
 export function getGame(id: GameId): Game {
   const game = GAMES.find((item) => item.id === id);
+
   if (!game) {
     throw new Error(`Unknown game: ${id}`);
   }
+
   return game;
 }

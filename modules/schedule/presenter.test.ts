@@ -26,7 +26,10 @@ describe('presentSchedule', () => {
   });
 
   it('maps a live match into card labels', () => {
-    const match = aMatch({ id: 'live-1', startsAt: new Date(FIXED_NOW).toISOString() });
+    const match = aMatch({
+      id: 'live-1',
+      startsAt: new Date(FIXED_NOW).toISOString(),
+    });
     const model = presentSchedule({
       interactor: stubScheduleInteractor({
         visibleMatches: () => [match],
@@ -58,8 +61,6 @@ describe('presentSchedule', () => {
       gameParam: 'lol',
     });
 
-    expect(model.emptyMessage).toBe(
-      'No upcoming League of Legends matches.'
-    );
+    expect(model.emptyMessage).toBe('No upcoming League of Legends matches.');
   });
 });

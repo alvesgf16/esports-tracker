@@ -10,11 +10,14 @@ export function matchStatus(startsAt: string, now = Date.now()): MatchStatus {
   if (delta <= 0 && -delta < LIVE_WINDOW_MS) {
     return 'live';
   }
+
   if (delta <= 0) {
     return 'finished';
   }
+
   if (delta <= SOON_WINDOW_MS) {
     return 'soon';
   }
+
   return 'upcoming';
 }

@@ -38,7 +38,7 @@ Prefer MIT/Apache tooling. Do **not** enable `eslint-plugin-sonarjs` (LGPL).
 | Names (Ch.2) | `@typescript-eslint/naming-convention`, `id-length`, `id-denylist` |
 | Functions (Ch.3) | `complexity` 5, `max-depth` 2, `max-params` 3, `max-lines-per-function` 20 |
 | Comments (Ch.4) | `no-warning-comments` — ban `fixme` / `xxx` / `hack`; `TODO` allowed |
-| Formatting (Ch.5) | Prettier + `eslint-plugin-prettier` / `eslint-config-prettier` |
+| Formatting (Ch.5) | Prettier + `eslint-plugin-prettier` / `eslint-config-prettier`; `padding-line-between-statements` for if/for/return and after declaration groups |
 | Errors (Ch.7) | `no-empty`, `no-throw-literal`, `prefer-promise-reject-errors`, typed `@typescript-eslint/only-throw-error` |
 | Boundaries (Ch.8/11) | VIPER layer map above; `no-restricted-imports` in `eslint.config.js` |
 | Unit tests (Ch.9) | `jest-expo` + Jest 30 (`npm test` / `npm run test:coverage`); `eslint-plugin-jest`; dual-standard size offs on specs/harness |
@@ -75,7 +75,7 @@ These are noisy on React Native screens; keep the default gates until an intenti
 | 2 | Meaningful Names | Intention-revealing; searchable; one word per concept; no encodings | `automate`, `guide` | `naming-convention`, `id-length` min 2, denylist `l`/`O`/`I`/`cb`/`err` |
 | 3 | Functions | Small; one abstraction level; few args; CQS; no flag args | `automate`, `guide` | `complexity` 5, `max-depth` 2, `max-params` 3, `max-lines-per-function` 20 (skip blank/comments) |
 | 4 | Comments | Why not what; prefer rename/extract; no FIXME/XXX/HACK | `automate`, `guide` | `no-warning-comments` for fixme/xxx/hack |
-| 5 | Formatting | Newspaper; vertical openness/density; team formatter | `automate`, `guide` | Prettier (`.prettierrc`); no style-lint wars |
+| 5 | Formatting | Newspaper; vertical openness/density; team formatter | `automate`, `guide` | Prettier (`.prettierrc`); `padding-line-between-statements` (blank around if/for, before return, after declaration groups); no style-lint wars |
 | 6 | Objects and Data Structures | Data vs object; LoD; DTOs; no Active Record on payloads | `guide` | `Match` / `Team` / `Game` stay data; behavior in Schedule Interactor / Presenter |
 | 7 | Error Handling | Exceptions over codes; no empty catch; context in errors | `automate`, `guide` | `no-empty`, `no-throw-literal`, `prefer-promise-reject-errors`, `only-throw-error` |
 | 8 | Boundaries | Wrap third-party; owned façade; learning tests at the edge | `automate`, `guide` | Live schedule API behind `data/` + Schedule Interactor; Expo Router adapters in `app/`; `no-restricted-imports` |

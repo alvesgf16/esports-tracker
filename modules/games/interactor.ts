@@ -15,8 +15,7 @@ function createGamesInteractor(
 ): GamesInteractor {
   return {
     listGames: () => GAMES,
-    upcomingCount: (gameId, now) =>
-      schedule.visibleMatches(gameId, now).length,
+    upcomingCount: (gameId, now) => schedule.visibleMatches(gameId, now).length,
   };
 }
 

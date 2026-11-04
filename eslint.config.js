@@ -101,6 +101,20 @@ module.exports = defineConfig([
         { terms: ['fixme', 'xxx', 'hack'], location: 'start' },
       ],
 
+      // Clean Code Ch.5 — vertical openness (Prettier owns horizontal)
+      'padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: '*', next: 'return' },
+        { blankLine: 'always', prev: ['if', 'for'], next: '*' },
+        { blankLine: 'always', prev: '*', next: ['if', 'for'] },
+        { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+        {
+          blankLine: 'any',
+          prev: ['const', 'let', 'var'],
+          next: ['const', 'let', 'var'],
+        },
+      ],
+
       // Clean Code Ch.7
       'no-empty': ['error', { allowEmptyCatch: false }],
       'no-throw-literal': 'error',

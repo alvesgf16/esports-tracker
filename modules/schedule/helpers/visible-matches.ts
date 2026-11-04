@@ -13,6 +13,7 @@ function isVisibleMatch(match: Match, game: GameFilter, now: number): boolean {
   if (game !== 'all' && match.game !== game) {
     return false;
   }
+
   return matchStatus(match.startsAt, now) !== 'finished';
 }
 

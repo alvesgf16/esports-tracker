@@ -24,6 +24,7 @@ function presentRow(
   const count = interactor.upcomingCount(game.id, now);
   const upcomingLabel =
     count === 0 ? 'No upcoming matches' : `${count} upcoming`;
+
   return {
     id: game.id,
     name: game.name,

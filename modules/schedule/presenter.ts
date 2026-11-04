@@ -52,6 +52,7 @@ function presentDay(
 function presentMatch(match: Match, input: PresentInput): MatchCardModel {
   const status = input.interactor.matchStatus(match.startsAt, input.now);
   const game = input.interactor.getGame(match.game);
+
   return {
     id: match.id,
     kickoffLabel: status === 'live' ? 'LIVE' : formatKickoff(match.startsAt),
@@ -70,5 +71,6 @@ function emptyMessage(
   if (selected === 'all') {
     return 'No upcoming matches.';
   }
+
   return `No upcoming ${interactor.gameName(selected)} matches.`;
 }

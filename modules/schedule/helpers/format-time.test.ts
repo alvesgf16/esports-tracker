@@ -8,6 +8,7 @@ describe('formatCountdown', () => {
 
   it('returns Starting under one minute', () => {
     const startsAt = new Date(FIXED_NOW + 20_000).toISOString();
+
     expect(formatCountdown(startsAt, FIXED_NOW, 'soon')).toBe('Starting');
   });
 
@@ -21,6 +22,7 @@ describe('formatCountdown', () => {
 
   it('returns hours and minutes together', () => {
     const startsAt = new Date(FIXED_NOW + 2.5 * 60 * 60 * 1000).toISOString();
+
     expect(formatCountdown(startsAt, FIXED_NOW, 'upcoming')).toBe('2h 30m');
   });
 

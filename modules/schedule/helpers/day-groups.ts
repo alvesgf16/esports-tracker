@@ -31,10 +31,13 @@ function addToDayGroup(match: Match, buckets: DayBuckets): void {
   const day = startOfDay(new Date(match.startsAt));
   const key = day.toISOString();
   const existing = buckets.groups.get(key);
+
   if (existing) {
     existing.matches.push(match);
+
     return;
   }
+
   buckets.groups.set(key, {
     key,
     label: dayLabel(day, buckets.today, buckets.tomorrow),
@@ -48,7 +51,9 @@ function startOfDay(date: Date): Date {
 
 function addDays(date: Date, days: number): Date {
   const next = new Date(date);
+
   next.setDate(date.getDate() + days);
+
   return next;
 }
 
@@ -56,9 +61,11 @@ function dayLabel(day: Date, today: Date, tomorrow: Date): string {
   if (day.getTime() === today.getTime()) {
     return 'Today';
   }
+
   if (day.getTime() === tomorrow.getTime()) {
     return 'Tomorrow';
   }
+
   return day.toLocaleDateString(undefined, {
     weekday: 'long',
     month: 'short',
