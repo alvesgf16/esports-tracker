@@ -29,8 +29,8 @@ Run `npm run check` before declaring any task done. Commits are blocked unless i
 ## Navigation & Routing
 
 - Use **Expo Router** for all navigation. Routes live in `app/` — every file there is a screen / Builder, `_layout.tsx` files define navigators.
-- Feature logic uses React-adapted **VIPER** under `modules/features/` (View / Presenter / Router contracts) with Clean Architecture use cases. Cross-feature entities, gateways, use cases, and UI live in `modules/shared/`. `app/` wires features, injects catalogs from `data/sample/` or `data/pandascore/`, and adapts Expo Router; keep Presenters and use cases outside `app/`. Every file in `app/` is a route (Expo Router SDK 58), so composition hooks stay in `lib/`.
-- Import `Link`, `router`, and `useLocalSearchParams` from `expo-router` only in `app/`.
+- Feature logic uses React-adapted **VIPER** under `modules/features/` (View / Presenter / Router contracts) with Clean Architecture use cases. Cross-feature entities, gateways, use cases, and UI live in `modules/shared/`. `app/` wires features and injects `sampleBoard`; keep Presenters, Routers, and use cases outside `app/`. Every file in `app/` is a route (Expo Router SDK 58), so composition hooks stay in `lib/`.
+- Import `Link` from `expo-router` only in `app/`. `useRouter` and `useLocalSearchParams` belong in `modules/features/*/router.ts`.
 - Docs: https://docs.expo.dev/router/introduction.md
 
 ## Building with EAS

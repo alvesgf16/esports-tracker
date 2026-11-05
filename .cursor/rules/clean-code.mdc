@@ -19,12 +19,12 @@ Prefer intention-revealing, searchable, pronounceable names. One word per concep
 - Kickoff, countdown, tournament (`league · stage`), format (`Bo3` / `Ft3`)
 - VIPER features: Schedule (`modules/features/schedule/`), Games (`modules/features/games/`)
 - Shared kernel: `modules/shared/` — entities, gateways, cross-feature use cases, shared UI
-- Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games); they inject sample catalogs into `useScheduleBoard`
-- Clock / board: `lib/use-now.ts`, `lib/format-time.ts`, `lib/schedule-board.ts`, `lib/use-schedule-board.ts`
+- Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games); they pass `sampleBoard` into presenters
+- Clock / board: `lib/use-now.ts`, `lib/format-time.ts`, `lib/schedule-board.ts`, `lib/sample-board.ts`, `lib/use-schedule-board.ts`
 
 ## Functions (Ch.3)
 
-Small; do one thing; one abstraction level; stepdown (caller above callee). Prefer 0–2 args; at most 3 positional — more → a named argument object type. Avoid flag arguments. No hidden side effects. Command/query separation. Prefer extract within the VIPER / Clean Architecture role (use cases / Presenter helpers) over growing past size gates. Keep Views thin: use cases own application logic, Presenter owns view models, View renders props.
+Small; do one thing; one abstraction level; stepdown (caller above callee). Prefer 0–2 args; at most 3 positional — more → a named argument object type. Avoid flag arguments. No hidden side effects. Command/query separation. Prefer extract within the VIPER / Clean Architecture role (use cases / Presenter helpers) over growing past size gates. Keep Views thin: use cases own application logic, Presenter owns the presenter object, View renders props.
 
 ## Comments (Ch.4)
 
@@ -44,7 +44,7 @@ Prefer exceptions over error codes for unexpected failures (`GameCatalog.get` th
 
 ## Boundaries (Ch.8)
 
-Wrap third-party APIs behind owned façades. Sample catalogs in `data/sample/` are a stand-in: a live schedule API belongs behind `data/` implementing `modules/shared/gateways.ts`, injected by Builders — not inside Views, use cases, or `lib/use-schedule-board`. Learning tests at the boundary. Expo Router (`Link`, `router`, `useLocalSearchParams`) stays in `app/` as Router adapters / Builders — every file in `app/` is a route, so composition hooks stay in `lib/`. Features import `modules/shared`, never each other.
+Wrap third-party APIs behind owned façades. Sample catalogs in `data/sample/` are a stand-in: a live schedule API belongs behind `data/` implementing `modules/shared/gateways.ts`, injected by Builders — not inside Views, use cases, or `lib/use-schedule-board`. Learning tests at the boundary. Expo Router’s `useRouter` / `useLocalSearchParams` live in `modules/features/*/router.ts`; `Link` and layouts stay in `app/`. Every file in `app/` is a route, so composition hooks stay in `lib/`. Features import `modules/shared`, never each other.
 
 ## Classes (Ch.10)
 
@@ -52,16 +52,17 @@ Small, cohesive, single responsibility. This app is function- and type-first VIP
 
 ## Systems (Ch.11)
 
-Separate construction from use. Builders in `app/` wire View, Presenter, catalogs, and Router adapters. One-way dependencies:
+Separate construction from use. Builders in `app/` inject `sampleBoard` into the Presenter and render the View. One-way dependencies:
 
 - `app/` → `modules/features`, `modules/shared`, `data/sample` / `data/pandascore`, `lib/`, `constants/`, `expo-router`
-- Presenter → use cases, shared gateways/entities, contracts, `lib/format-time`
+- Router → `expo-router`, contracts, entities
+- Presenter → use cases, shared gateways/entities, contracts, feature `router`, `lib/use-now`, `lib/use-schedule-board`, `lib/format-time`, `lib/device-time-zone`
 - Use cases → entities (and other use cases); never `data/` or sibling features
-- View → view-model types + `constants/` + `modules/shared`
+- View → presenter types + `constants/` + `modules/shared`
 - `data/` → shared `entities` + `gateways` only (outer sample / API implementations)
-- `lib/use-schedule-board` → `lib/schedule-board` only; Builders pass sample catalogs
+- `lib/use-schedule-board` → `lib/schedule-board` only; Presenters pass `sampleBoard` from the Builder
 
-Feature root files: `view`, `presenter`, `contracts`, harness, and their tests. Cross-feature types, gateways, use cases, and UI live in `modules/shared`. Application logic lives in `use-cases/`; UI pieces in `components/`.
+Feature root files: `view`, `presenter`, `router`, `contracts`, harness, and their tests. Cross-feature types, gateways, use cases, and UI live in `modules/shared`. Application logic lives in `use-cases/`; UI pieces in `components/`.
 
 Keep use-case / Presenter math testable without rendering a screen.
 

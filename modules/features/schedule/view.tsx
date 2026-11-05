@@ -2,26 +2,29 @@ import { View } from 'react-native';
 
 import NoticeBanner from '@/modules/shared/components/notice-banner';
 
-import type { ScheduleViewModel } from './contracts';
 import DayList from './components/day-list';
 import GameChips from './components/game-chips';
+import type { SchedulePresenter } from './contracts';
 
 type Props = {
-  model: ScheduleViewModel;
-  notice?: string | null;
-  onSelectGame: (game: ScheduleViewModel['selected']) => void;
+  presenter: SchedulePresenter;
 };
 
-export default function ScheduleView({ model, notice, onSelectGame }: Props) {
+export default function ScheduleView({ presenter }: Props) {
   return (
     <View className="flex-1 bg-background">
       <GameChips
-        chips={model.chips}
-        selected={model.selected}
-        onSelect={onSelectGame}
+        chips={presenter.chips}
+        selected={presenter.selected}
+        onSelect={presenter.setGameFilter}
       />
-      {notice ? <NoticeBanner text={notice} className="px-4 pb-1" /> : null}
-      <DayList groups={model.groups} emptyMessage={model.emptyMessage} />
+      {presenter.notice ? (
+        <NoticeBanner text={presenter.notice} className="px-4 pb-1" />
+      ) : null}
+      <DayList
+        groups={presenter.groups}
+        emptyMessage={presenter.emptyMessage}
+      />
     </View>
   );
 }

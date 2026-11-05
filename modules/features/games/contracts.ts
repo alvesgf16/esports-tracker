@@ -12,6 +12,8 @@ export type GameRowModel = {
   accessibilityLabel: string;
 };
 
-export type GamesViewModel = {
+export type GamesPresenter = {
   rows: GameRowModel[];
+  notice: string | null;
+  openSchedule: (gameId: GameId) => void;
 };

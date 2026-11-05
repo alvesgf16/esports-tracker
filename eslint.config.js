@@ -71,12 +71,42 @@ function useCaseImports(forbiddenModules) {
   };
 }
 
+function routerImports(siblingFeatures) {
+  return {
+    paths: [
+      {
+        name: 'react-native',
+        message: 'Routers must not import React Native.',
+      },
+    ],
+    patterns: [
+      {
+        group: [
+          '@/app',
+          '@/app/*',
+          '@/data',
+          '@/data/*',
+          '@/constants',
+          '@/constants/*',
+        ],
+        message:
+          'Routers adapt Expo Router; they must not import app/ or data/.',
+      },
+      {
+        group: siblingFeatures,
+        message:
+          'Features must not import each other; put shared code in modules/shared.',
+      },
+    ],
+  };
+}
+
 function viewImports(siblingFeatures) {
   return {
     paths: [
       {
         name: 'expo-router',
-        message: 'Views must not import Expo Router; use Router adapters in app/.',
+        message: 'Views must not import Expo Router; use the feature Router.',
       },
     ],
     patterns: [
@@ -271,6 +301,30 @@ module.exports = defineConfig([
         presenterImports([
           '@/modules/features/games',
           '@/modules/features/games/**',
+        ]),
+      ],
+    },
+  },
+  {
+    files: ['modules/features/schedule/router.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        routerImports([
+          '@/modules/features/games',
+          '@/modules/features/games/**',
+        ]),
+      ],
+    },
+  },
+  {
+    files: ['modules/features/games/router.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        routerImports([
+          '@/modules/features/schedule',
+          '@/modules/features/schedule/**',
         ]),
       ],
     },

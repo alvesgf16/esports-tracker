@@ -8,14 +8,12 @@ import {
   type ScheduleBoardState,
 } from '@/lib/schedule-board';
 
-export type { ScheduleBoardState };
-
 export function useScheduleBoard(
-  offlineBoard: ScheduleBoardState
+  sampleBoard: ScheduleBoardState
 ): ScheduleBoardState {
   const liveEnabled = process.env.EXPO_PUBLIC_LIVE_SCHEDULE === '1';
   const [board, setBoard] = useState(() =>
-    liveEnabled ? loadingBoard : offlineBoard
+    liveEnabled ? loadingBoard : sampleBoard
   );
 
   useEffect(() => {

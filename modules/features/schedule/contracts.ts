@@ -1,6 +1,7 @@
 import type { GameFilter } from '@/modules/shared/entities';
 
 export type ScheduleRouter = {
+  gameFilter?: string;
   setGameFilter: (game: GameFilter) => void;
 };
 
@@ -25,9 +26,11 @@ export type DaySectionModel = {
   matches: MatchCardModel[];
 };
 
-export type ScheduleViewModel = {
+export type SchedulePresenter = {
   selected: GameFilter;
   chips: ChipModel[];
   groups: DaySectionModel[];
   emptyMessage: string;
+  notice: string | null;
+  setGameFilter: (game: GameFilter) => void;
 };

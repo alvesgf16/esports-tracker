@@ -25,6 +25,7 @@
     "uniwind": "^1.13.1"
   },
   "devDependencies": {
+    "@testing-library/react-native": "^14.1.0",
     "@types/jest": "30.0.0",
     "@types/react": "~19.3.0",
     "@typescript-eslint/eslint-plugin": "^8.72.1",

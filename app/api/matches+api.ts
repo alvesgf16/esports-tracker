@@ -23,39 +23,37 @@ let cache: CacheEntry | null = null;
 export async function GET(): Promise<Response> {
   const token = process.env.PANDASCORE_TOKEN?.trim();
 
-  if (!token) {
-    return jsonBoard({ status: 'unconfigured' });
-  }
-
-  return loadBoardResponse(token);
+  return token
+    ? loadBoardResponse(token)
+    : respondWithBoard({ status: 'unconfigured' });
 }
 
 async function loadBoardResponse(token: string): Promise<Response> {
   try {
-    const board = await cachedBoard(token);
+    const board = await loadCachedBoard(token);
 
-    return jsonBoard({
+    return respondWithBoard({
       status: 'ok',
       games: board.games,
       matches: board.matches,
     });
   } catch (error) {
-    return errorBoard(error);
+    return respondWithBoardError(error);
   }
 }
 
-function errorBoard(error: unknown): Response {
+function respondWithBoardError(error: unknown): Response {
   const message =
     error instanceof Error ? error.message : 'Failed to load schedule';
 
-  return jsonBoard({ status: 'error', message }, 502);
+  return respondWithBoard({ status: 'error', message }, 502);
 }
 
-function jsonBoard(body: BoardResponse, status = 200): Response {
+function respondWithBoard(body: BoardResponse, status = 200): Response {
   return Response.json(body, { status });
 }
 
-async function cachedBoard(token: string): Promise<ScheduleBoard> {
+async function loadCachedBoard(token: string): Promise<ScheduleBoard> {
   const now = Date.now();
 
   if (cache && cache.expiresAt > now) {

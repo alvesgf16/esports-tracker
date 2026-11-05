@@ -1,6 +1,6 @@
 import type { MatchProgress } from '../entities';
 
-export type MatchStatus = 'live' | 'soon' | 'upcoming' | 'finished';
+type MatchStatus = 'live' | 'soon' | 'upcoming' | 'finished';
 
 const LIVE_WINDOW_MS = 3 * 60 * 60 * 1000;
 const SOON_WINDOW_MS = 60 * 60 * 1000;

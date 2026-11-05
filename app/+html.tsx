@@ -5,17 +5,17 @@ import {
 import type { ReactNode } from 'react';
 
 // Web-only root HTML for server rendering. Runs in Node.js only.
-export default function Root({ children }: { children: ReactNode }) {
-  const document = useServerDocumentContext();
+export default function HtmlDocument({ children }: { children: ReactNode }) {
+  const serverDocument = useServerDocumentContext();
 
   return (
-    <html lang="en" {...document.htmlAttributes}>
+    <html lang="en" {...serverDocument.htmlAttributes}>
       <head>
-        <DocumentHead headNodes={document.headNodes} />
+        <DocumentHead headNodes={serverDocument.headNodes} />
       </head>
-      <body {...document.bodyAttributes}>
+      <body {...serverDocument.bodyAttributes}>
         {children}
-        {document.bodyNodes}
+        {serverDocument.bodyNodes}
       </body>
     </html>
   );

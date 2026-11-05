@@ -1,20 +1,24 @@
+import type { ScheduleBoardState } from '@/lib/schedule-board';
+import { useNow } from '@/lib/use-now';
+import { useScheduleBoard } from '@/lib/use-schedule-board';
 import type { Game, Match } from '@/modules/shared/entities';
-import type { GameCatalog, MatchCatalog } from '@/modules/shared/gateways';
 
-import type { GameRowModel, GamesViewModel } from './contracts';
+import type { GameRowModel, GamesPresenter } from './contracts';
+import { useGamesRouter } from './router';
 import { upcomingCount } from './use-cases/upcoming-count';
 
-type PresentInput = {
-  games: GameCatalog;
-  matches: MatchCatalog;
-  now: number;
-};
+export function useGamesPresenter(
+  sampleBoard: ScheduleBoardState
+): GamesPresenter {
+  const now = useNow();
+  const board = useScheduleBoard(sampleBoard);
+  const { openSchedule } = useGamesRouter();
+  const matches = board.matches.list();
 
-export function presentGames(input: PresentInput): GamesViewModel {
   return {
-    rows: input.games
-      .list()
-      .map((game) => presentRow(game, input.matches.list(), input.now)),
+    rows: board.games.list().map((game) => presentRow(game, matches, now)),
+    notice: board.notice,
+    openSchedule,
   };
 }
 
