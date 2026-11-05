@@ -4,7 +4,7 @@ import {
   hoursFromNow,
   TEST_TIME_ZONE,
 } from '../schedule.harness';
-import { groupByDay } from './day-groups';
+import { groupByDay } from './group-by-day';
 
 describe('groupByDay', () => {
   it('labels today and tomorrow relative to now', () => {

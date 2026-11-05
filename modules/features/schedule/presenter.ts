@@ -10,7 +10,7 @@ import type {
   MatchCardModel,
   ScheduleViewModel,
 } from './contracts';
-import { groupByDay } from './use-cases/day-groups';
+import { groupByDay } from './use-cases/group-by-day';
 import { gameName } from './use-cases/game-name';
 import { parseFilter } from './use-cases/parse-filter';
 

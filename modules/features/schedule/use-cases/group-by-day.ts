@@ -2,7 +2,7 @@ import moment from 'moment-timezone';
 
 import type { Match } from '@/modules/shared/entities';
 
-export type DayGroup = {
+type DayGroup = {
   key: string;
   label: string;
   matches: Match[];
