@@ -1,7 +1,7 @@
 import type { Game } from '@/modules/shared/entities';
 
-import { shortNameForSlug } from './short-name';
-import { isSimulatedSport } from './simulated-sports';
+import { isSimulatedSport } from './is-simulated-sport';
+import { shortNameForSlug } from './short-name-for-slug';
 import type { VendorVideogame } from './vendor-types';
 
 export function mapVideogame(vendor: VendorVideogame): Game | null {

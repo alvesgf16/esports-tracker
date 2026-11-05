@@ -1,10 +1,10 @@
 import type { Match, Team } from '@/modules/shared/entities';
 
-import { formatLabel } from './map-format';
+import { formatLabel } from './format-label';
+import { isSimulatedSport } from './is-simulated-sport';
 import { mapProgress } from './map-progress';
-import { fallbackMatchName, mapTeams } from './map-teams';
-import { tournamentLabel } from './map-tournament';
-import { isSimulatedSport } from './simulated-sports';
+import { mapTeams } from './map-teams';
+import { tournamentLabel } from './tournament-label';
 import type { VendorMatch } from './vendor-types';
 
 type MatchParts = {
@@ -66,4 +66,12 @@ function buildMatch(parts: MatchParts): Match {
     teams: parts.teams,
     progress: mapProgress(parts.vendor.status),
   };
+}
+
+function fallbackMatchName(teams: Team[]): string {
+  if (teams.length === 2) {
+    return `${teams[0].name} vs ${teams[1].name}`;
+  }
+
+  return `${teams.length} teams`;
 }

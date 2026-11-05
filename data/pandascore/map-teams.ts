@@ -21,11 +21,3 @@ function namedTeam(name: string, acronym: string | null | undefined): Team {
 
   return { name, shortName };
 }
-
-export function fallbackMatchName(teams: Team[]): string {
-  if (teams.length === 2) {
-    return `${teams[0].name} vs ${teams[1].name}`;
-  }
-
-  return `${teams.length} teams`;
-}

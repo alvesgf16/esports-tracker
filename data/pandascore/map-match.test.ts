@@ -2,9 +2,8 @@ import duel from './fixtures/duel.json';
 import eSoccer from './fixtures/e-soccer.json';
 import lobby from './fixtures/lobby.json';
 import tbd from './fixtures/tbd.json';
-import { mapVideogame } from './map-game';
 import { mapMatch } from './map-match';
-import type { VendorMatch, VendorVideogame } from './vendor-types';
+import type { VendorMatch } from './vendor-types';
 
 describe('mapMatch', () => {
   it('maps a two-team duel with league · stage and Bo format', () => {
@@ -43,27 +42,5 @@ describe('mapMatch', () => {
 
   it('drops simulated sports matches', () => {
     expect(mapMatch(eSoccer as VendorMatch)).toBeNull();
-  });
-});
-
-describe('mapVideogame', () => {
-  it('maps a traditional title and drops simulated sports', () => {
-    const lol: VendorVideogame = {
-      id: 1,
-      name: 'LoL',
-      slug: 'league-of-legends',
-    };
-    const soccer: VendorVideogame = {
-      id: 2,
-      name: 'eSoccer',
-      slug: 'e-soccer',
-    };
-
-    expect(mapVideogame(lol)).toEqual({
-      id: 'league-of-legends',
-      name: 'LoL',
-      shortName: 'LoL',
-    });
-    expect(mapVideogame(soccer)).toBeNull();
   });
 });

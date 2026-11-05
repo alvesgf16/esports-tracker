@@ -1,7 +1,6 @@
-import {
-  fetchScheduleBoard,
-  type ScheduleBoard,
-} from '@/data/pandascore/client';
+import { fetchScheduleBoard } from '@/data/pandascore/fetch-schedule-board';
+
+type ScheduleBoard = Awaited<ReturnType<typeof fetchScheduleBoard>>;
 
 const CACHE_TTL_MS = 60_000;
 

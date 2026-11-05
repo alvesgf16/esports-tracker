@@ -1,15 +1,15 @@
 import type { Game, Match } from '@/modules/shared/entities';
 
-import { mapVideogame } from './map-game';
 import { mapMatch } from './map-match';
 import { mapPool } from './map-pool';
+import { mapVideogame } from './map-videogame';
 import type { VendorMatch, VendorVideogame } from './vendor-types';
 
 const API_BASE = 'https://api.pandascore.co';
 const PAGE_SIZE = 20;
 const MATCH_CONCURRENCY = 2;
 
-export type ScheduleBoard = {
+type ScheduleBoard = {
   games: Game[];
   matches: Match[];
 };
