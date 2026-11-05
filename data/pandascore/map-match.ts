@@ -1,4 +1,4 @@
-import type { Match, Team } from '@/modules/schedule/entities';
+import type { Match, Team } from '@/modules/shared/entities';
 
 import { formatLabel } from './map-format';
 import { mapProgress } from './map-progress';

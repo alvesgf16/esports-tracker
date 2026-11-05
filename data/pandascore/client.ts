@@ -1,5 +1,4 @@
-import type { Game } from '@/modules/games/entities';
-import type { Match } from '@/modules/schedule/entities';
+import type { Game, Match } from '@/modules/shared/entities';
 
 import { mapVideogame } from './map-game';
 import { mapMatch } from './map-match';

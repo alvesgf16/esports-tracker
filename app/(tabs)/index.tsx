@@ -1,16 +1,21 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { sampleGameCatalog } from '@/data/sample/games';
+import { sampleMatchCatalog } from '@/data/sample/matches';
 import { deviceTimeZone } from '@/lib/device-time-zone';
+import { boardFromCatalogs } from '@/lib/schedule-board';
 import { useNow } from '@/lib/use-now';
 import { useScheduleBoard } from '@/lib/use-schedule-board';
-import type { ScheduleRouter } from '@/modules/schedule/contracts';
-import type { GameFilter } from '@/modules/schedule/entities';
-import { presentSchedule } from '@/modules/schedule/presenter';
-import ScheduleView from '@/modules/schedule/view';
+import type { ScheduleRouter } from '@/modules/features/schedule/contracts';
+import { presentSchedule } from '@/modules/features/schedule/presenter';
+import ScheduleView from '@/modules/features/schedule/view';
+import type { GameFilter } from '@/modules/shared/entities';
+
+const offlineBoard = boardFromCatalogs(sampleGameCatalog, sampleMatchCatalog);
 
 export default function ScheduleScreen() {
   const now = useNow();
-  const board = useScheduleBoard();
+  const board = useScheduleBoard(offlineBoard);
   const router = useRouter();
   const { game } = useLocalSearchParams<{ game?: string }>();
   const scheduleRouter = createScheduleRouter(router);

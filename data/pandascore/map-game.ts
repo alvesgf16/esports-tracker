@@ -1,4 +1,4 @@
-import type { Game } from '@/modules/games/entities';
+import type { Game } from '@/modules/shared/entities';
 
 import { shortNameForSlug } from './short-name';
 import { isSimulatedSport } from './simulated-sports';

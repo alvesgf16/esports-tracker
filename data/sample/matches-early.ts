@@ -1,4 +1,4 @@
-import type { Match } from '@/modules/schedule/entities';
+import type { Match } from '@/modules/shared/entities';
 
 import { duel } from './sample-teams';
 import { sampleKickoff, sampleMinutesFromNow } from './sample-kickoff';

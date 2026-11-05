@@ -1,4 +1,4 @@
-import type { Match } from '@/modules/schedule/entities';
+import type { Match } from '@/modules/shared/entities';
 
 import { PUBG_LOBBY } from './sample-teams';
 import { sampleKickoff } from './sample-kickoff';

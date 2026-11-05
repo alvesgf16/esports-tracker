@@ -1,4 +1,10 @@
-import type { GameId } from '@/modules/games/entities';
+export type GameId = string;
+
+export type Game = {
+  id: GameId;
+  name: string;
+  shortName: string;
+};
 
 export type GameFilter = GameId | 'all';
 

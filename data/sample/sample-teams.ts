@@ -1,4 +1,4 @@
-import type { Team } from '@/modules/schedule/entities';
+import type { Team } from '@/modules/shared/entities';
 
 export function duel(left: [string, string], right: [string, string]): Team[] {
   return [team(left), team(right)];

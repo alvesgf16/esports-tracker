@@ -11,6 +11,89 @@ const testFiles = [
   '**/__tests__/**/*.{ts,tsx,js,jsx}',
 ];
 
+function presenterImports(siblingFeatures) {
+  return {
+    paths: [
+      {
+        name: 'expo-router',
+        message: 'Presenters must not import Expo Router.',
+      },
+      {
+        name: 'react-native',
+        message: 'Presenters must not import React Native.',
+      },
+    ],
+    patterns: [
+      {
+        group: ['@/app', '@/app/*', '@/data', '@/data/*'],
+        message:
+          'Presenters use entities, gateways, and use cases; Builders inject data/.',
+      },
+      {
+        group: siblingFeatures,
+        message:
+          'Features must not import each other; put shared code in modules/shared.',
+      },
+    ],
+  };
+}
+
+function useCaseImports(forbiddenModules) {
+  return {
+    paths: [
+      {
+        name: 'expo-router',
+        message: 'Use cases must not import Expo Router.',
+      },
+      {
+        name: 'react-native',
+        message: 'Use cases must not import React Native.',
+      },
+    ],
+    patterns: [
+      {
+        group: [
+          '@/app',
+          '@/app/*',
+          '@/data',
+          '@/data/*',
+          '@/constants',
+          '@/constants/*',
+        ],
+        message: 'Use cases take entities as input; they must not import data/.',
+      },
+      {
+        group: forbiddenModules,
+        message:
+          'Features must not import each other; put shared code in modules/shared.',
+      },
+    ],
+  };
+}
+
+function viewImports(siblingFeatures) {
+  return {
+    paths: [
+      {
+        name: 'expo-router',
+        message: 'Views must not import Expo Router; use Router adapters in app/.',
+      },
+    ],
+    patterns: [
+      {
+        group: ['@/data', '@/data/*', '@/app', '@/app/*'],
+        message:
+          'Views render view models only; no data queries or app routes.',
+      },
+      {
+        group: siblingFeatures,
+        message:
+          'Features must not import each other; put shared code in modules/shared.',
+      },
+    ],
+  };
+}
+
 module.exports = defineConfig([
   expoConfig,
   globalIgnores([
@@ -94,6 +177,19 @@ module.exports = defineConfig([
     },
   },
   {
+    files: ['data/pandascore/vendor-types.ts'],
+    rules: {
+      '@typescript-eslint/naming-convention': [
+        'error',
+        { selector: 'typeLike', format: ['PascalCase'] },
+        {
+          selector: 'typeProperty',
+          format: ['camelCase', 'snake_case'],
+        },
+      ],
+    },
+  },
+  {
     plugins: {
       unicorn,
     },
@@ -168,63 +264,59 @@ module.exports = defineConfig([
   },
   // VIPER + Clean Architecture — Clean Code Ch.8 / Ch.11
   {
-    files: ['modules/**/presenter.ts'],
+    files: ['modules/features/schedule/presenter.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
-        {
-          paths: [
-            {
-              name: 'expo-router',
-              message: 'Presenters must not import Expo Router.',
-            },
-            {
-              name: 'react-native',
-              message: 'Presenters must not import React Native.',
-            },
-          ],
-          patterns: [
-            {
-              group: ['@/app', '@/app/*', '@/data', '@/data/*'],
-              message:
-                'Presenters use entities, gateways, and use cases; Builders inject data/.',
-            },
-          ],
-        },
+        presenterImports([
+          '@/modules/features/games',
+          '@/modules/features/games/**',
+        ]),
       ],
     },
   },
   {
-    files: ['modules/**/use-cases/**/*.{ts,tsx}'],
+    files: ['modules/features/games/presenter.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
-        {
-          paths: [
-            {
-              name: 'expo-router',
-              message: 'Use cases must not import Expo Router.',
-            },
-            {
-              name: 'react-native',
-              message: 'Use cases must not import React Native.',
-            },
-          ],
-          patterns: [
-            {
-              group: [
-                '@/app',
-                '@/app/*',
-                '@/data',
-                '@/data/*',
-                '@/constants',
-                '@/constants/*',
-              ],
-              message:
-                'Use cases take entities as input; they must not import data/.',
-            },
-          ],
-        },
+        presenterImports([
+          '@/modules/features/schedule',
+          '@/modules/features/schedule/**',
+        ]),
+      ],
+    },
+  },
+  {
+    files: ['modules/features/schedule/use-cases/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        useCaseImports([
+          '@/modules/features/games',
+          '@/modules/features/games/**',
+        ]),
+      ],
+    },
+  },
+  {
+    files: ['modules/features/games/use-cases/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        useCaseImports([
+          '@/modules/features/schedule',
+          '@/modules/features/schedule/**',
+        ]),
+      ],
+    },
+  },
+  {
+    files: ['modules/shared/use-cases/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        useCaseImports(['@/modules/features', '@/modules/features/**']),
       ],
     },
   },
@@ -255,6 +347,8 @@ module.exports = defineConfig([
                 '@/lib/*',
                 '@/constants',
                 '@/constants/*',
+                '@/modules/features',
+                '@/modules/features/**',
               ],
               message: 'Entities are domain DTOs only.',
             },
@@ -288,6 +382,7 @@ module.exports = defineConfig([
                 '@/data/*',
                 '@/modules',
                 '@/modules/*',
+                '@/modules/**',
               ],
               message: 'lib/format-time must stay free of modules and data/.',
             },
@@ -297,23 +392,78 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['modules/**/*.tsx'],
+    files: ['modules/features/schedule/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        viewImports([
+          '@/modules/features/games',
+          '@/modules/features/games/**',
+        ]),
+      ],
+    },
+  },
+  {
+    files: ['modules/features/games/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        viewImports([
+          '@/modules/features/schedule',
+          '@/modules/features/schedule/**',
+        ]),
+      ],
+    },
+  },
+  {
+    files: ['modules/shared/**/*.tsx'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        viewImports(['@/modules/features', '@/modules/features/**']),
+      ],
+    },
+  },
+  {
+    files: [
+      'modules/features/schedule/contracts.ts',
+      'modules/features/schedule/*.harness.ts',
+    ],
     rules: {
       'no-restricted-imports': [
         'error',
         {
-          paths: [
-            {
-              name: 'expo-router',
-              message:
-                'Views must not import Expo Router; use Router adapters in app/.',
-            },
-          ],
           patterns: [
             {
-              group: ['@/data', '@/data/*', '@/app', '@/app/*'],
+              group: [
+                '@/modules/features/games',
+                '@/modules/features/games/**',
+              ],
               message:
-                'Views render view models only; no data queries or app routes.',
+                'Features must not import each other; put shared code in modules/shared.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: [
+      'modules/features/games/contracts.ts',
+      'modules/features/games/*.harness.ts',
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@/modules/features/schedule',
+                '@/modules/features/schedule/**',
+              ],
+              message:
+                'Features must not import each other; put shared code in modules/shared.',
             },
           ],
         },
@@ -345,14 +495,13 @@ module.exports = defineConfig([
                 '@/constants/*',
                 '@/lib',
                 '@/lib/*',
-                '@/modules/*/view',
-                '@/modules/*/presenter',
-                '@/modules/*/contracts',
-                '@/modules/*/components',
-                '@/modules/*/components/*',
-                '@/modules/*/use-cases',
-                '@/modules/*/use-cases/*',
-                '@/modules/*/*.harness',
+                '@/modules/features',
+                '@/modules/features/**',
+                '@/modules/shared/components',
+                '@/modules/shared/components/**',
+                '@/modules/shared/use-cases',
+                '@/modules/shared/use-cases/**',
+                '@/modules/shared/*.harness',
               ],
               message:
                 'data/ implements gateways; import entities and gateways only.',

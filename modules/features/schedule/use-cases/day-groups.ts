@@ -1,6 +1,6 @@
 import moment from 'moment-timezone';
 
-import type { Match } from '../entities';
+import type { Match } from '@/modules/shared/entities';
 
 export type DayGroup = {
   key: string;

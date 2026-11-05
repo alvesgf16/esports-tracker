@@ -18,7 +18,7 @@ npx expo start              # start the dev server
 npm run lint                # lint (eslint . — whole project, not expo lint)
 npm run typecheck           # tsc --noEmit
 npm test                    # unit tests (jest-expo)
-npm run check               # lint + typecheck + tests (also runs on git pre-commit via husky)
+npm run check               # lint + typecheck + tests + knip + jscpd (also runs on git pre-commit via husky)
 npm run test:coverage       # unit tests with coverage report in coverage/
 npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
@@ -29,7 +29,7 @@ Run `npm run check` before declaring any task done. Commits are blocked unless i
 ## Navigation & Routing
 
 - Use **Expo Router** for all navigation. Routes live in `app/` — every file there is a screen / Builder, `_layout.tsx` files define navigators.
-- Feature logic uses React-adapted **VIPER** under `modules/` (View / Presenter / Entity / Router contracts) with Clean Architecture use cases and gateways. `app/` wires modules, injects catalogs from `data/sample/` or `data/pandascore/`, and adapts Expo Router; keep Presenters and use cases outside `app/`.
+- Feature logic uses React-adapted **VIPER** under `modules/features/` (View / Presenter / Router contracts) with Clean Architecture use cases. Cross-feature entities, gateways, use cases, and UI live in `modules/shared/`. `app/` wires features, injects catalogs from `data/sample/` or `data/pandascore/`, and adapts Expo Router; keep Presenters and use cases outside `app/`. Every file in `app/` is a route (Expo Router SDK 58), so composition hooks stay in `lib/`.
 - Import `Link`, `router`, and `useLocalSearchParams` from `expo-router` only in `app/`.
 - Docs: https://docs.expo.dev/router/introduction.md
 

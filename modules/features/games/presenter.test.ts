@@ -1,9 +1,9 @@
-import type { MatchCatalog } from '@/modules/schedule/gateways';
+import type { MatchCatalog } from '@/modules/shared/gateways';
 import {
   aMatch,
   FIXED_NOW,
   hoursFromNow,
-} from '@/modules/schedule/schedule.harness';
+} from '@/modules/shared/shared.harness';
 
 import { stubGameCatalog } from './games.harness';
 import { presentGames } from './presenter';

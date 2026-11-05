@@ -1,5 +1,5 @@
-import { FIXED_NOW, hoursFromNow } from '../schedule.harness';
 import { matchStatus } from './match-status';
+import { FIXED_NOW, hoursFromNow } from '../shared.harness';
 
 describe('matchStatus', () => {
   it('returns live inside the live window after kickoff', () => {

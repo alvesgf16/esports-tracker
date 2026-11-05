@@ -13,13 +13,14 @@ Prefer intention-revealing, searchable, pronounceable names. One word per concep
 
 ### Domain vocabulary
 
-- `Game`, `GameId` (opaque string), `Team`, `Match` — Entity DTOs in `modules/*/entities.ts`
+- `Game`, `GameId` (opaque string), `Team`, `Match` — Entity DTOs in `modules/shared/entities.ts`
 - `Match.teams`, optional `Match.progress` (`not_started` / `running` / `finished`)
 - `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter`
 - Kickoff, countdown, tournament (`league · stage`), format (`Bo3` / `Ft3`)
-- VIPER modules: Schedule (`modules/schedule/`), Games (`modules/games/`)
-- Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games)
-- Clock infrastructure: `lib/use-now.ts`, `lib/format-time.ts`
+- VIPER features: Schedule (`modules/features/schedule/`), Games (`modules/features/games/`)
+- Shared kernel: `modules/shared/` — entities, gateways, cross-feature use cases, shared UI
+- Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games); they inject sample catalogs into `useScheduleBoard`
+- Clock / board: `lib/use-now.ts`, `lib/format-time.ts`, `lib/schedule-board.ts`, `lib/use-schedule-board.ts`
 
 ## Functions (Ch.3)
 
@@ -43,7 +44,7 @@ Prefer exceptions over error codes for unexpected failures (`GameCatalog.get` th
 
 ## Boundaries (Ch.8)
 
-Wrap third-party APIs behind owned façades. Sample `MATCHES` is a stand-in: a live schedule API belongs behind `data/` implementing module `gateways.ts`, injected by Builders — not inside Views or use cases. Learning tests at the boundary. Expo Router (`Link`, `router`, `useLocalSearchParams`) stays in `app/` as Router adapters / Builders. Features depend on what you control (module contracts).
+Wrap third-party APIs behind owned façades. Sample catalogs in `data/sample/` are a stand-in: a live schedule API belongs behind `data/` implementing `modules/shared/gateways.ts`, injected by Builders — not inside Views, use cases, or `lib/use-schedule-board`. Learning tests at the boundary. Expo Router (`Link`, `router`, `useLocalSearchParams`) stays in `app/` as Router adapters / Builders — every file in `app/` is a route, so composition hooks stay in `lib/`. Features import `modules/shared`, never each other.
 
 ## Classes (Ch.10)
 
@@ -53,13 +54,14 @@ Small, cohesive, single responsibility. This app is function- and type-first VIP
 
 Separate construction from use. Builders in `app/` wire View, Presenter, catalogs, and Router adapters. One-way dependencies:
 
-- `app/` → `modules/`, `data/sample` / `data/pandascore`, `lib/use-now`, `constants/`, `expo-router`
-- Presenter → use cases, gateways, entities, contracts, `lib/format-time`
-- Use cases → entities (and other use cases); never `data/`
-- View → view-model types + `constants/`
-- `data/` → `entities` + `gateways` only (outer sample / API implementations)
+- `app/` → `modules/features`, `modules/shared`, `data/sample` / `data/pandascore`, `lib/`, `constants/`, `expo-router`
+- Presenter → use cases, shared gateways/entities, contracts, `lib/format-time`
+- Use cases → entities (and other use cases); never `data/` or sibling features
+- View → view-model types + `constants/` + `modules/shared`
+- `data/` → shared `entities` + `gateways` only (outer sample / API implementations)
+- `lib/use-schedule-board` → `lib/schedule-board` only; Builders pass sample catalogs
 
-Module root files: `view`, `presenter`, `entities`, `contracts`, `gateways`, harness, and their tests. Application logic lives in `use-cases/`; UI pieces in `components/`.
+Feature root files: `view`, `presenter`, `contracts`, harness, and their tests. Cross-feature types, gateways, use cases, and UI live in `modules/shared`. Application logic lives in `use-cases/`; UI pieces in `components/`.
 
 Keep use-case / Presenter math testable without rendering a screen.
 
@@ -77,4 +79,4 @@ Make it work, then refine with the bar green. Feature branch; no broken main. Co
 
 ## Smells and Heuristics (Ch.17)
 
-Prefer MIT clone/dead-code tooling (`eslint-plugin-unicorn`; optional `jscpd` / `knip`). Avoid nested ternaries and lonely ifs when a clearer structure exists. Keep cyclomatic gates under Functions (Ch.3).
+Prefer MIT clone/dead-code tooling (`eslint-plugin-unicorn`; `jscpd` / `knip` in `npm run check`). Avoid nested ternaries and lonely ifs when a clearer structure exists. Keep cyclomatic gates under Functions (Ch.3).

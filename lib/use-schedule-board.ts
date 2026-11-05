@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { sampleGameCatalog } from '@/data/sample/games';
-import { sampleMatchCatalog } from '@/data/sample/matches';
 import {
   boardFromPayload,
   failedBoard,
@@ -12,18 +10,12 @@ import {
 
 export type { ScheduleBoardState };
 
-/** Sample fixtures — only when live schedule is off (local debugging). */
-const sampleBoard: ScheduleBoardState = {
-  games: sampleGameCatalog,
-  matches: sampleMatchCatalog,
-  notice: null,
-  ready: true,
-};
-
-export function useScheduleBoard(): ScheduleBoardState {
+export function useScheduleBoard(
+  offlineBoard: ScheduleBoardState
+): ScheduleBoardState {
   const liveEnabled = process.env.EXPO_PUBLIC_LIVE_SCHEDULE === '1';
   const [board, setBoard] = useState(() =>
-    liveEnabled ? loadingBoard : sampleBoard
+    liveEnabled ? loadingBoard : offlineBoard
   );
 
   useEffect(() => {

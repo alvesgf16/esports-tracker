@@ -1,5 +1,5 @@
-import type { Game } from './entities';
-import type { GameCatalog } from './gateways';
+import type { Game } from '@/modules/shared/entities';
+import type { GameCatalog } from '@/modules/shared/gateways';
 
 const sampleGames: Game[] = [
   { id: 'lol', name: 'League of Legends', shortName: 'LoL' },

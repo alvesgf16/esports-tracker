@@ -1,4 +1,4 @@
-import type { MatchProgress } from '@/modules/schedule/entities';
+import type { MatchProgress } from '@/modules/shared/entities';
 
 const FINISHED = new Set(['finished', 'canceled', 'postponed']);
 

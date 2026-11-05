@@ -1,14 +1,19 @@
 import { useRouter } from 'expo-router';
 
+import { sampleGameCatalog } from '@/data/sample/games';
+import { sampleMatchCatalog } from '@/data/sample/matches';
+import { boardFromCatalogs } from '@/lib/schedule-board';
 import { useNow } from '@/lib/use-now';
 import { useScheduleBoard } from '@/lib/use-schedule-board';
-import type { GamesRouter } from '@/modules/games/contracts';
-import { presentGames } from '@/modules/games/presenter';
-import GamesView from '@/modules/games/view';
+import type { GamesRouter } from '@/modules/features/games/contracts';
+import { presentGames } from '@/modules/features/games/presenter';
+import GamesView from '@/modules/features/games/view';
+
+const offlineBoard = boardFromCatalogs(sampleGameCatalog, sampleMatchCatalog);
 
 export default function GamesScreen() {
   const now = useNow();
-  const board = useScheduleBoard();
+  const board = useScheduleBoard(offlineBoard);
   const router = useRouter();
   const gamesRouter = createGamesRouter(router);
   const model = presentGames({

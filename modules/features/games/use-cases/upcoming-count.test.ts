@@ -2,7 +2,7 @@ import {
   aMatch,
   FIXED_NOW,
   hoursFromNow,
-} from '@/modules/schedule/schedule.harness';
+} from '@/modules/shared/shared.harness';
 
 import { upcomingCount } from './upcoming-count';
 

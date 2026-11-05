@@ -1,6 +1,7 @@
 {
   "minTokens": 50,
   "minLines": 5,
+  "threshold": 0,
   "format": ["typescript", "javascript", "tsx", "jsx"],
   "ignore": [
     "**/node_modules/**",

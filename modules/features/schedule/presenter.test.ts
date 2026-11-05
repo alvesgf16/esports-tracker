@@ -20,6 +20,13 @@ function present(
   });
 }
 
+function presentedCard(match: ReturnType<typeof aMatch>) {
+  return present({
+    matches: stubMatchCatalog({ list: () => [match] }),
+    gameParam: 'all',
+  }).groups[0].matches[0];
+}
+
 describe('presentSchedule', () => {
   it('defaults an invalid game param to all', () => {
     const model = present({ gameParam: 'chess' });
@@ -37,16 +44,14 @@ describe('presentSchedule', () => {
   });
 
   it('maps a live match into card labels', () => {
-    const match = aMatch({
-      id: 'live-1',
-      startsAt: new Date(FIXED_NOW).toISOString(),
-    });
-    const model = present({
-      matches: stubMatchCatalog({ list: () => [match] }),
-      gameParam: 'all',
-    });
+    const card = presentedCard(
+      aMatch({
+        id: 'live-1',
+        startsAt: new Date(FIXED_NOW).toISOString(),
+      })
+    );
 
-    expect(model.groups[0].matches[0]).toMatchObject({
+    expect(card).toMatchObject({
       id: 'live-1',
       kickoffLabel: 'LIVE',
       countdownLabel: '',
@@ -58,23 +63,21 @@ describe('presentSchedule', () => {
   });
 
   it('maps a lobby match into name and team count', () => {
-    const match = aMatch({
-      id: 'lobby-1',
-      name: 'Group A — Match 3',
-      tournament: 'PGS · Global Series',
-      format: 'Maps',
-      teams: [
-        { name: 'Alpha', shortName: 'ALP' },
-        { name: 'Beta', shortName: 'BET' },
-        { name: 'Gamma', shortName: 'GAM' },
-      ],
-    });
-    const model = present({
-      matches: stubMatchCatalog({ list: () => [match] }),
-      gameParam: 'all',
-    });
+    const card = presentedCard(
+      aMatch({
+        id: 'lobby-1',
+        name: 'Group A — Match 3',
+        tournament: 'PGS · Global Series',
+        format: 'Maps',
+        teams: [
+          { name: 'Alpha', shortName: 'ALP' },
+          { name: 'Beta', shortName: 'BET' },
+          { name: 'Gamma', shortName: 'GAM' },
+        ],
+      })
+    );
 
-    expect(model.groups[0].matches[0]).toMatchObject({
+    expect(card).toMatchObject({
       teamA: 'Group A — Match 3',
       teamB: '3 teams',
       meta: 'LoL · PGS · Global Series · Maps',

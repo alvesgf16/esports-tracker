@@ -1,9 +1,7 @@
-import type { Match } from '@/modules/schedule/entities';
-import type { MatchCatalog } from '@/modules/schedule/gateways';
+import type { Game, Match } from '@/modules/shared/entities';
+import type { GameCatalog, MatchCatalog } from '@/modules/shared/gateways';
 
 import type { GameRowModel, GamesViewModel } from './contracts';
-import type { Game } from './entities';
-import type { GameCatalog } from './gateways';
 import { upcomingCount } from './use-cases/upcoming-count';
 
 type PresentInput = {

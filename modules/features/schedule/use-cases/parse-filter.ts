@@ -1,6 +1,4 @@
-import type { Game } from '@/modules/games/entities';
-
-import type { GameFilter } from '../entities';
+import type { Game, GameFilter } from '@/modules/shared/entities';
 
 export function parseFilter(
   value: string | string[] | undefined,

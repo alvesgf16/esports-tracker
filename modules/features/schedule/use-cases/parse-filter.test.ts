@@ -1,4 +1,4 @@
-import type { Game } from '@/modules/games/entities';
+import type { Game } from '@/modules/shared/entities';
 
 import { parseFilter } from './parse-filter';
 

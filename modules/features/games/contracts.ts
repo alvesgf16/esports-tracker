@@ -1,4 +1,4 @@
-import type { GameId } from './entities';
+import type { GameId } from '@/modules/shared/entities';
 
 export type GamesRouter = {
   openSchedule: (gameId: GameId) => void;

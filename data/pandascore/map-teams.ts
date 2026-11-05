@@ -1,4 +1,4 @@
-import type { Team } from '@/modules/schedule/entities';
+import type { Team } from '@/modules/shared/entities';
 
 import type { VendorOpponent } from './vendor-types';
 

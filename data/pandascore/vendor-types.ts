@@ -1,5 +1,4 @@
-/* Vendor JSON uses snake_case field names from PandaScore. */
-/* eslint-disable @typescript-eslint/naming-convention */
+/** Vendor JSON uses snake_case field names from PandaScore. */
 
 export type VendorVideogame = {
   id: number;

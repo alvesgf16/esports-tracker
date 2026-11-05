@@ -1,5 +1,5 @@
-import { aMatch, FIXED_NOW, hoursFromNow } from '../schedule.harness';
 import { visibleMatches } from './visible-matches';
+import { aMatch, FIXED_NOW, hoursFromNow } from '../shared.harness';
 
 describe('visibleMatches', () => {
   it('keeps only the selected game', () => {

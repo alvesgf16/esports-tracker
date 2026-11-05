@@ -22,7 +22,7 @@ Production size/complexity gates stay strict. Spec, `*.test`, harness, and `__te
 
 ## Harness / DSL
 
-Put fixture clocks (`now`), sample `Match` builders, and stub catalogs in `*.harness.ts` (or `__tests__/helpers`) — not inline in every `it`. Prefer `rejects.toThrow` / RNTL queries over try/catch for expected failures. Schedule use cases / Presenter logic under `modules/schedule/` should be unit-tested without rendering Views. Use-case tests pass fixture entities — they must not import `data/` sample catalogs.
+Put fixture clocks (`now`), sample `Match` builders, and stub catalogs in `*.harness.ts` (or `__tests__/helpers`) — not inline in every `it`. Shared fixtures live in `modules/shared/shared.harness.ts`. Prefer `rejects.toThrow` / RNTL queries over try/catch for expected failures. Feature Presenter / use-case logic under `modules/features/` should be unit-tested without rendering Views. Use-case tests pass fixture entities — they must not import `data/` sample catalogs.
 
 ## Coverage
 

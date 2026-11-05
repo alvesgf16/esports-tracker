@@ -26,7 +26,6 @@
   },
   "devDependencies": {
     "@types/jest": "30.0.0",
-    "@types/moment-timezone": "^0.5.13",
     "@types/react": "~19.3.0",
     "@typescript-eslint/eslint-plugin": "^8.72.1",
     "eslint": "^9.39.5",
@@ -54,7 +53,7 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
-    "check": "npm run lint && npm run typecheck && npm test",
+    "check": "npm run lint && npm run typecheck && npm test && npm run knip && npm run jscpd",
     "knip": "knip",
     "jscpd": "jscpd .",
     "uniwind:types": "uniwind generate-artifacts --css ./global.css --dts ./uniwind-types.d.ts",

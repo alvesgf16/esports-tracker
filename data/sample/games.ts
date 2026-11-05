@@ -1,8 +1,8 @@
-import type { Game } from '@/modules/games/entities';
-import type { GameCatalog } from '@/modules/games/gateways';
+import type { Game } from '@/modules/shared/entities';
+import type { GameCatalog } from '@/modules/shared/gateways';
 
 /** All traditional esports titles the live board will always list. */
-export const GAMES: Game[] = [
+const GAMES: Game[] = [
   { id: 'lol', name: 'League of Legends', shortName: 'LoL' },
   { id: 'cs2', name: 'Counter-Strike 2', shortName: 'CS2' },
   { id: 'valorant', name: 'Valorant', shortName: 'VLR' },

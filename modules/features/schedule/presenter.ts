@@ -1,6 +1,8 @@
 import { formatCountdown, formatKickoff } from '@/lib/format-time';
-import type { Game } from '@/modules/games/entities';
-import type { GameCatalog } from '@/modules/games/gateways';
+import type { Game, GameFilter, Match, Team } from '@/modules/shared/entities';
+import type { GameCatalog, MatchCatalog } from '@/modules/shared/gateways';
+import { matchStatus } from '@/modules/shared/use-cases/match-status';
+import { visibleMatches } from '@/modules/shared/use-cases/visible-matches';
 
 import type {
   ChipModel,
@@ -8,13 +10,9 @@ import type {
   MatchCardModel,
   ScheduleViewModel,
 } from './contracts';
-import type { GameFilter, Match, Team } from './entities';
-import type { MatchCatalog } from './gateways';
 import { groupByDay } from './use-cases/day-groups';
 import { gameName } from './use-cases/game-name';
-import { matchStatus } from './use-cases/match-status';
 import { parseFilter } from './use-cases/parse-filter';
-import { visibleMatches } from './use-cases/visible-matches';
 
 type PresentInput = {
   games: GameCatalog;

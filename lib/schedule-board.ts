@@ -1,7 +1,5 @@
-import type { Game } from '@/modules/games/entities';
-import type { GameCatalog } from '@/modules/games/gateways';
-import type { Match } from '@/modules/schedule/entities';
-import type { MatchCatalog } from '@/modules/schedule/gateways';
+import type { Game, Match } from '@/modules/shared/entities';
+import type { GameCatalog, MatchCatalog } from '@/modules/shared/gateways';
 
 export type ScheduleBoardState = {
   games: GameCatalog;
@@ -33,12 +31,9 @@ export const loadingBoard: ScheduleBoardState = {
 
 export function boardFromPayload(payload: LivePayload): ScheduleBoardState {
   if (payload.status === 'ok') {
-    return {
-      games: catalogFromGames(payload.games),
-      matches: { list: () => payload.matches },
-      notice: null,
-      ready: true,
-    };
+    return boardFromCatalogs(catalogFromGames(payload.games), {
+      list: () => payload.matches,
+    });
   }
 
   if (payload.status === 'unconfigured') {
@@ -46,6 +41,18 @@ export function boardFromPayload(payload: LivePayload): ScheduleBoardState {
   }
 
   return failedBoard(payload.message ?? "Couldn't load schedule.");
+}
+
+export function boardFromCatalogs(
+  games: GameCatalog,
+  matches: MatchCatalog
+): ScheduleBoardState {
+  return {
+    games,
+    matches,
+    notice: null,
+    ready: true,
+  };
 }
 
 export function failedBoard(notice: string): ScheduleBoardState {

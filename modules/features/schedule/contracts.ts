@@ -1,4 +1,4 @@
-import type { GameFilter } from './entities';
+import type { GameFilter } from '@/modules/shared/entities';
 
 export type ScheduleRouter = {
   setGameFilter: (game: GameFilter) => void;

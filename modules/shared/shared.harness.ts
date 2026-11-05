@@ -1,8 +1,4 @@
-import type { Game } from '@/modules/games/entities';
-import type { GameCatalog } from '@/modules/games/gateways';
-
 import type { Match } from './entities';
-import type { MatchCatalog } from './gateways';
 
 /** UTC noon on a fixed calendar day — stable across host time zones. */
 export const FIXED_NOW = Date.UTC(2026, 2, 15, 12, 0, 0, 0);
@@ -27,31 +23,6 @@ export function aMatch(overrides: Partial<Match> = {}): Match {
       { name: 'Alpha', shortName: 'ALP' },
       { name: 'Beta', shortName: 'BET' },
     ],
-    ...overrides,
-  };
-}
-
-const lol: Game = {
-  id: 'lol',
-  name: 'League of Legends',
-  shortName: 'LoL',
-};
-
-export function stubGameCatalog(
-  overrides: Partial<GameCatalog> = {}
-): GameCatalog {
-  return {
-    list: () => [lol],
-    get: () => lol,
-    ...overrides,
-  };
-}
-
-export function stubMatchCatalog(
-  overrides: Partial<MatchCatalog> = {}
-): MatchCatalog {
-  return {
-    list: () => [],
     ...overrides,
   };
 }
