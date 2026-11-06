@@ -1,7 +1,6 @@
+import { gameCatalog } from '@/data/game-catalog';
 import type { Game } from '@/modules/shared/entities';
-import type { GameCatalog } from '@/modules/shared/gateways';
 
-/** All traditional esports titles the live board will always list. */
 const GAMES: Game[] = [
   { id: 'lol', name: 'League of Legends', shortName: 'LoL' },
   { id: 'cs2', name: 'Counter-Strike 2', shortName: 'CS2' },
@@ -20,15 +19,4 @@ const GAMES: Game[] = [
   { id: 'broodwar', name: 'StarCraft Brood War', shortName: 'BW' },
 ];
 
-export const sampleGameCatalog: GameCatalog = {
-  list: () => GAMES,
-  get: (id) => {
-    const game = GAMES.find((item) => item.id === id);
-
-    if (!game) {
-      throw new Error(`Unknown game: ${id}`);
-    }
-
-    return game;
-  },
-};
+export const sampleGameCatalog = gameCatalog(GAMES);
