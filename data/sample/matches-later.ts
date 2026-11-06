@@ -1,6 +1,6 @@
 import type { Match } from '@/modules/shared/entities';
 
-import { duel } from './sample-teams';
+import { duel } from './duel';
 import { sampleKickoff } from './sample-kickoff';
 
 /** Later board plus titles that still appear empty on the Games tab. */

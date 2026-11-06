@@ -1,6 +1,6 @@
 import type { Match } from '@/modules/shared/entities';
 
-import { PUBG_LOBBY } from './sample-teams';
+import { PUBG_LOBBY } from './pubg-lobby';
 import { sampleKickoff } from './sample-kickoff';
 
 /** Multi-team lobby — card shows match name and team count, not 16 rows. */

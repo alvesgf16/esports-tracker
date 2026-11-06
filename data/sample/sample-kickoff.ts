@@ -8,8 +8,3 @@ export function sampleKickoff(hoursAhead: number, extraMinutes = 0): string {
 
   return date.toISOString();
 }
-
-/** Exact offset from now — keeps soon/live samples stable across the hour. */
-export function sampleMinutesFromNow(minutesAhead: number): string {
-  return new Date(Date.now() + minutesAhead * 60_000).toISOString();
-}

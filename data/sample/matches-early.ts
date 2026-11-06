@@ -1,7 +1,7 @@
 import type { Match } from '@/modules/shared/entities';
 
-import { duel } from './sample-teams';
-import { sampleKickoff, sampleMinutesFromNow } from './sample-kickoff';
+import { duel } from './duel';
+import { sampleKickoff } from './sample-kickoff';
 
 /** Near-term board: live, soon, progress overrides, and standard duels. */
 export const EARLY_MATCHES: Match[] = [
@@ -81,3 +81,8 @@ export const EARLY_MATCHES: Match[] = [
     teams: duel(['FaZe Clan', 'FaZe'], ['MOUZ', 'MOUZ']),
   },
 ];
+
+/** Exact offset from now — keeps soon/live samples stable across the hour. */
+function sampleMinutesFromNow(minutesAhead: number): string {
+  return new Date(Date.now() + minutesAhead * 60_000).toISOString();
+}

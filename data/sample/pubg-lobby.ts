@@ -1,8 +1,6 @@
 import type { Team } from '@/modules/shared/entities';
 
-export function duel(left: [string, string], right: [string, string]): Team[] {
-  return [team(left), team(right)];
-}
+import { team } from './team';
 
 export const PUBG_LOBBY: Team[] = [
   team(['Twisted Minds', 'TWIS']),
@@ -22,7 +20,3 @@ export const PUBG_LOBBY: Team[] = [
   team(['MOUZ', 'MOUZ']),
   team(['Vitality', 'VIT']),
 ];
-
-function team([name, shortName]: [string, string]): Team {
-  return { name, shortName };
-}
