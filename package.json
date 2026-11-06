@@ -67,7 +67,7 @@
     ],
     "collectCoverageFrom": [
       "modules/**/*.{ts,tsx}",
-      "lib/format-time.ts",
+      "lib/**/*.{ts,tsx}",
       "data/**/*.{ts,tsx}",
       "!**/*.{test,spec}.{ts,tsx}",
       "!**/*.harness.ts",
