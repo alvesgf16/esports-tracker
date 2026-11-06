@@ -3,16 +3,12 @@ import type { Game, Match } from '@/modules/shared/entities';
 import { mapMatch } from './map-match';
 import { mapPool } from './map-pool';
 import { mapVideogame } from './map-videogame';
+import type { ScheduleBoard } from './schedule-board';
 import type { VendorMatch, VendorVideogame } from './vendor-types';
 
 const API_BASE = 'https://api.pandascore.co';
 const PAGE_SIZE = 20;
 const MATCH_CONCURRENCY = 2;
-
-type ScheduleBoard = {
-  games: Game[];
-  matches: Match[];
-};
 
 export async function fetchScheduleBoard(
   token: string
@@ -47,7 +43,7 @@ async function loadMatchesForGames(
     loadMatchesForVideogame(token, item.id)
   );
 
-  return pages.flat().sort(byKickoff);
+  return pages.flat();
 }
 
 async function loadMatchesForVideogame(
@@ -88,8 +84,4 @@ async function getJson<T>(token: string, path: string): Promise<T> {
   }
 
   return (await response.json()) as T;
-}
-
-function byKickoff(left: Match, right: Match): number {
-  return new Date(left.startsAt).getTime() - new Date(right.startsAt).getTime();
 }
