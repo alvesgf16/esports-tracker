@@ -1,5 +1,7 @@
 import { useRouter } from 'expo-router';
 
+import { scheduleGameRoute } from '@/modules/shared/schedule-game-route';
+
 import type { GamesRouter } from './contracts';
 
 export function useGamesRouter(): GamesRouter {
@@ -7,7 +9,7 @@ export function useGamesRouter(): GamesRouter {
 
   return {
     openSchedule: (gameId) => {
-      router.push(`/?game=${gameId}`);
+      router.push(scheduleGameRoute.href(gameId));
     },
   };
 }

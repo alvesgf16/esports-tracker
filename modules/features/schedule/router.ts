@@ -1,19 +1,34 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+import { scheduleGameRoute } from '@/modules/shared/schedule-game-route';
+
 import type { ScheduleRouter } from './contracts';
 
 type ScheduleSearchParams = {
-  game?: string;
+  [Key in typeof scheduleGameRoute.param]?: string | string[];
 };
 
 export function useScheduleRouter(): ScheduleRouter {
   const router = useRouter();
-  const { game: gameFilter } = useLocalSearchParams<ScheduleSearchParams>();
+  const params = useLocalSearchParams<ScheduleSearchParams>();
+  const game = params[scheduleGameRoute.param];
 
   return {
-    gameFilter,
+    gameFilter: firstQueryValue(game),
     setGameFilter: (next) => {
-      router.setParams({ game: next === 'all' ? '' : next });
+      router.setParams({
+        [scheduleGameRoute.param]: next === 'all' ? '' : next,
+      });
     },
   };
+}
+
+function firstQueryValue(
+  value: string | string[] | undefined
+): string | undefined {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return value;
 }
