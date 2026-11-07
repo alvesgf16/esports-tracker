@@ -7,7 +7,7 @@ const SOON_WINDOW_MS = 60 * 60 * 1000;
 
 export function matchStatus(
   startsAt: string,
-  now = Date.now(),
+  now: number,
   progress?: MatchProgress
 ): MatchStatus {
   if (progress === 'running') {

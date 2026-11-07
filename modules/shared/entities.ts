@@ -6,8 +6,6 @@ export type Game = {
   shortName: string;
 };
 
-export type GameFilter = GameId | 'all';
-
 export type MatchProgress = 'not_started' | 'running' | 'finished';
 
 export type Team = {

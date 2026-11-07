@@ -1,13 +1,11 @@
-import type { Game, GameFilter } from '@/modules/shared/entities';
+import type { Game, GameId } from '@/modules/shared/entities';
 
 export function parseFilter(
-  value: string | string[] | undefined,
+  value: string | undefined,
   games: Game[]
-): GameFilter | null {
-  const game = Array.isArray(value) ? value[0] : value;
-
-  if (game === 'all' || games.some((item) => item.id === game)) {
-    return game as GameFilter;
+): GameId | null {
+  if (value && games.some((item) => item.id === value)) {
+    return value;
   }
 
   return null;

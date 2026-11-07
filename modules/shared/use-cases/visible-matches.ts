@@ -1,18 +1,22 @@
-import type { GameFilter, Match } from '../entities';
+import type { GameId, Match } from '../entities';
 import { matchStatus } from './match-status';
 
 export function visibleMatches(
   matches: Match[],
-  game: GameFilter,
-  now = Date.now()
+  game: GameId | null,
+  now: number
 ): Match[] {
   return matches
     .filter((match) => isVisibleMatch(match, game, now))
     .sort(byKickoff);
 }
 
-function isVisibleMatch(match: Match, game: GameFilter, now: number): boolean {
-  if (game !== 'all' && match.game !== game) {
+function isVisibleMatch(
+  match: Match,
+  game: GameId | null,
+  now: number
+): boolean {
+  if (game && match.game !== game) {
     return false;
   }
 

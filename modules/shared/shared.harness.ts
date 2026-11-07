@@ -1,4 +1,5 @@
-import type { Match } from './entities';
+import type { Game, Match } from './entities';
+import type { GameCatalog } from './gateways';
 
 /** UTC noon on a fixed calendar day — stable across host time zones. */
 export const FIXED_NOW = Date.UTC(2026, 2, 15, 12, 0, 0, 0);
@@ -25,4 +26,17 @@ export function aMatch(overrides: Partial<Match> = {}): Match {
     ],
     ...overrides,
   };
+}
+
+export function aGameCatalog(games: Game[]): GameCatalog {
+  const byId = new Map(games.map((game) => [game.id, game]));
+
+  return {
+    list: () => games,
+    get: (id) => byId.get(id) ?? unknownGame(id),
+  };
+}
+
+function unknownGame(id: Game['id']): never {
+  throw new Error(`Unknown game: ${id}`);
 }

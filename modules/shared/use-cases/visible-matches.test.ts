@@ -20,14 +20,14 @@ describe('visibleMatches', () => {
     ];
 
     expect(
-      visibleMatches(matches, 'all', FIXED_NOW).map((match) => match.id)
+      visibleMatches(matches, null, FIXED_NOW).map((match) => match.id)
     ).toEqual(['sooner', 'later']);
   });
 
   it('hides finished matches past the live window', () => {
     const matches = [aMatch({ startsAt: hoursFromNow(-4) })];
 
-    expect(visibleMatches(matches, 'all', FIXED_NOW)).toEqual([]);
+    expect(visibleMatches(matches, null, FIXED_NOW)).toEqual([]);
   });
 
   it('hides matches marked finished even inside the live window', () => {
@@ -38,7 +38,7 @@ describe('visibleMatches', () => {
       }),
     ];
 
-    expect(visibleMatches(matches, 'all', FIXED_NOW)).toEqual([]);
+    expect(visibleMatches(matches, null, FIXED_NOW)).toEqual([]);
   });
 
   it('keeps long-running matches via progress', () => {
@@ -51,7 +51,7 @@ describe('visibleMatches', () => {
     ];
 
     expect(
-      visibleMatches(matches, 'all', FIXED_NOW).map((match) => match.id)
+      visibleMatches(matches, null, FIXED_NOW).map((match) => match.id)
     ).toEqual(['bo5-live']);
   });
 });

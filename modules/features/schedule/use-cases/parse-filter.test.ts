@@ -9,16 +9,12 @@ const games: Game[] = [
 ];
 
 describe('parseFilter', () => {
-  it('accepts all', () => {
-    expect(parseFilter('all', games)).toBe('all');
+  it('treats all as no game', () => {
+    expect(parseFilter('all', games)).toBeNull();
   });
 
   it('accepts a known game id', () => {
     expect(parseFilter('cs2', games)).toBe('cs2');
-  });
-
-  it('reads the first value from an array param', () => {
-    expect(parseFilter(['valorant', 'lol'], games)).toBe('valorant');
   });
 
   it('returns null for an unknown value', () => {
