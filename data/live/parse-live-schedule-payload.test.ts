@@ -1,0 +1,81 @@
+import { G2_VS_FNC, LOL, OK_PAYLOAD } from './live.harness';
+import { parseLiveSchedulePayload } from './parse-live-schedule-payload';
+
+describe('parseLiveSchedulePayload', () => {
+  it('accepts an ok payload', () => {
+    expect(parseLiveSchedulePayload(OK_PAYLOAD)).toEqual(OK_PAYLOAD);
+  });
+
+  it('accepts unconfigured', () => {
+    expect(parseLiveSchedulePayload({ status: 'unconfigured' })).toEqual({
+      status: 'unconfigured',
+    });
+  });
+
+  it('accepts an error with a message', () => {
+    expect(
+      parseLiveSchedulePayload({ status: 'error', message: 'PandaScore 502' })
+    ).toEqual({ status: 'error', message: 'PandaScore 502' });
+  });
+
+  it('accepts an error without a message', () => {
+    expect(parseLiveSchedulePayload({ status: 'error' })).toEqual({
+      status: 'error',
+    });
+  });
+
+  it('accepts a match with progress', () => {
+    const payload = {
+      status: 'ok',
+      games: [LOL],
+      matches: [{ ...G2_VS_FNC, progress: 'running' }],
+    };
+
+    expect(parseLiveSchedulePayload(payload)).toEqual(payload);
+  });
+
+  it('rejects a non-object', () => {
+    expect(parseLiveSchedulePayload(null)).toBeNull();
+    expect(parseLiveSchedulePayload([])).toBeNull();
+  });
+
+  it('rejects an unknown status', () => {
+    expect(parseLiveSchedulePayload({ status: 'loading' })).toBeNull();
+  });
+
+  it('rejects an ok payload with a bad game', () => {
+    expect(
+      parseLiveSchedulePayload({
+        status: 'ok',
+        games: [{ id: 'lol' }],
+        matches: [],
+      })
+    ).toBeNull();
+  });
+
+  it('rejects an ok payload with a bad match', () => {
+    expect(
+      parseLiveSchedulePayload({
+        status: 'ok',
+        games: [LOL],
+        matches: [{ ...G2_VS_FNC, teams: [{ name: 'G2' }] }],
+      })
+    ).toBeNull();
+  });
+
+  it('rejects a match with unknown progress', () => {
+    expect(
+      parseLiveSchedulePayload({
+        status: 'ok',
+        games: [LOL],
+        matches: [{ ...G2_VS_FNC, progress: 'canceled' }],
+      })
+    ).toBeNull();
+  });
+
+  it('rejects an error whose message is not a string', () => {
+    expect(
+      parseLiveSchedulePayload({ status: 'error', message: 502 })
+    ).toBeNull();
+  });
+});
