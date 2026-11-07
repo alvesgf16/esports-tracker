@@ -1,8 +1,9 @@
 import { sampleGameCatalog } from '@/data/sample/games';
 import { sampleMatchCatalog } from '@/data/sample/matches';
-import { boardFromCatalogs } from '@/lib/schedule-board';
+import type { ScheduleBoardState } from '@/modules/shared/gateways';
 
-export const sampleBoard = boardFromCatalogs(
-  sampleGameCatalog,
-  sampleMatchCatalog
-);
+export const sampleBoard: ScheduleBoardState = {
+  games: sampleGameCatalog,
+  matches: sampleMatchCatalog,
+  loadState: { status: 'ok' },
+};
