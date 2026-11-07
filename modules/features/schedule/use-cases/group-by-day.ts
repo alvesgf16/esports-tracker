@@ -1,31 +1,24 @@
-import moment from 'moment-timezone';
-
 import type { Match } from '@/modules/shared/entities';
 
-type DayGroup = {
-  key: string;
-  label: string;
-  matches: Match[];
-};
+import type { DayCalendar, DayGroup } from '../contracts';
 
 type DayBuckets = {
   groups: Map<string, DayGroup>;
   todayKey: string;
   tomorrowKey: string;
-  timeZone: string;
+  calendar: DayCalendar;
 };
 
 export function groupByDay(
   matches: Match[],
   now: number,
-  timeZone: string
+  calendar: DayCalendar
 ): DayGroup[] {
-  const today = moment.tz(now, timeZone).startOf('day');
   const buckets: DayBuckets = {
     groups: new Map(),
-    todayKey: today.format('YYYY-MM-DD'),
-    tomorrowKey: today.clone().add(1, 'day').format('YYYY-MM-DD'),
-    timeZone,
+    todayKey: calendar.todayKey(now),
+    tomorrowKey: calendar.tomorrowKey(now),
+    calendar,
   };
 
   for (const match of matches) {
@@ -36,7 +29,7 @@ export function groupByDay(
 }
 
 function addToDayGroup(match: Match, buckets: DayBuckets): void {
-  const key = moment.tz(match.startsAt, buckets.timeZone).format('YYYY-MM-DD');
+  const key = buckets.calendar.key(match.startsAt);
   const existing = buckets.groups.get(key);
 
   if (existing) {
@@ -61,5 +54,5 @@ function dayLabel(key: string, buckets: DayBuckets): string {
     return 'Tomorrow';
   }
 
-  return moment.tz(key, 'YYYY-MM-DD', buckets.timeZone).format('dddd, MMM D');
+  return buckets.calendar.heading(key);
 }

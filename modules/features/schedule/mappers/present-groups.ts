@@ -1,20 +1,44 @@
-import { formatCountdown, formatKickoff } from '@/lib/format-time';
-import type { ScheduleBoardState } from '@/lib/schedule-board';
 import type { Match, Team } from '@/modules/shared/entities';
+import type { GameCatalog } from '@/modules/shared/gateways';
 import { matchStatus } from '@/modules/shared/use-cases/match-status';
 
-import type { DaySectionModel, MatchCardModel } from '../contracts';
+import type {
+  DayGroup,
+  DaySectionModel,
+  MatchCardModel,
+  MatchLabels,
+  ScheduleClock,
+} from '../contracts';
+import { groupByDay } from '../use-cases/group-by-day';
 
 type PresentContext = {
-  board: ScheduleBoardState;
+  games: GameCatalog;
   now: number;
-  timeZone: string;
+  labels: MatchLabels;
 };
 
-export function presentDay(
-  group: { key: string; label: string; matches: Match[] },
-  context: PresentContext
-): DaySectionModel {
+type MatchSides = {
+  teamA: string;
+  teamB: string;
+};
+
+export function presentGroups(
+  matches: Match[],
+  games: GameCatalog,
+  clock: ScheduleClock
+): DaySectionModel[] {
+  const context = {
+    games,
+    now: clock.now,
+    labels: clock.labels,
+  };
+
+  return groupByDay(matches, clock.now, clock.calendar).map((group) =>
+    presentDay(group, context)
+  );
+}
+
+function presentDay(group: DayGroup, context: PresentContext): DaySectionModel {
   return {
     key: group.key,
     label: group.label,
@@ -24,16 +48,14 @@ export function presentDay(
 
 function presentMatch(match: Match, context: PresentContext): MatchCardModel {
   const status = matchStatus(match.startsAt, context.now, match.progress);
-  const game = context.board.games.get(match.game);
+  const game = context.games.get(match.game);
   const isLive = status === 'live';
   const sides = presentSides(match);
 
   return {
     id: match.id,
-    kickoffLabel: isLive
-      ? 'LIVE'
-      : formatKickoff(match.startsAt, context.timeZone),
-    countdownLabel: isLive ? '' : formatCountdown(match.startsAt, context.now),
+    kickoffLabel: isLive ? 'LIVE' : context.labels.kickoff(match.startsAt),
+    countdownLabel: isLive ? '' : context.labels.countdown(match.startsAt),
     isLive,
     teamA: sides.teamA,
     teamB: sides.teamB,
@@ -41,7 +63,7 @@ function presentMatch(match: Match, context: PresentContext): MatchCardModel {
   };
 }
 
-function presentSides(match: Match): { teamA: string; teamB: string } {
+function presentSides(match: Match): MatchSides {
   if (match.teams.length > 2) {
     return {
       teamA: match.name,

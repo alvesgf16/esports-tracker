@@ -1,45 +1,24 @@
-import type { ScheduleBoardState } from '@/lib/schedule-board';
 import type { Match } from '@/modules/shared/entities';
+import { aMatch, FIXED_NOW } from '@/modules/shared/shared.harness';
 
-import {
-  aMatch,
-  FIXED_NOW,
-  stubGameCatalog,
-  stubMatchCatalog,
-  TEST_TIME_ZONE,
-} from '../schedule.harness';
-import { presentDay } from './present-day';
+import type { MatchCardModel } from '../contracts';
+import { stubGameCatalog, stubScheduleClock } from '../schedule.harness';
+import { presentGroups } from './present-groups';
 
-const context = {
-  board: {
-    games: stubGameCatalog(),
-    matches: stubMatchCatalog(),
-    notice: null,
-    ready: true,
-  } satisfies ScheduleBoardState,
-  now: FIXED_NOW,
-  timeZone: TEST_TIME_ZONE,
-};
-
-function presentedCard(match: Match) {
-  return presentDay(
-    { key: '2026-03-15', label: 'Today', matches: [match] },
-    context
-  ).matches[0];
+function presentedCard(match: Match): MatchCardModel {
+  return presentGroups([match], stubGameCatalog(), stubScheduleClock())[0]
+    .matches[0];
 }
 
-describe('presentDay', () => {
-  it('keeps the day key and label', () => {
-    const section = presentDay(
-      { key: '2026-03-16', label: 'Tomorrow', matches: [] },
-      context
+describe('presentGroups', () => {
+  it('keeps the day label on the section', () => {
+    const groups = presentGroups(
+      [aMatch()],
+      stubGameCatalog(),
+      stubScheduleClock()
     );
 
-    expect(section).toEqual({
-      key: '2026-03-16',
-      label: 'Tomorrow',
-      matches: [],
-    });
+    expect(groups[0].label).toBe('Today');
   });
 
   it('maps a live match into card labels', () => {
@@ -62,12 +41,13 @@ describe('presentDay', () => {
   });
 
   it('maps an upcoming match into kickoff and countdown', () => {
-    const card = presentedCard(aMatch({ id: 'soon-1' }));
+    const match = aMatch({ id: 'soon-1' });
+    const card = presentedCard(match);
 
     expect(card).toMatchObject({
       id: 'soon-1',
-      kickoffLabel: '2:00 PM',
-      countdownLabel: '2h',
+      kickoffLabel: `kickoff:${match.startsAt}`,
+      countdownLabel: `countdown:${match.startsAt}`,
       isLive: false,
     });
   });

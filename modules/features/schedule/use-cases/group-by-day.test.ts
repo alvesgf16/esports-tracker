@@ -2,8 +2,9 @@ import {
   aMatch,
   FIXED_NOW,
   hoursFromNow,
-  TEST_TIME_ZONE,
-} from '../schedule.harness';
+} from '@/modules/shared/shared.harness';
+
+import { stubDayCalendar } from '../schedule.harness';
 import { groupByDay } from './group-by-day';
 
 describe('groupByDay', () => {
@@ -14,7 +15,7 @@ describe('groupByDay', () => {
         aMatch({ id: 'tomorrow', startsAt: hoursFromNow(24) }),
       ],
       FIXED_NOW,
-      TEST_TIME_ZONE
+      stubDayCalendar()
     );
 
     expect(groups.map((group) => group.label)).toEqual(['Today', 'Tomorrow']);
@@ -29,7 +30,7 @@ describe('groupByDay', () => {
         aMatch({ id: 'b', startsAt: hoursFromNow(2) }),
       ],
       FIXED_NOW,
-      TEST_TIME_ZONE
+      stubDayCalendar()
     );
 
     expect(groups).toHaveLength(1);
@@ -41,7 +42,7 @@ describe('groupByDay', () => {
     const groups = groupByDay(
       [aMatch({ id: 'abt', startsAt: '2026-11-05T06:30:00Z' })],
       Date.parse('2026-11-05T05:30:00Z'),
-      'America/Edmonton'
+      stubDayCalendar('America/Edmonton')
     );
 
     expect(groups[0].label).toBe('Tomorrow');
