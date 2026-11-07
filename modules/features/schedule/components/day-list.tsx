@@ -22,7 +22,11 @@ export default function DayList({ groups, emptyMessage }: Props) {
   );
 }
 
-function DaySection({ group }: { group: DaySectionModel }) {
+type DaySectionProps = {
+  group: DaySectionModel;
+};
+
+function DaySection({ group }: DaySectionProps) {
   return (
     <View className="mb-2 gap-2.5">
       <Text className="mt-4 mb-2 text-[13px] font-bold tracking-[0.4px] text-muted uppercase">

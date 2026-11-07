@@ -59,7 +59,11 @@ function useTabPalette() {
   };
 }
 
-function ScheduleIcon({ color }: { color: ColorValue }) {
+type TabIconProps = {
+  color: ColorValue;
+};
+
+function ScheduleIcon({ color }: TabIconProps) {
   return (
     <SymbolView
       name={{
@@ -73,7 +77,7 @@ function ScheduleIcon({ color }: { color: ColorValue }) {
   );
 }
 
-function GamesIcon({ color }: { color: ColorValue }) {
+function GamesIcon({ color }: TabIconProps) {
   return (
     <SymbolView
       name={{

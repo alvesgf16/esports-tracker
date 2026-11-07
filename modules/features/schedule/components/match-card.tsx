@@ -44,7 +44,11 @@ function MatchBody({ match }: Props) {
   );
 }
 
-function TeamName({ name }: { name: string }) {
+type TeamNameProps = {
+  name: string;
+};
+
+function TeamName({ name }: TeamNameProps) {
   return (
     <Text className="text-base font-semibold text-foreground" numberOfLines={1}>
       {name}

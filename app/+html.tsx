@@ -4,8 +4,16 @@ import {
 } from 'expo-router/html';
 import type { ReactNode } from 'react';
 
+type HtmlDocumentProps = {
+  children: ReactNode;
+};
+
+type DocumentHeadProps = {
+  headNodes: ReactNode;
+};
+
 // Web-only root HTML for server rendering. Runs in Node.js only.
-export default function HtmlDocument({ children }: { children: ReactNode }) {
+export default function HtmlDocument({ children }: HtmlDocumentProps) {
   const serverDocument = useServerDocumentContext();
 
   return (
@@ -21,7 +29,7 @@ export default function HtmlDocument({ children }: { children: ReactNode }) {
   );
 }
 
-function DocumentHead({ headNodes }: { headNodes: ReactNode }) {
+function DocumentHead({ headNodes }: DocumentHeadProps) {
   return (
     <>
       <meta charSet="utf-8" />
