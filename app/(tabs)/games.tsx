@@ -1,9 +1,11 @@
-import { sampleBoard } from '@/lib/sample-board';
+import { scheduleSource } from '@/lib/schedule-source';
+import { useBoardNow } from '@/lib/use-board-now';
 import { useGamesPresenter } from '@/modules/features/games/presenter';
 import GamesView from '@/modules/features/games/view';
 
 export default function GamesScreen() {
-  const presenter = useGamesPresenter(sampleBoard);
+  const { board, now } = useBoardNow(scheduleSource());
+  const presenter = useGamesPresenter(board, now);
 
   return <GamesView presenter={presenter} />;
 }

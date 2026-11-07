@@ -1,7 +1,5 @@
 import { renderHook } from '@testing-library/react-native';
 
-import type { ScheduleBoardState } from '@/lib/schedule-board';
-import { useNow } from '@/lib/use-now';
 import type { MatchCatalog } from '@/modules/shared/gateways';
 import {
   aMatch,
@@ -13,10 +11,6 @@ import { stubGameCatalog } from './games.harness';
 import { useGamesPresenter } from './presenter';
 import { useGamesRouter } from './router';
 
-jest.mock('@/lib/use-now');
-jest.mock('@/lib/use-schedule-board', () => ({
-  useScheduleBoard: (board: ScheduleBoardState) => board,
-}));
 jest.mock('./router', () => ({
   useGamesRouter: jest.fn(),
 }));
@@ -31,18 +25,19 @@ describe('useGamesPresenter', () => {
       ],
     };
 
-    jest.mocked(useNow).mockReturnValue(FIXED_NOW);
     jest.mocked(useGamesRouter).mockReturnValue({
       openSchedule: jest.fn(),
     });
 
     const { result } = await renderHook(() =>
-      useGamesPresenter({
-        games: stubGameCatalog(),
-        matches,
-        notice: null,
-        ready: true,
-      })
+      useGamesPresenter(
+        {
+          games: stubGameCatalog(),
+          matches,
+          loadState: { status: 'ok' },
+        },
+        FIXED_NOW
+      )
     );
 
     expect(result.current.rows).toEqual([
