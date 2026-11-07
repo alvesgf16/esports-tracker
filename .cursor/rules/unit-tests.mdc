@@ -26,4 +26,4 @@ Put fixture clocks (`now`), sample `Match` builders, and stub catalogs in `*.har
 
 ## Coverage
 
-Prefer meaningful tests over chasing percentage alone. Run `npm run test:coverage` for a report under `coverage/` (gitignored). Collection covers use cases / Presenter / `lib/format-time` and `data/`, excluding Views, contracts, entities, gateways, harnesses, and specs.
+Prefer meaningful tests over chasing percentage alone. Run `npm run test:coverage` for a report under `coverage/` (gitignored). Collection covers `modules/`, `lib/`, and `data/`, excluding Views, contracts, entities, gateways, harnesses, and specs.

@@ -9,18 +9,18 @@ Source: Robert C. Martin, _Clean Code_. Inventory: `docs/clean-code-inventory.md
 
 ## Meaningful Names (Ch.2)
 
-Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). File names are kebab-case (`match-card.tsx`, `use-now.ts`); Expo Router reserved names (`_layout`, `+html`, `(tabs)`) stay as the framework requires. Prefer problem-domain vocabulary in `modules/` entities and use cases; solution-domain (Expo / React Native) words in `app/` routes, hooks, and Views.
+Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). File names are kebab-case (`match-card.tsx`, `use-now.ts`); Expo Router reserved names (`_layout`, `+html`, `(tabs)`) stay as the framework requires. Prefer problem-domain vocabulary in `modules/` entities and use cases; solution-domain (Expo / React Native) words in `app/` routes, hooks, and Views. Name inferred types (`ScheduleLoadFailure`, not `Exclude<Awaited<ReturnType<typeof loadLiveSchedule>>, { status: 'ok' }>`). Inline `ReturnType` / `Awaited` / `Exclude` / `Extract` are banned (`types/no-inline-utility-types`); inline `{ ... }` object types are banned (`types/no-inline-object-types`); aliases are fine.
 
 ### Domain vocabulary
 
 - `Game`, `GameId` (opaque string), `Team`, `Match` — Entity DTOs in `modules/shared/entities.ts`
 - `Match.teams`, optional `Match.progress` (`not_started` / `running` / `finished`)
-- `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter`
+- `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter` (Schedule contract: chip selection `GameId | 'all'`)
 - Kickoff, countdown, tournament (`league · stage`), format (`Bo3` / `Ft3`)
 - VIPER features: Schedule (`modules/features/schedule/`), Games (`modules/features/games/`)
 - Shared kernel: `modules/shared/` — entities, gateways, cross-feature use cases, shared UI
-- Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games); they pass `sampleBoard` into presenters
-- Clock / board: `lib/use-now.ts`, `lib/format-time.ts`, `lib/schedule-board.ts`, `lib/sample-board.ts`, `lib/use-schedule-board.ts`
+- Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games); they pass `scheduleSource()` into `useBoardNow` and pass `board` plus `scheduleClock(now, timeZone)` (Schedule) or `now` (Games) into presenters
+- Clock / board: `lib/use-now.ts`, `lib/use-board-now.ts`, `lib/calendar-day.ts`, `lib/format-kickoff.ts`, `lib/format-countdown.ts`, `lib/schedule-clock.ts`, `lib/sample-board.ts`, `lib/schedule-source.ts`, `lib/use-schedule-board.ts`
 
 ## Functions (Ch.3)
 
@@ -36,33 +36,33 @@ Prettier is the horizontal source of truth (`npm run lint` + `.prettierrc`). Ver
 
 ## Objects and Data Structures (Ch.6)
 
-Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status and day grouping live in Schedule use cases; countdown labels live in the Presenter via `lib/format-time`. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teams[0].name`) is fine.
+Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status and day grouping live in Schedule use cases; countdown labels live in injected `MatchLabels` from `lib/schedule-clock`. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teams[0].name`) is fine.
 
 ## Error Handling (Ch.7)
 
-Prefer exceptions over error codes for unexpected failures (`GameCatalog.get` throwing on unknown `GameId` is the pattern). No empty catches. Provide context. Don’t use throw for expected validation — return a named outcome (`GameFilter | null`). Be deliberate with null/optional.
+Prefer exceptions over error codes for unexpected failures (`GameCatalog.get` throwing on unknown `GameId` is the pattern). No empty catches. Provide context. Don’t use throw for expected validation — return a named outcome (`GameId | null`). Be deliberate with null/optional.
 
 ## Boundaries (Ch.8)
 
-Wrap third-party APIs behind owned façades. Sample catalogs in `data/sample/` are a stand-in: a live schedule API belongs behind `data/` implementing `modules/shared/gateways.ts`, injected by Builders — not inside Views, use cases, or `lib/use-schedule-board`. Learning tests at the boundary. Expo Router’s `useRouter` / `useLocalSearchParams` live in `modules/features/*/router.ts`; `Link` and layouts stay in `app/`. Every file in `app/` is a route, so composition hooks stay in `lib/`. Features import `modules/shared`, never each other.
+Wrap third-party APIs behind owned façades. Sample catalogs in `data/sample/` are a stand-in: a live schedule API belongs behind `data/` implementing `modules/shared/gateways.ts` (`data/live`, `data/pandascore`, `gameCatalog` / `matchCatalog`), chosen by `lib/schedule-source` and loaded via `useBoardNow(scheduleSource())` in Builders — not inside Views, use cases, or Presenters. `data/pandascore` maps and caches the vendor board; `data/live/load-schedule-payload` builds the HTTP payload; `app/api/matches+api.ts` only maps that payload to a status code. Learning tests at the boundary. Expo Router’s `useRouter` / `useLocalSearchParams` live in `modules/features/*/router.ts`; the Games→Schedule game param lives in `modules/shared/schedule-game-route.ts`. `Link` and layouts stay in `app/`. Every file in `app/` is a route, so composition hooks stay in `lib/`. Features import `modules/shared`, never each other.
 
 ## Classes (Ch.10)
 
-Small, cohesive, single responsibility. This app is function- and type-first VIPER + Clean Architecture (contracts + functions); don’t introduce classes unless they earn cohesion. Organize for change. Expo Router layout / `ErrorBoundary` conventions stay framework-owned when they conflict with purity.
+Small, cohesive, single responsibility. This app is function- and type-first VIPER + Clean Architecture (contracts + functions); don’t introduce classes unless they earn cohesion. Organize for change. Expo Router layout / `ErrorBoundary` conventions stay framework-owned when they conflict with purity. One runtime export per file (`exports/max-value-exports`); a function module must not export types (`exports/no-mixed-exports`); type-only modules export types and nothing else; no `index.ts` / `export *` barrels. Specs, harnesses, and `app/_layout.tsx` are documented exceptions. Single-caller helpers stay unexported next to their caller.
 
 ## Systems (Ch.11)
 
-Separate construction from use. Builders in `app/` inject `sampleBoard` into the Presenter and render the View. One-way dependencies:
+Separate construction from use. Builders in `app/` inject the loaded board and clock ports into the Presenter and render the View. One-way dependencies:
 
-- `app/` → `modules/features`, `modules/shared`, `data/sample` / `data/pandascore`, `lib/`, `constants/`, `expo-router`
-- Router → `expo-router`, contracts, entities
-- Presenter → use cases, shared gateways/entities, contracts, feature `router`, `lib/use-now`, `lib/use-schedule-board`, `lib/format-time`, `lib/device-time-zone`
-- Use cases → entities (and other use cases); never `data/` or sibling features
+- `app/` → `modules/features`, `modules/shared`, `data/sample` / `data/pandascore` / `data/live`, `lib/`, `constants/`, `expo-router`
+- Router → `expo-router`, contracts, entities, shared route helpers
+- Presenter → use cases, shared entities/gateways/mappers, contracts, feature `router`, `mappers/` — no `react-native` / `expo-router` / `data/` / `lib/` / sibling features. Mappers do not import `lib/`; the Builder binds `scheduleClock` and injects it.
+- Use cases → entities, gateway ports, and other use cases; never `data/`, sibling features, or `lib/`
 - View → presenter types + `constants/` + `modules/shared`
-- `data/` → shared `entities` + `gateways` only (outer sample / API implementations)
-- `lib/use-schedule-board` → `lib/schedule-board` only; Presenters pass `sampleBoard` from the Builder
+- `data/` → shared `entities` + `gateways` only (outer sample / live / API implementations)
+- `lib/use-schedule-board` → `ScheduleBoardSource`; Builders pass `scheduleSource()` into `useBoardNow`, then pass loaded `board` and `scheduleClock(now, timeZone)` into presenters
 
-Feature root files: `view`, `presenter`, `router`, `contracts`, harness, and their tests. Cross-feature types, gateways, use cases, and UI live in `modules/shared`. Application logic lives in `use-cases/`; UI pieces in `components/`.
+Feature / shared layout (omit a slot until it has a real owner): `components/`, `mappers/`, `use-cases/`, `contracts.ts`, `entities.ts`, `gateways.ts`, `presenter.ts`, `router.ts`, `view.tsx`, harness, colocated tests. `mappers/` is a per-module slot for presenter mapping (`present-groups`, `present-row`) so those are not loose files beside `presenter.ts`. Cross-feature mapping (`present-notice`) lives in `modules/shared/mappers/`. Cross-feature types, gateways, use cases, and UI live in `modules/shared`. Application logic lives in `use-cases/`; UI pieces in `components/`.
 
 Keep use-case / Presenter math testable without rendering a screen.
 
