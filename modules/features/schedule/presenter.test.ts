@@ -1,60 +1,56 @@
 import { renderHook } from '@testing-library/react-native';
 
-import { deviceTimeZone } from '@/lib/device-time-zone';
-import type { ScheduleBoardState } from '@/lib/schedule-board';
-import { useNow } from '@/lib/use-now';
-import type { GameCatalog, MatchCatalog } from '@/modules/shared/gateways';
+import type {
+  GameCatalog,
+  MatchCatalog,
+  ScheduleBoardState,
+  ScheduleLoadState,
+} from '@/modules/shared/gateways';
+import { aMatch } from '@/modules/shared/shared.harness';
 
+import type { ScheduleClock } from './contracts';
 import { useSchedulePresenter } from './presenter';
 import { useScheduleRouter } from './router';
 import {
-  FIXED_NOW,
   stubGameCatalog,
   stubMatchCatalog,
-  TEST_TIME_ZONE,
+  stubScheduleClock,
 } from './schedule.harness';
 
-jest.mock('@/lib/use-now');
-jest.mock('@/lib/device-time-zone');
-jest.mock('@/lib/use-schedule-board', () => ({
-  useScheduleBoard: (board: ScheduleBoardState) => board,
-}));
 jest.mock('./router', () => ({
   useScheduleRouter: jest.fn(),
 }));
 
-function stubBoard(
-  overrides: {
-    games?: GameCatalog;
-    matches?: MatchCatalog;
-    notice?: string | null;
-  } = {}
-): ScheduleBoardState {
+type BoardOverrides = {
+  games?: GameCatalog;
+  matches?: MatchCatalog;
+  loadState?: ScheduleLoadState;
+};
+
+type PresentOverrides = BoardOverrides & {
+  gameFilter?: string;
+  clock?: ScheduleClock;
+};
+
+function stubBoard(overrides: BoardOverrides = {}): ScheduleBoardState {
   return {
     games: overrides.games ?? stubGameCatalog(),
     matches: overrides.matches ?? stubMatchCatalog(),
-    notice: overrides.notice ?? null,
-    ready: true,
+    loadState: overrides.loadState ?? { status: 'ok' },
   };
 }
 
-async function present(
-  overrides: {
-    games?: GameCatalog;
-    matches?: MatchCatalog;
-    gameFilter?: string;
-    notice?: string | null;
-  } = {}
-) {
-  jest.mocked(useNow).mockReturnValue(FIXED_NOW);
-  jest.mocked(deviceTimeZone).mockReturnValue(TEST_TIME_ZONE);
+async function present(overrides: PresentOverrides = {}) {
   jest.mocked(useScheduleRouter).mockReturnValue({
     gameFilter: overrides.gameFilter,
     setGameFilter: jest.fn(),
   });
 
   const { result } = await renderHook(() =>
-    useSchedulePresenter(stubBoard(overrides))
+    useSchedulePresenter(
+      stubBoard(overrides),
+      overrides.clock ?? stubScheduleClock()
+    )
   );
 
   return result.current;
@@ -67,26 +63,23 @@ describe('useSchedulePresenter', () => {
     expect(presenter.selected).toBe('all');
   });
 
-  it('builds chips from the game catalog', async () => {
-    const presenter = await present();
+  it('maps a loading board into notice copy', async () => {
+    const presenter = await present({ loadState: { status: 'loading' } });
 
-    expect(presenter.chips).toEqual([
-      { id: 'all', label: 'All' },
-      { id: 'lol', label: 'LoL' },
-    ]);
+    expect(presenter.notice).toBe('Loading schedule…');
   });
 
-  it('uses the filtered empty copy when a game is selected', async () => {
-    const presenter = await present({ gameFilter: 'lol' });
+  it('uses injected clock labels for upcoming matches', async () => {
+    const match = aMatch({ id: 'soon-1' });
+    const presenter = await present({
+      matches: stubMatchCatalog({
+        list: () => [match],
+      }),
+    });
 
-    expect(presenter.emptyMessage).toBe(
-      'No upcoming League of Legends matches.'
-    );
-  });
-
-  it('forwards the board notice', async () => {
-    const presenter = await present({ notice: 'Using sample data' });
-
-    expect(presenter.notice).toBe('Using sample data');
+    expect(presenter.groups[0].matches[0]).toMatchObject({
+      kickoffLabel: `kickoff:${match.startsAt}`,
+      countdownLabel: `countdown:${match.startsAt}`,
+    });
   });
 });

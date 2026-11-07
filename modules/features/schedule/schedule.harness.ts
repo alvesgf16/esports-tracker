@@ -1,12 +1,13 @@
+import { calendarDay } from '@/lib/calendar-day';
 import type { Game } from '@/modules/shared/entities';
 import type { GameCatalog, MatchCatalog } from '@/modules/shared/gateways';
-
-export {
-  aMatch,
+import {
+  aGameCatalog,
   FIXED_NOW,
-  hoursFromNow,
   TEST_TIME_ZONE,
 } from '@/modules/shared/shared.harness';
+
+import type { ScheduleClock } from './contracts';
 
 const lol: Game = {
   id: 'lol',
@@ -17,18 +18,29 @@ const lol: Game = {
 export function stubGameCatalog(
   overrides: Partial<GameCatalog> = {}
 ): GameCatalog {
-  return {
-    list: () => [lol],
-    get: () => lol,
-    ...overrides,
-  };
+  return { ...aGameCatalog([lol]), ...overrides };
 }
 
 export function stubMatchCatalog(
   overrides: Partial<MatchCatalog> = {}
 ): MatchCatalog {
+  return { list: () => [], ...overrides };
+}
+
+export function stubDayCalendar(timeZone = TEST_TIME_ZONE) {
+  return calendarDay.forZone(timeZone);
+}
+
+export function stubScheduleClock(
+  overrides: Partial<ScheduleClock> = {}
+): ScheduleClock {
   return {
-    list: () => [],
+    now: FIXED_NOW,
+    calendar: stubDayCalendar(),
+    labels: {
+      kickoff: (startsAt) => `kickoff:${startsAt}`,
+      countdown: (startsAt) => `countdown:${startsAt}`,
+    },
     ...overrides,
   };
 }

@@ -1,66 +1,30 @@
-import { deviceTimeZone } from '@/lib/device-time-zone';
-import type { ScheduleBoardState } from '@/lib/schedule-board';
-import { useNow } from '@/lib/use-now';
-import { useScheduleBoard } from '@/lib/use-schedule-board';
-import type { Game, GameFilter } from '@/modules/shared/entities';
+import type { ScheduleBoardState } from '@/modules/shared/gateways';
+import { presentNotice } from '@/modules/shared/mappers/present-notice';
 import { visibleMatches } from '@/modules/shared/use-cases/visible-matches';
 
-import type { ChipModel, SchedulePresenter } from './contracts';
+import type { ScheduleClock, SchedulePresenter } from './contracts';
+import { presentChips } from './mappers/present-chips';
+import { presentEmptyMessage } from './mappers/present-empty-message';
+import { presentGroups } from './mappers/present-groups';
 import { useScheduleRouter } from './router';
-import { gameName } from './use-cases/game-name';
-import { groupByDay } from './use-cases/group-by-day';
 import { parseFilter } from './use-cases/parse-filter';
-import { presentDay } from './use-cases/present-day';
 
 export function useSchedulePresenter(
-  sampleBoard: ScheduleBoardState
-): SchedulePresenter {
-  const now = useNow();
-  const board = useScheduleBoard(sampleBoard);
-  const { gameFilter, setGameFilter } = useScheduleRouter();
-
-  return {
-    ...presentSchedule(board, now, gameFilter),
-    notice: board.notice,
-    setGameFilter,
-  };
-}
-
-function presentSchedule(
   board: ScheduleBoardState,
-  now: number,
-  gameFilter?: string
-) {
-  const timeZone = deviceTimeZone();
+  clock: ScheduleClock
+): SchedulePresenter {
+  const { gameFilter, setGameFilter } = useScheduleRouter();
   const catalogGames = board.games.list();
-  const selected = parseFilter(gameFilter, catalogGames) ?? 'all';
-  const matches = visibleMatches(board.matches.list(), selected, now);
-  const context = { board, now, timeZone };
+  const parsed = parseFilter(gameFilter, catalogGames);
+  const selected = parsed ?? 'all';
+  const matches = visibleMatches(board.matches.list(), parsed, clock.now);
 
   return {
     selected,
-    chips: buildChips(catalogGames),
-    groups: groupByDay(matches, now, timeZone).map((group) =>
-      presentDay(group, context)
-    ),
-    emptyMessage: emptyMessage(selected, catalogGames),
+    chips: presentChips(catalogGames),
+    groups: presentGroups(matches, board.games, clock),
+    emptyMessage: presentEmptyMessage(selected, catalogGames),
+    notice: presentNotice(board.loadState),
+    setGameFilter,
   };
-}
-
-function buildChips(games: Game[]): ChipModel[] {
-  return [
-    { id: 'all', label: 'All' },
-    ...games.map((game) => ({
-      id: game.id,
-      label: game.shortName,
-    })),
-  ];
-}
-
-function emptyMessage(selected: GameFilter, games: Game[]): string {
-  if (selected === 'all') {
-    return 'No upcoming matches.';
-  }
-
-  return `No upcoming ${gameName(selected, games)} matches.`;
 }
