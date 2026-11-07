@@ -4,6 +4,8 @@ const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommen
 const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const unicorn = require('eslint-plugin-unicorn').default;
 const jestPlugin = require('eslint-plugin-jest');
+const exportRules = require('./eslint-rules/exports');
+const typesRules = require('./eslint-rules/types');
 
 const testFiles = [
   '**/*.{spec,test}.{ts,tsx,js,jsx}',
@@ -11,7 +13,25 @@ const testFiles = [
   '**/__tests__/**/*.{ts,tsx,js,jsx}',
 ];
 
-function presenterImports(siblingFeatures) {
+const siblingFeatures = {
+  group: ['@/modules/features/*', '@/modules/features/*/**'],
+  message:
+    'Features must not import each other; put shared code in modules/shared.',
+};
+
+const allFeatures = {
+  group: ['@/modules/features', '@/modules/features/**'],
+  message:
+    'Features must not import each other; put shared code in modules/shared.',
+};
+
+const dataLayer = {
+  group: ['@/data', '@/data/*'],
+  message:
+    'Feature and shared tests fake gateway ports; they must not import data/.',
+};
+
+function presenterImports() {
   return {
     paths: [
       {
@@ -25,20 +45,21 @@ function presenterImports(siblingFeatures) {
     ],
     patterns: [
       {
+        group: ['@/lib', '@/lib/*'],
+        message:
+          'Builders own lib/; inject the board and scheduleClock into the Presenter.',
+      },
+      {
         group: ['@/app', '@/app/*', '@/data', '@/data/*'],
         message:
           'Presenters use entities, gateways, and use cases; Builders inject data/.',
       },
-      {
-        group: siblingFeatures,
-        message:
-          'Features must not import each other; put shared code in modules/shared.',
-      },
+      siblingFeatures,
     ],
   };
 }
 
-function useCaseImports(forbiddenModules) {
+function useCaseImports(featureBan) {
   return {
     paths: [
       {
@@ -59,19 +80,50 @@ function useCaseImports(forbiddenModules) {
           '@/data/*',
           '@/constants',
           '@/constants/*',
+          '@/lib',
+          '@/lib/*',
         ],
-        message: 'Use cases take entities as input; they must not import data/.',
-      },
-      {
-        group: forbiddenModules,
         message:
-          'Features must not import each other; put shared code in modules/shared.',
+          'Use cases take entities as input; view-model mapping lives in mappers/.',
       },
+      featureBan,
     ],
   };
 }
 
-function routerImports(siblingFeatures) {
+function mapperImports(featureBan) {
+  return {
+    paths: [
+      {
+        name: 'expo-router',
+        message: 'Mappers must not import Expo Router.',
+      },
+      {
+        name: 'react-native',
+        message: 'Mappers must not import React Native.',
+      },
+    ],
+    patterns: [
+      {
+        group: [
+          '@/app',
+          '@/app/*',
+          '@/data',
+          '@/data/*',
+          '@/constants',
+          '@/constants/*',
+          '@/lib',
+          '@/lib/*',
+        ],
+        message:
+          'Mappers map entities and gateway state into view models.',
+      },
+      featureBan,
+    ],
+  };
+}
+
+function routerImports() {
   return {
     paths: [
       {
@@ -92,16 +144,12 @@ function routerImports(siblingFeatures) {
         message:
           'Routers adapt Expo Router; they must not import app/ or data/.',
       },
-      {
-        group: siblingFeatures,
-        message:
-          'Features must not import each other; put shared code in modules/shared.',
-      },
+      siblingFeatures,
     ],
   };
 }
 
-function viewImports(siblingFeatures) {
+function viewImports(featureBan) {
   return {
     paths: [
       {
@@ -115,11 +163,7 @@ function viewImports(siblingFeatures) {
         message:
           'Views render view models only; no data queries or app routes.',
       },
-      {
-        group: siblingFeatures,
-        message:
-          'Features must not import each other; put shared code in modules/shared.',
-      },
+      featureBan,
     ],
   };
 }
@@ -136,6 +180,7 @@ module.exports = defineConfig([
     '**/uniwind-types.d.ts',
     'expo-env.d.ts',
     'eslint.config.js',
+    'eslint-rules/*',
   ]),
   {
     // eslint-plugin-import otherwise loads the `typescript` package as a resolver
@@ -222,6 +267,8 @@ module.exports = defineConfig([
   {
     plugins: {
       unicorn,
+      exports: exportRules,
+      types: typesRules,
     },
     rules: {
       // Clean Code Ch.2
@@ -268,6 +315,11 @@ module.exports = defineConfig([
         'error',
         { max: 100, skipBlankLines: true, skipComments: true },
       ],
+      'exports/max-value-exports': 'error',
+      'exports/no-mixed-exports': 'error',
+      'exports/no-barrel': 'error',
+      'types/no-inline-utility-types': 'error',
+      'types/no-inline-object-types': 'error',
 
       // Clean Code Ch.17 (MIT unicorn; not sonarjs)
       'unicorn/no-nested-ternary': 'error',
@@ -288,90 +340,67 @@ module.exports = defineConfig([
       'max-lines-per-function': 'off',
       'max-lines': 'off',
       'max-classes-per-file': 'off',
+      'exports/max-value-exports': 'off',
+      'exports/no-mixed-exports': 'off',
       'jest/no-focused-tests': 'error',
       'jest/no-identical-title': 'error',
     },
   },
+  {
+    files: [
+      'modules/shared/entities.ts',
+      'modules/shared/gateways.ts',
+      'modules/features/*/contracts.ts',
+      'data/live/schedule-result.ts',
+      'data/pandascore/schedule-board.ts',
+      'data/pandascore/vendor-types.ts',
+    ],
+    rules: {
+      'exports/max-value-exports': ['error', { max: 0 }],
+    },
+  },
+  {
+    files: ['app/_layout.tsx'],
+    rules: {
+      // Expo Router: ErrorBoundary, unstable_settings, and the default layout.
+      'exports/max-value-exports': ['error', { max: 3 }],
+    },
+  },
   // VIPER + Clean Architecture — Clean Code Ch.8 / Ch.11
   {
-    files: ['modules/features/schedule/presenter.ts'],
+    files: ['modules/features/*/presenter.ts'],
     rules: {
-      'no-restricted-imports': [
-        'error',
-        presenterImports([
-          '@/modules/features/games',
-          '@/modules/features/games/**',
-        ]),
-      ],
+      'no-restricted-imports': ['error', presenterImports()],
     },
   },
   {
-    files: ['modules/features/schedule/router.ts'],
+    files: ['modules/features/*/mappers/**/*.{ts,tsx}'],
     rules: {
-      'no-restricted-imports': [
-        'error',
-        routerImports([
-          '@/modules/features/games',
-          '@/modules/features/games/**',
-        ]),
-      ],
+      'no-restricted-imports': ['error', mapperImports(siblingFeatures)],
     },
   },
   {
-    files: ['modules/features/games/router.ts'],
+    files: ['modules/features/*/router.ts'],
     rules: {
-      'no-restricted-imports': [
-        'error',
-        routerImports([
-          '@/modules/features/schedule',
-          '@/modules/features/schedule/**',
-        ]),
-      ],
+      'no-restricted-imports': ['error', routerImports()],
     },
   },
   {
-    files: ['modules/features/games/presenter.ts'],
+    files: ['modules/features/*/use-cases/**/*.{ts,tsx}'],
     rules: {
-      'no-restricted-imports': [
-        'error',
-        presenterImports([
-          '@/modules/features/schedule',
-          '@/modules/features/schedule/**',
-        ]),
-      ],
-    },
-  },
-  {
-    files: ['modules/features/schedule/use-cases/**/*.{ts,tsx}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        useCaseImports([
-          '@/modules/features/games',
-          '@/modules/features/games/**',
-        ]),
-      ],
-    },
-  },
-  {
-    files: ['modules/features/games/use-cases/**/*.{ts,tsx}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        useCaseImports([
-          '@/modules/features/schedule',
-          '@/modules/features/schedule/**',
-        ]),
-      ],
+      'no-restricted-imports': ['error', useCaseImports(siblingFeatures)],
     },
   },
   {
     files: ['modules/shared/use-cases/**/*.{ts,tsx}'],
     rules: {
-      'no-restricted-imports': [
-        'error',
-        useCaseImports(['@/modules/features', '@/modules/features/**']),
-      ],
+      'no-restricted-imports': ['error', useCaseImports(allFeatures)],
+    },
+  },
+  {
+    files: ['modules/shared/mappers/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', mapperImports(allFeatures)],
     },
   },
   {
@@ -412,7 +441,7 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['lib/format-time.ts'],
+    files: ['lib/format-*.ts', 'lib/calendar-day.ts', 'lib/schedule-clock.ts'],
     rules: {
       'no-restricted-imports': [
         'error',
@@ -438,7 +467,7 @@ module.exports = defineConfig([
                 '@/modules/*',
                 '@/modules/**',
               ],
-              message: 'lib/format-time must stay free of modules and data/.',
+              message: 'Clock helpers must stay free of modules and data/.',
             },
           ],
         },
@@ -446,81 +475,44 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['modules/features/schedule/**/*.tsx'],
+    files: ['modules/features/**/*.tsx'],
     rules: {
-      'no-restricted-imports': [
-        'error',
-        viewImports([
-          '@/modules/features/games',
-          '@/modules/features/games/**',
-        ]),
-      ],
-    },
-  },
-  {
-    files: ['modules/features/games/**/*.tsx'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        viewImports([
-          '@/modules/features/schedule',
-          '@/modules/features/schedule/**',
-        ]),
-      ],
+      'no-restricted-imports': ['error', viewImports(siblingFeatures)],
     },
   },
   {
     files: ['modules/shared/**/*.tsx'],
     rules: {
+      'no-restricted-imports': ['error', viewImports(allFeatures)],
+    },
+  },
+  {
+    files: ['modules/features/*/contracts.ts'],
+    rules: {
+      'no-restricted-imports': ['error', { patterns: [siblingFeatures] }],
+    },
+  },
+  {
+    files: [
+      'modules/features/**/*.test.{ts,tsx}',
+      'modules/features/**/*.harness.ts',
+    ],
+    rules: {
       'no-restricted-imports': [
         'error',
-        viewImports(['@/modules/features', '@/modules/features/**']),
+        { patterns: [siblingFeatures, dataLayer] },
       ],
     },
   },
   {
     files: [
-      'modules/features/schedule/contracts.ts',
-      'modules/features/schedule/*.harness.ts',
+      'modules/shared/**/*.test.{ts,tsx}',
+      'modules/shared/**/*.harness.ts',
     ],
     rules: {
       'no-restricted-imports': [
         'error',
-        {
-          patterns: [
-            {
-              group: [
-                '@/modules/features/games',
-                '@/modules/features/games/**',
-              ],
-              message:
-                'Features must not import each other; put shared code in modules/shared.',
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    files: [
-      'modules/features/games/contracts.ts',
-      'modules/features/games/*.harness.ts',
-    ],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              group: [
-                '@/modules/features/schedule',
-                '@/modules/features/schedule/**',
-              ],
-              message:
-                'Features must not import each other; put shared code in modules/shared.',
-            },
-          ],
-        },
+        { patterns: [allFeatures, dataLayer] },
       ],
     },
   },
