@@ -1,8 +1,34 @@
-import type { GameFilter } from '@/modules/shared/entities';
+import type { GameId, Match } from '@/modules/shared/entities';
+
+export type GameFilter = GameId | 'all';
 
 export type ScheduleRouter = {
   gameFilter?: string;
   setGameFilter: (game: GameFilter) => void;
+};
+
+export type DayCalendar = {
+  key: (instant: string | number) => string;
+  todayKey: (now: number) => string;
+  tomorrowKey: (now: number) => string;
+  heading: (key: string) => string;
+};
+
+export type DayGroup = {
+  key: string;
+  label: string;
+  matches: Match[];
+};
+
+export type MatchLabels = {
+  kickoff: (startsAt: string) => string;
+  countdown: (startsAt: string) => string;
+};
+
+export type ScheduleClock = {
+  now: number;
+  calendar: DayCalendar;
+  labels: MatchLabels;
 };
 
 export type ChipModel = {
