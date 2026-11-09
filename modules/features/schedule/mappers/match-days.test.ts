@@ -3,16 +3,16 @@ import { aMatch, FIXED_NOW } from '@/modules/shared/shared.harness';
 
 import type { MatchCardModel } from '../contracts';
 import { stubGameCatalog, stubScheduleClock } from '../schedule.harness';
-import { presentGroups } from './present-groups';
+import { matchDays } from './match-days';
 
 function presentedCard(match: Match): MatchCardModel {
-  return presentGroups([match], stubGameCatalog(), stubScheduleClock())[0]
+  return matchDays([match], stubGameCatalog(), stubScheduleClock())[0]
     .matches[0];
 }
 
-describe('presentGroups', () => {
+describe('matchDays', () => {
   it('keeps the day label on the section', () => {
-    const groups = presentGroups(
+    const groups = matchDays(
       [aMatch()],
       stubGameCatalog(),
       stubScheduleClock()
@@ -34,8 +34,8 @@ describe('presentGroups', () => {
       kickoffLabel: 'LIVE',
       countdownLabel: '',
       isLive: true,
-      teamA: 'Alpha',
-      teamB: 'Beta',
+      left: 'Alpha',
+      right: 'Beta',
       meta: 'LoL · LEC · Spring · Bo3',
     });
   });
@@ -68,8 +68,8 @@ describe('presentGroups', () => {
     );
 
     expect(card).toMatchObject({
-      teamA: 'Group A — Match 3',
-      teamB: '3 teams',
+      left: 'Group A — Match 3',
+      right: '3 teams',
       meta: 'LoL · PGS · Global Series · Maps',
     });
   });

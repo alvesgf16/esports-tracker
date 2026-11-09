@@ -1,6 +1,6 @@
 import type { ScheduleLoadState } from '../gateways';
 
-export function presentNotice(loadState: ScheduleLoadState): string | null {
+export function notice(loadState: ScheduleLoadState): string | null {
   if (loadState.status === 'ok') {
     return null;
   }

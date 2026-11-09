@@ -34,6 +34,7 @@ export type ScheduleClock = {
 export type ChipModel = {
   id: GameFilter;
   label: string;
+  onPress: () => void;
 };
 
 export type MatchCardModel = {
@@ -41,8 +42,8 @@ export type MatchCardModel = {
   kickoffLabel: string;
   countdownLabel: string;
   isLive: boolean;
-  teamA: string;
-  teamB: string;
+  left: string;
+  right: string;
   meta: string;
 };
 
@@ -53,10 +54,9 @@ export type DaySectionModel = {
 };
 
 export type SchedulePresenter = {
-  selected: GameFilter;
+  selectedChip: GameFilter;
   chips: ChipModel[];
   groups: DaySectionModel[];
   emptyMessage: string;
   notice: string | null;
-  setGameFilter: (game: GameFilter) => void;
 };

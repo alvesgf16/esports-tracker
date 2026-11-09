@@ -4,9 +4,9 @@ import {
   hoursFromNow,
 } from '@/modules/shared/shared.harness';
 
-import { upcomingCount } from './upcoming-count';
+import { countUpcomingMatchesFor } from './count-upcoming-matches-for';
 
-describe('upcomingCount', () => {
+describe('countUpcomingMatchesFor', () => {
   it('counts visible matches for the game', () => {
     const matches = [
       aMatch({ id: '1', game: 'lol', startsAt: hoursFromNow(2) }),
@@ -15,6 +15,8 @@ describe('upcomingCount', () => {
       aMatch({ id: '4', game: 'lol', startsAt: hoursFromNow(-4) }),
     ];
 
-    expect(upcomingCount(matches, 'lol', FIXED_NOW)).toBe(2);
+    expect(
+      countUpcomingMatchesFor('lol', { matches, referenceTime: FIXED_NOW })
+    ).toBe(2);
   });
 });

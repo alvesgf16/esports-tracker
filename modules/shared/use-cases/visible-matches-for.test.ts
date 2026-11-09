@@ -1,7 +1,12 @@
-import { visibleMatches } from './visible-matches';
+import type { Match } from '../entities';
 import { aMatch, FIXED_NOW, hoursFromNow } from '../shared.harness';
+import { visibleMatchesFor } from './visible-matches-for';
 
-describe('visibleMatches', () => {
+function snapshot(matches: Match[]) {
+  return { matches, referenceTime: FIXED_NOW };
+}
+
+describe('visibleMatchesFor', () => {
   it('keeps only the selected game', () => {
     const matches = [
       aMatch({ id: 'lol-1', game: 'lol', startsAt: hoursFromNow(2) }),
@@ -9,7 +14,7 @@ describe('visibleMatches', () => {
     ];
 
     expect(
-      visibleMatches(matches, 'lol', FIXED_NOW).map((match) => match.id)
+      visibleMatchesFor('lol', snapshot(matches)).map((match) => match.id)
     ).toEqual(['lol-1']);
   });
 
@@ -20,14 +25,14 @@ describe('visibleMatches', () => {
     ];
 
     expect(
-      visibleMatches(matches, null, FIXED_NOW).map((match) => match.id)
+      visibleMatchesFor(null, snapshot(matches)).map((match) => match.id)
     ).toEqual(['sooner', 'later']);
   });
 
   it('hides finished matches past the live window', () => {
     const matches = [aMatch({ startsAt: hoursFromNow(-4) })];
 
-    expect(visibleMatches(matches, null, FIXED_NOW)).toEqual([]);
+    expect(visibleMatchesFor(null, snapshot(matches))).toEqual([]);
   });
 
   it('hides matches marked finished even inside the live window', () => {
@@ -38,7 +43,7 @@ describe('visibleMatches', () => {
       }),
     ];
 
-    expect(visibleMatches(matches, null, FIXED_NOW)).toEqual([]);
+    expect(visibleMatchesFor(null, snapshot(matches))).toEqual([]);
   });
 
   it('keeps long-running matches via status', () => {
@@ -51,7 +56,7 @@ describe('visibleMatches', () => {
     ];
 
     expect(
-      visibleMatches(matches, null, FIXED_NOW).map((match) => match.id)
+      visibleMatchesFor(null, snapshot(matches)).map((match) => match.id)
     ).toEqual(['bo5-live']);
   });
 });

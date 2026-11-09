@@ -62,7 +62,7 @@ Separate construction from use. Builders in `app/` inject the loaded board and c
 - `data/` → shared `entities` + `gateways` only (outer sample / live / API implementations)
 - `lib/use-schedule-board` → `ScheduleBoardSource`; Builders pass `scheduleSource()` into `useBoardNow`, then pass loaded `board` and `scheduleClock(now, timeZone)` into presenters
 
-Feature / shared layout (omit a slot until it has a real owner): `components/`, `mappers/`, `use-cases/`, `contracts.ts`, `entities.ts`, `gateways.ts`, `presenter.ts`, `router.ts`, `view.tsx`, harness, colocated tests. `mappers/` is a per-module slot for presenter mapping (`present-groups`, `present-row`) so those are not loose files beside `presenter.ts`. Cross-feature mapping (`present-notice`) lives in `modules/shared/mappers/`. Cross-feature types, gateways, use cases, and UI live in `modules/shared`. Application logic lives in `use-cases/`; UI pieces in `components/`.
+Feature / shared layout (omit a slot until it has a real owner): `components/`, `mappers/`, `use-cases/`, `contracts.ts`, `entities.ts`, `gateways.ts`, `presenter.ts`, `router.ts`, `view.tsx`, harness, colocated tests. `mappers/` is a per-module slot for presenter mapping (`match-days`, `game-row`) so those are not loose files beside `presenter.ts`. Cross-feature mapping (`notice`) lives in `modules/shared/mappers/`. Cross-feature types, gateways, use cases, and UI live in `modules/shared`. Application logic lives in `use-cases/`; UI pieces in `components/`.
 
 Keep use-case / Presenter math testable without rendering a screen.
 

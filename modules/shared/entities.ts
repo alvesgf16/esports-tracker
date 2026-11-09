@@ -23,3 +23,8 @@ export type Match = {
   teams: Team[];
   status?: MatchStatus;
 };
+
+export type MatchesSnapshot = {
+  matches: Match[];
+  referenceTime: number;
+};

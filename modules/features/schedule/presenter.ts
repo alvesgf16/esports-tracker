@@ -1,30 +1,34 @@
 import type { ScheduleBoardState } from '@/modules/shared/gateways';
-import { presentNotice } from '@/modules/shared/mappers/present-notice';
-import { visibleMatches } from '@/modules/shared/use-cases/visible-matches';
+import { notice } from '@/modules/shared/mappers/notice';
+import { visibleMatchesFor } from '@/modules/shared/use-cases/visible-matches-for';
 
 import type { ScheduleClock, SchedulePresenter } from './contracts';
-import { presentChips } from './mappers/present-chips';
-import { presentEmptyMessage } from './mappers/present-empty-message';
-import { presentGroups } from './mappers/present-groups';
+import { emptyMessage } from './mappers/empty-message';
+import { gameChips } from './mappers/game-chips';
+import { matchDays } from './mappers/match-days';
 import { useScheduleRouter } from './router';
-import { parseFilter } from './use-cases/parse-filter';
+import { selectGameFromFilter } from './use-cases/select-game-from-filter';
 
 export function useSchedulePresenter(
   board: ScheduleBoardState,
   clock: ScheduleClock
 ): SchedulePresenter {
+  const { games, matches, loadState } = board;
+
   const { gameFilter, setGameFilter } = useScheduleRouter();
-  const catalogGames = board.games.list();
-  const parsed = parseFilter(gameFilter, catalogGames);
-  const selected = parsed ?? 'all';
-  const matches = visibleMatches(board.matches.list(), parsed, clock.now);
+
+  const listedGames = games.list();
+  const selectedGame = selectGameFromFilter(gameFilter, listedGames);
+  const selectedChip = selectedGame ?? 'all';
+  const listedMatches = matches.list();
+  const matchesSnapshot = { matches: listedMatches, referenceTime: clock.now };
+  const visibleMatches = visibleMatchesFor(selectedGame, matchesSnapshot);
 
   return {
-    selected,
-    chips: presentChips(catalogGames),
-    groups: presentGroups(matches, board.games, clock),
-    emptyMessage: presentEmptyMessage(selected, catalogGames),
-    notice: presentNotice(board.loadState),
-    setGameFilter,
+    selectedChip,
+    chips: gameChips(listedGames, setGameFilter),
+    groups: matchDays(visibleMatches, games, clock),
+    emptyMessage: emptyMessage(selectedChip, listedGames),
+    notice: notice(loadState),
   };
 }

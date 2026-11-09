@@ -1,15 +1,15 @@
 import { stubGameCatalog } from '../schedule.harness';
-import { presentEmptyMessage } from './present-empty-message';
+import { emptyMessage } from './empty-message';
 
 const games = stubGameCatalog().list();
 
-describe('presentEmptyMessage', () => {
+describe('emptyMessage', () => {
   it('uses the unfiltered copy for all', () => {
-    expect(presentEmptyMessage('all', games)).toBe('No upcoming matches.');
+    expect(emptyMessage('all', games)).toBe('No upcoming matches.');
   });
 
   it('names the selected game', () => {
-    expect(presentEmptyMessage('lol', games)).toBe(
+    expect(emptyMessage('lol', games)).toBe(
       'No upcoming League of Legends matches.'
     );
   });

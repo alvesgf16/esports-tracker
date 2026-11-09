@@ -60,7 +60,7 @@ describe('useSchedulePresenter', () => {
   it('defaults an invalid game filter to all', async () => {
     const presenter = await present({ gameFilter: 'chess' });
 
-    expect(presenter.selected).toBe('all');
+    expect(presenter.selectedChip).toBe('all');
   });
 
   it('maps a loading board into notice copy', async () => {

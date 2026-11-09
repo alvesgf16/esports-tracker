@@ -4,15 +4,14 @@ import type { GameRowModel } from '../contracts';
 
 type Props = {
   row: GameRowModel;
-  onPress: (gameId: GameRowModel['id']) => void;
 };
 
-export default function GameRow({ row, onPress }: Props) {
+export default function GameRow({ row }: Props) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={row.accessibilityLabel}
-      onPress={() => onPress(row.id)}
+      onPress={row.onPress}
       className="flex-row items-center justify-between rounded-card bg-card p-4"
     >
       <View>

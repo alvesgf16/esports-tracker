@@ -10,16 +10,16 @@ type Props = {
 };
 
 export default function GamesView({ presenter }: Props) {
+  const { notice, rows } = presenter;
+
   return (
     <ScrollView
       className="flex-1 bg-background"
       contentContainerClassName="gap-2.5 p-4"
     >
-      {presenter.notice ? (
-        <NoticeBanner text={presenter.notice} className="mb-1" />
-      ) : null}
-      {presenter.rows.map((row) => (
-        <GameRow key={row.id} row={row} onPress={presenter.openSchedule} />
+      {notice ? <NoticeBanner text={notice} className="mb-1" /> : null}
+      {rows.map((row) => (
+        <GameRow key={row.id} row={row} />
       ))}
     </ScrollView>
   );

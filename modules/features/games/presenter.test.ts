@@ -47,6 +47,7 @@ describe('useGamesPresenter', () => {
         shortName: 'LoL',
         upcomingLabel: '3 upcoming',
         accessibilityLabel: 'League of Legends, 3 upcoming',
+        onPress: expect.any(Function),
       },
       {
         id: 'cs2',
@@ -54,6 +55,7 @@ describe('useGamesPresenter', () => {
         shortName: 'CS2',
         upcomingLabel: 'No upcoming matches',
         accessibilityLabel: 'Counter-Strike 2, no upcoming matches',
+        onPress: expect.any(Function),
       },
     ]);
   });
