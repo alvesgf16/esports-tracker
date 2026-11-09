@@ -2,7 +2,7 @@ import type { Match, Team } from '@/modules/shared/entities';
 
 import { formatLabel } from './format-label';
 import { isSimulatedSport } from './is-simulated-sport';
-import { mapProgress } from './map-progress';
+import { mapStatus } from './map-status';
 import { mapTeams } from './map-teams';
 import { tournamentLabel } from './tournament-label';
 import type { VendorMatch } from './vendor-types';
@@ -64,7 +64,7 @@ function buildMatch(parts: MatchParts): Match {
     format: formatLabel(parts.vendor),
     startsAt: parts.startsAt,
     teams: parts.teams,
-    progress: mapProgress(parts.vendor.status),
+    status: mapStatus(parts.vendor.status),
   };
 }
 

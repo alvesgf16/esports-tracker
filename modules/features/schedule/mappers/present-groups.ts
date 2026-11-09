@@ -1,6 +1,6 @@
 import type { Match, Team } from '@/modules/shared/entities';
 import type { GameCatalog } from '@/modules/shared/gateways';
-import { matchStatus } from '@/modules/shared/use-cases/match-status';
+import { matchDisplayStatus } from '@/modules/shared/use-cases/match-display-status';
 
 import type {
   DayGroup,
@@ -47,7 +47,7 @@ function presentDay(group: DayGroup, context: PresentContext): DaySectionModel {
 }
 
 function presentMatch(match: Match, context: PresentContext): MatchCardModel {
-  const status = matchStatus(match.startsAt, context.now, match.progress);
+  const status = matchDisplayStatus(match.startsAt, context.now, match.status);
   const game = context.games.get(match.game);
   const isLive = status === 'live';
   const sides = presentSides(match);

@@ -23,7 +23,7 @@
     "placeholderTextColorClassName",
     "selectionHandleColorClassName",
     "colorsClassName",
-    "progressBackgroundColorClassName",
+    "statusBackgroundColorClassName",
     "titleColorClassName",
     "underlayColorClassName",
     "colorClassName",

@@ -3,7 +3,7 @@ import type { Match } from '@/modules/shared/entities';
 import { duel } from './duel';
 import { sampleKickoff } from './sample-kickoff';
 
-/** Near-term board: live, soon, progress overrides, and standard duels. */
+/** Near-term board: live, soon, status overrides, and standard duels. */
 export const EARLY_MATCHES: Match[] = [
   {
     id: 'live-window',
@@ -15,24 +15,24 @@ export const EARLY_MATCHES: Match[] = [
     teams: duel(['G2 Esports', 'G2'], ['Fnatic', 'FNC']),
   },
   {
-    id: 'live-progress',
+    id: 'live-status',
     game: 'cs2',
     name: 'Natus Vincere vs Vitality',
     tournament: 'BLAST · Open Final',
     format: 'Bo3',
     startsAt: sampleMinutesFromNow(-4 * 60),
     teams: duel(['Natus Vincere', 'NAVI'], ['Vitality', 'VIT']),
-    progress: 'running',
+    status: 'running',
   },
   {
-    id: 'finished-progress',
+    id: 'finished-status',
     game: 'valorant',
     name: 'Sentinels vs Cloud9',
     tournament: 'VCT · Americas',
     format: 'Bo3',
     startsAt: sampleMinutesFromNow(-50),
     teams: duel(['Sentinels', 'SEN'], ['Cloud9', 'C9']),
-    progress: 'finished',
+    status: 'finished',
   },
   {
     id: 'soon',
@@ -42,7 +42,7 @@ export const EARLY_MATCHES: Match[] = [
     format: 'Bo3',
     startsAt: sampleMinutesFromNow(30),
     teams: duel(['Team Spirit', 'TSpirit'], ['Team Liquid', 'Liquid']),
-    progress: 'not_started',
+    status: 'not_started',
   },
   {
     id: 'first-to',

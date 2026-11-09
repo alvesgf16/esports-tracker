@@ -1,4 +1,4 @@
-import type { Match, MatchProgress, Team } from '@/modules/shared/entities';
+import type { Match, MatchStatus, Team } from '@/modules/shared/entities';
 
 import { jsonValue } from './json-value';
 import { parseList } from './parse-list';
@@ -25,13 +25,13 @@ export function parseMatch(value: unknown): Match | null {
 function matchFromRecord(record: Record<string, unknown>): Match | null {
   const core = matchCore(record);
   const teams = parseList(record.teams, parseTeam);
-  const progress = parseProgress(record.progress);
+  const status = parseMatchStatus(record.status);
 
-  if (!core || !teams || progress === null) {
+  if (!core || !teams || status === null) {
     return null;
   }
 
-  return progress ? { ...core, teams, progress } : { ...core, teams };
+  return status ? { ...core, teams, status } : { ...core, teams };
 }
 
 function matchCore(record: Record<string, unknown>): MatchCore | null {
@@ -73,18 +73,18 @@ function parseTeam(value: unknown): Team | null {
   return { name, shortName };
 }
 
-function parseProgress(value: unknown): MatchProgress | undefined | null {
+function parseMatchStatus(value: unknown): MatchStatus | undefined | null {
   if (value === undefined) {
     return undefined;
   }
 
-  if (isMatchProgress(value)) {
+  if (isMatchStatus(value)) {
     return value;
   }
 
   return null;
 }
 
-function isMatchProgress(value: unknown): value is MatchProgress {
+function isMatchStatus(value: unknown): value is MatchStatus {
   return value === 'not_started' || value === 'running' || value === 'finished';
 }

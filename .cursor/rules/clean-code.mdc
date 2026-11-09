@@ -14,8 +14,8 @@ Prefer intention-revealing, searchable, pronounceable names. One word per concep
 ### Domain vocabulary
 
 - `Game`, `GameId` (opaque string), `Team`, `Match` — Entity DTOs in `modules/shared/entities.ts`
-- `Match.teams`, optional `Match.progress` (`not_started` / `running` / `finished`)
-- `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter` (Schedule contract: chip selection `GameId | 'all'`)
+- `Match.teams`, optional `Match.status` (`not_started` / `running` / `finished`)
+- Display status (`live` / `soon` / `upcoming` / `finished`) from `matchDisplayStatus`, `DayGroup`, `GameFilter` (Schedule contract: chip selection `GameId | 'all'`)
 - Kickoff, countdown, tournament (`league · stage`), format (`Bo3` / `Ft3`)
 - VIPER features: Schedule (`modules/features/schedule/`), Games (`modules/features/games/`)
 - Shared kernel: `modules/shared/` — entities, gateways, cross-feature use cases, shared UI

@@ -18,7 +18,7 @@ describe('mapMatch', () => {
         { name: 'G2 Esports', shortName: 'G2' },
         { name: 'Fnatic', shortName: 'FNC' },
       ],
-      progress: 'not_started',
+      status: 'not_started',
     });
   });
 
@@ -31,7 +31,7 @@ describe('mapMatch', () => {
       name: 'Group A — Match 3',
       tournament: 'PGS · Global Series',
       format: 'Maps',
-      progress: 'running',
+      status: 'running',
     });
     expect(match?.teams).toHaveLength(16);
   });

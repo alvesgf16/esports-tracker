@@ -6,7 +6,7 @@ export type Game = {
   shortName: string;
 };
 
-export type MatchProgress = 'not_started' | 'running' | 'finished';
+export type MatchStatus = 'not_started' | 'running' | 'finished';
 
 export type Team = {
   name: string;
@@ -21,5 +21,5 @@ export type Match = {
   format: string;
   startsAt: string;
   teams: Team[];
-  progress?: MatchProgress;
+  status?: MatchStatus;
 };

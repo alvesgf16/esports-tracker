@@ -34,19 +34,19 @@ describe('visibleMatches', () => {
     const matches = [
       aMatch({
         startsAt: hoursFromNow(-1),
-        progress: 'finished',
+        status: 'finished',
       }),
     ];
 
     expect(visibleMatches(matches, null, FIXED_NOW)).toEqual([]);
   });
 
-  it('keeps long-running matches via progress', () => {
+  it('keeps long-running matches via status', () => {
     const matches = [
       aMatch({
         id: 'bo5-live',
         startsAt: hoursFromNow(-4),
-        progress: 'running',
+        status: 'running',
       }),
     ];
 

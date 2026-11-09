@@ -24,11 +24,11 @@ describe('parseLiveSchedulePayload', () => {
     });
   });
 
-  it('accepts a match with progress', () => {
+  it('accepts a match with status', () => {
     const payload = {
       status: 'ok',
       games: [LOL],
-      matches: [{ ...G2_VS_FNC, progress: 'running' }],
+      matches: [{ ...G2_VS_FNC, status: 'running' }],
     };
 
     expect(parseLiveSchedulePayload(payload)).toEqual(payload);
@@ -63,12 +63,12 @@ describe('parseLiveSchedulePayload', () => {
     ).toBeNull();
   });
 
-  it('rejects a match with unknown progress', () => {
+  it('rejects a match with unknown status', () => {
     expect(
       parseLiveSchedulePayload({
         status: 'ok',
         games: [LOL],
-        matches: [{ ...G2_VS_FNC, progress: 'canceled' }],
+        matches: [{ ...G2_VS_FNC, status: 'canceled' }],
       })
     ).toBeNull();
   });

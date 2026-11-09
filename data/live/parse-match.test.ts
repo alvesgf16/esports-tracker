@@ -6,8 +6,8 @@ describe('parseMatch', () => {
     expect(parseMatch(G2_VS_FNC)).toEqual(G2_VS_FNC);
   });
 
-  it('keeps a valid progress value', () => {
-    const match = { ...G2_VS_FNC, progress: 'running' };
+  it('keeps a valid status value', () => {
+    const match = { ...G2_VS_FNC, status: 'running' };
 
     expect(parseMatch(match)).toEqual(match);
   });
@@ -26,7 +26,7 @@ describe('parseMatch', () => {
     ).toBeNull();
   });
 
-  it('rejects unknown progress', () => {
-    expect(parseMatch({ ...G2_VS_FNC, progress: 'canceled' })).toBeNull();
+  it('rejects unknown status', () => {
+    expect(parseMatch({ ...G2_VS_FNC, status: 'canceled' })).toBeNull();
   });
 });

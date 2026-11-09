@@ -1,5 +1,5 @@
 import type { GameId, Match } from '../entities';
-import { matchStatus } from './match-status';
+import { matchDisplayStatus } from './match-display-status';
 
 export function visibleMatches(
   matches: Match[],
@@ -20,7 +20,7 @@ function isVisibleMatch(
     return false;
   }
 
-  return matchStatus(match.startsAt, now, match.progress) !== 'finished';
+  return matchDisplayStatus(match.startsAt, now, match.status) !== 'finished';
 }
 
 function byKickoff(left: Match, right: Match): number {

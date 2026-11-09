@@ -1,20 +1,20 @@
-import type { MatchProgress } from '../entities';
+import type { MatchStatus } from '../entities';
 
-type MatchStatus = 'live' | 'soon' | 'upcoming' | 'finished';
+type MatchDisplayStatus = 'live' | 'soon' | 'upcoming' | 'finished';
 
 const LIVE_WINDOW_MS = 3 * 60 * 60 * 1000;
 const SOON_WINDOW_MS = 60 * 60 * 1000;
 
-export function matchStatus(
+export function matchDisplayStatus(
   startsAt: string,
   now: number,
-  progress?: MatchProgress
-): MatchStatus {
-  if (progress === 'running') {
+  status?: MatchStatus
+): MatchDisplayStatus {
+  if (status === 'running') {
     return 'live';
   }
 
-  if (progress === 'finished') {
+  if (status === 'finished') {
     return 'finished';
   }
 
@@ -27,7 +27,7 @@ export function matchStatus(
   return elapsedStatus(delta);
 }
 
-function upcomingStatus(delta: number): MatchStatus {
+function upcomingStatus(delta: number): MatchDisplayStatus {
   if (delta <= SOON_WINDOW_MS) {
     return 'soon';
   }
@@ -35,7 +35,7 @@ function upcomingStatus(delta: number): MatchStatus {
   return 'upcoming';
 }
 
-function elapsedStatus(delta: number): MatchStatus {
+function elapsedStatus(delta: number): MatchDisplayStatus {
   if (-delta < LIVE_WINDOW_MS) {
     return 'live';
   }

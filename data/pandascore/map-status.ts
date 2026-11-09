@@ -1,8 +1,8 @@
-import type { MatchProgress } from '@/modules/shared/entities';
+import type { MatchStatus } from '@/modules/shared/entities';
 
 const FINISHED = new Set(['finished', 'canceled', 'postponed']);
 
-export function mapProgress(status: string): MatchProgress | undefined {
+export function mapStatus(status: string): MatchStatus | undefined {
   if (status === 'running') {
     return 'running';
   }
