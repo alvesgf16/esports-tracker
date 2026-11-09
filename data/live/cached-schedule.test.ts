@@ -1,4 +1,4 @@
-import { cachedLiveSchedule } from './cached-live-schedule';
+import { cachedLiveSchedule } from './cached-schedule';
 import type { LiveScheduleResult } from './schedule-result';
 
 const unconfigured: LiveScheduleResult = { status: 'unconfigured' };

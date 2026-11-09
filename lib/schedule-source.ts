@@ -1,5 +1,5 @@
 import { gameCatalog } from '@/data/game-catalog';
-import { cachedLiveSchedule } from '@/data/live/cached-live-schedule';
+import { cachedLiveSchedule } from '@/data/live/cached-schedule';
 import type { LiveScheduleResult } from '@/data/live/schedule-result';
 import { matchCatalog } from '@/data/match-catalog';
 import type {

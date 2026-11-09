@@ -1,12 +1,12 @@
 import { gameCatalog } from '@/data/game-catalog';
-import { cachedLiveSchedule } from '@/data/live/cached-live-schedule';
+import { cachedLiveSchedule } from '@/data/live/cached-schedule';
 import { matchCatalog } from '@/data/match-catalog';
 import type { ScheduleBoardSource } from '@/modules/shared/gateways';
 
 import { sampleBoard } from './sample-board';
 import { scheduleSource } from './schedule-source';
 
-jest.mock('@/data/live/cached-live-schedule', () => {
+jest.mock('@/data/live/cached-schedule', () => {
   const loadCached = jest.fn();
 
   return {

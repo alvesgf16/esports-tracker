@@ -22,7 +22,9 @@ function readCache(
     return Promise.resolve(store.result);
   }
 
-  store.pending ??= loadAndStore(load, store);
+  if (!store.pending) {
+    store.pending = loadAndStore(load, store);
+  }
 
   return store.pending;
 }

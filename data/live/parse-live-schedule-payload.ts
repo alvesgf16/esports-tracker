@@ -1,22 +1,18 @@
-import { jsonValue } from './json-value';
-import { parseGame } from './parse-game';
-import { parseList } from './parse-list';
-import { parseMatch } from './parse-match';
+import { asOrNull } from './as-or-null';
+import { parseAll } from './parse-all';
 import type { LiveSchedulePayload } from './schedule-result';
+import { toGame } from './to-game';
+import { toMatch } from './to-match';
 
 export function parseLiveSchedulePayload(
   value: unknown
 ): LiveSchedulePayload | null {
-  const record = jsonValue.record(value);
+  const record = asOrNull.record(value);
 
-  if (!record) {
-    return null;
-  }
-
-  return payloadFromRecord(record);
+  return record ? payloadFrom(record) : null;
 }
 
-function payloadFromRecord(
+function payloadFrom(
   record: Record<string, unknown>
 ): LiveSchedulePayload | null {
   if (record.status === 'unconfigured') {
@@ -24,41 +20,33 @@ function payloadFromRecord(
   }
 
   if (record.status === 'error') {
-    return errorPayload(record);
+    return errorPayloadFrom(record);
   }
 
   if (record.status === 'ok') {
-    return okPayload(record);
+    return okPayloadFrom(record);
   }
 
   return null;
 }
 
-function errorPayload(
+function errorPayloadFrom(
   record: Record<string, unknown>
 ): LiveSchedulePayload | null {
   if (record.message === undefined) {
     return { status: 'error' };
   }
 
-  const message = jsonValue.string(record.message);
+  const message = asOrNull.string(record.message);
 
-  if (!message) {
-    return null;
-  }
-
-  return { status: 'error', message };
+  return message ? { status: 'error', message } : null;
 }
 
-function okPayload(
+function okPayloadFrom(
   record: Record<string, unknown>
 ): LiveSchedulePayload | null {
-  const games = parseList(record.games, parseGame);
-  const matches = parseList(record.matches, parseMatch);
+  const games = parseAll(record.games, toGame);
+  const matches = parseAll(record.matches, toMatch);
 
-  if (!games || !matches) {
-    return null;
-  }
-
-  return { status: 'ok', games, matches };
+  return games && matches ? { status: 'ok', games, matches } : null;
 }
