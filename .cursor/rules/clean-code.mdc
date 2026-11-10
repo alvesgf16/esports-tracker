@@ -9,18 +9,18 @@ Source: Robert C. Martin, _Clean Code_. Inventory: `docs/clean-code-inventory.md
 
 ## Meaningful Names (Ch.2)
 
-Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). File names are kebab-case (`match-card.tsx`, `use-now.ts`); Expo Router reserved names (`_layout`, `+html`, `(tabs)`) stay as the framework requires. Prefer problem-domain vocabulary in `modules/` entities and use cases; solution-domain (Expo / React Native) words in `app/` routes, hooks, and Views. Name inferred types (`ScheduleLoadFailure`, not `Exclude<Awaited<ReturnType<typeof loadLiveSchedule>>, { status: 'ok' }>`). Inline `ReturnType` / `Awaited` / `Exclude` / `Extract` are banned (`types/no-inline-utility-types`); inline `{ ... }` object types are banned (`types/no-inline-object-types`); aliases are fine.
+Prefer intention-revealing, searchable, pronounceable names. One word per concept. No Hungarian / type prefixes. Classes and types are nouns; functions are verbs (React components stay PascalCase nouns). File names are kebab-case (`game-row.tsx`, `use-now.ts`); Expo Router reserved names (`_layout`, `+html`, `(tabs)`) stay as the framework requires. Prefer problem-domain vocabulary in `modules/` entities and use cases; solution-domain (Expo / React Native) words in `app/` routes, hooks, and Views. Name inferred types (`ScheduleLoadFailure`, not `Exclude<Awaited<ReturnType<typeof loadLiveSchedule>>, { status: 'ok' }>`). Inline `ReturnType` / `Awaited` / `Exclude` / `Extract` are banned (`types/no-inline-utility-types`); inline `{ ... }` object types are banned (`types/no-inline-object-types`); aliases are fine.
 
 ### Domain vocabulary
 
 - `Game`, `GameId` (opaque string), `Team`, `Match` — Entity DTOs in `modules/shared/entities.ts`
 - `Match.teams`, optional `Match.status` (`not_started` / `running` / `finished`)
-- Display status (`live` / `soon` / `upcoming` / `finished`) from `matchDisplayStatus`, `DayGroup`, `GameFilter` (Schedule contract: chip selection `GameId | 'all'`)
+- `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter` (Schedule contract: chip selection `GameId | 'all'`)
 - Kickoff, countdown, tournament (`league · stage`), format (`Bo3` / `Ft3`)
 - VIPER features: Schedule (`modules/features/schedule/`), Games (`modules/features/games/`)
 - Shared kernel: `modules/shared/` — entities, gateways, cross-feature use cases, shared UI
-- Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games); they pass `scheduleSource()` into `useBoardNow` and pass `board` plus `scheduleClock(now, timeZone)` (Schedule) or `now` (Games) into presenters
-- Clock / board: `lib/use-now.ts`, `lib/use-board-now.ts`, `lib/calendar-day.ts`, `lib/format-kickoff.ts`, `lib/format-countdown.ts`, `lib/schedule-clock.ts`, `lib/sample-board.ts`, `lib/schedule-source.ts`, `lib/use-schedule-board.ts`
+- Builders: `app/(tabs)/index.tsx` (Schedule), `app/(tabs)/games.tsx` (Games); they pass `scheduleSource()` into `useScheduleSnapshot` and pass `board` plus `scheduleClock(now, timezone)` (Schedule) or `now` (Games) into presenters
+- Clock / board: `lib/clock/` (`use-now`, `calendar-day`, `schedule-clock`, `device-time-zone`), `lib/board/` (`sample-board`, `schedule-source`, `use-schedule-board`), `lib/use-schedule-snapshot.ts`
 
 ## Functions (Ch.3)
 
@@ -32,11 +32,11 @@ Prefer rename/extract over narrative comments. Keep legal, intent, clarification
 
 ## Formatting (Ch.5)
 
-Prettier is the horizontal source of truth (`npm run lint` + `.prettierrc`). Vertical: newspaper metaphor, single blank between concepts, density within a thought, dependents below callers, conceptual affinity. Blank line around `if`/`for`, before `return`, and after a declaration group before the next kind of statement (`padding-line-between-statements`). Do not fight Prettier with other style ESLint.
+Prettier is the horizontal source of truth (`npm run lint` + `.prettierrc`). Vertical: newspaper metaphor, single blank between concepts, density within a thought, dependents below callers, conceptual affinity. Blank line around `if`/`for`, before `return`, and after a declaration group before the next kind of statement (`padding-line-between-statements`). Tests waive that padding so arrange-act-assert blocks own the blanks (`unit-tests.mdc`). Do not fight Prettier with other style ESLint.
 
 ## Objects and Data Structures (Ch.6)
 
-Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status and day grouping live in Schedule use cases; countdown labels live in injected `MatchLabels` from `lib/schedule-clock`. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teams[0].name`) is fine.
+Objects hide data behind operations; data structures expose data. `Match`, `Team`, and `Game` are DTOs — no behavior on the payload. Status and day grouping live in Schedule use cases; countdown labels live in injected `MatchLabels` from `lib/clock/schedule-clock`. Law of Demeter: talk to neighbors, not strangers — reading DTO fields (`match.teams[0].name`) is fine.
 
 ## Error Handling (Ch.7)
 
@@ -44,7 +44,7 @@ Prefer exceptions over error codes for unexpected failures (`GameCatalog.get` th
 
 ## Boundaries (Ch.8)
 
-Wrap third-party APIs behind owned façades. Sample catalogs in `data/sample/` are a stand-in: a live schedule API belongs behind `data/` implementing `modules/shared/gateways.ts` (`data/live`, `data/pandascore`, `gameCatalog` / `matchCatalog`), chosen by `lib/schedule-source` and loaded via `useBoardNow(scheduleSource())` in Builders — not inside Views, use cases, or Presenters. `data/pandascore` maps and caches the vendor board; `data/live/load-schedule-payload` builds the HTTP payload; `app/api/matches+api.ts` only maps that payload to a status code. Learning tests at the boundary. Expo Router’s `useRouter` / `useLocalSearchParams` live in `modules/features/*/router.ts`; the Games→Schedule game param lives in `modules/shared/schedule-game-route.ts`. `Link` and layouts stay in `app/`. Every file in `app/` is a route, so composition hooks stay in `lib/`. Features import `modules/shared`, never each other.
+Wrap third-party APIs behind owned façades. Sample catalogs in `data/sources/sample/` are a stand-in: a live schedule API belongs behind `data/` implementing `modules/shared/gateways.ts` (`data/sources/live`, `data/sources/pandascore`, `gameCatalog` / `matchCatalog` at `data/catalogs/`), chosen by `lib/board/schedule-source` and loaded via `useScheduleSnapshot(scheduleSource())` in Builders — not inside Views, use cases, or Presenters. `data/sources/pandascore` maps vendor JSON in `mappers/` and caches the board; `data/sources/live` parses owned JSON in `mappers/` using shared combinators in `data/mappers/`; `load-schedule-payload` builds the HTTP payload; `app/api/matches+api.ts` only maps that payload to a status code. Learning tests at the boundary. Expo Router’s `useRouter` / `useLocalSearchParams` live in `modules/features/*/router.ts`; the Games→Schedule game param lives in `modules/shared/schedule-game-route.ts`. `Link` and layouts stay in `app/`. Every file in `app/` is a route, so composition hooks stay in `lib/`. Features import `modules/shared`, never each other.
 
 ## Classes (Ch.10)
 
@@ -54,13 +54,13 @@ Small, cohesive, single responsibility. This app is function- and type-first VIP
 
 Separate construction from use. Builders in `app/` inject the loaded board and clock ports into the Presenter and render the View. One-way dependencies:
 
-- `app/` → `modules/features`, `modules/shared`, `data/sample` / `data/pandascore` / `data/live`, `lib/`, `constants/`, `expo-router`
+- `app/` → `modules/features`, `modules/shared`, `data/sources/` / `data/catalogs/` / `data/mappers/`, `lib/`, `constants/`, `expo-router`
 - Router → `expo-router`, contracts, entities, shared route helpers
 - Presenter → use cases, shared entities/gateways/mappers, contracts, feature `router`, `mappers/` — no `react-native` / `expo-router` / `data/` / `lib/` / sibling features. Mappers do not import `lib/`; the Builder binds `scheduleClock` and injects it.
 - Use cases → entities, gateway ports, and other use cases; never `data/`, sibling features, or `lib/`
 - View → presenter types + `constants/` + `modules/shared`
-- `data/` → shared `entities` + `gateways` only (outer sample / live / API implementations)
-- `lib/use-schedule-board` → `ScheduleBoardSource`; Builders pass `scheduleSource()` into `useBoardNow`, then pass loaded `board` and `scheduleClock(now, timeZone)` into presenters
+- `data/` → shared `entities` + `gateways` only (outer `sources/` / catalogs / mappers)
+- `lib/board/use-schedule-board` → `ScheduleBoardSource`; Builders pass `scheduleSource()` into `useScheduleSnapshot`, then pass loaded `board` and `scheduleClock(now, timezone)` into presenters
 
 Feature / shared layout (omit a slot until it has a real owner): `components/`, `mappers/`, `use-cases/`, `contracts.ts`, `entities.ts`, `gateways.ts`, `presenter.ts`, `router.ts`, `view.tsx`, harness, colocated tests. `mappers/` is a per-module slot for presenter mapping (`match-days`, `game-row`) so those are not loose files beside `presenter.ts`. Cross-feature mapping (`notice`) lives in `modules/shared/mappers/`. Cross-feature types, gateways, use cases, and UI live in `modules/shared`. Application logic lives in `use-cases/`; UI pieces in `components/`.
 

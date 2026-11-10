@@ -7,8 +7,10 @@ const jestPlugin = require('eslint-plugin-jest');
 const exportRules = require('./eslint-rules/exports');
 const typesRules = require('./eslint-rules/types');
 
+const specFiles = ['**/*.{spec,test}.{ts,tsx,js,jsx}'];
+
 const testFiles = [
-  '**/*.{spec,test}.{ts,tsx,js,jsx}',
+  ...specFiles,
   '**/*.harness.{ts,tsx}',
   '**/__tests__/**/*.{ts,tsx,js,jsx}',
 ];
@@ -26,7 +28,7 @@ const allFeatures = {
 };
 
 const dataLayer = {
-  group: ['@/data', '@/data/*'],
+  group: ['@/data', '@/data/*', '@/data/**'],
   message:
     'Feature and shared tests fake gateway ports; they must not import data/.',
 };
@@ -45,12 +47,12 @@ function presenterImports() {
     ],
     patterns: [
       {
-        group: ['@/lib', '@/lib/*'],
+        group: ['@/lib', '@/lib/*', '@/lib/**'],
         message:
           'Builders own lib/; inject the board and scheduleClock into the Presenter.',
       },
       {
-        group: ['@/app', '@/app/*', '@/data', '@/data/*'],
+        group: ['@/app', '@/app/*', '@/data', '@/data/*', '@/data/**'],
         message:
           'Presenters use entities, gateways, and use cases; Builders inject data/.',
       },
@@ -78,10 +80,12 @@ function useCaseImports(featureBan) {
           '@/app/*',
           '@/data',
           '@/data/*',
+          '@/data/**',
           '@/constants',
           '@/constants/*',
           '@/lib',
           '@/lib/*',
+          '@/lib/**',
         ],
         message:
           'Use cases take entities as input; view-model mapping lives in mappers/.',
@@ -110,13 +114,14 @@ function mapperImports(featureBan) {
           '@/app/*',
           '@/data',
           '@/data/*',
+          '@/data/**',
           '@/constants',
           '@/constants/*',
           '@/lib',
           '@/lib/*',
+          '@/lib/**',
         ],
-        message:
-          'Mappers map entities and gateway state into view models.',
+        message: 'Mappers map entities and gateway state into view models.',
       },
       featureBan,
     ],
@@ -138,6 +143,7 @@ function routerImports() {
           '@/app/*',
           '@/data',
           '@/data/*',
+          '@/data/**',
           '@/constants',
           '@/constants/*',
         ],
@@ -159,7 +165,7 @@ function viewImports(featureBan) {
     ],
     patterns: [
       {
-        group: ['@/data', '@/data/*', '@/app', '@/app/*'],
+        group: ['@/data', '@/data/*', '@/data/**', '@/app', '@/app/*'],
         message:
           'Views render view models only; no data queries or app routes.',
       },
@@ -347,6 +353,13 @@ module.exports = defineConfig([
     },
   },
   {
+    files: specFiles,
+    rules: {
+      // AAA blocks own vertical blanks; harnesses keep production padding.
+      'padding-line-between-statements': 'off',
+    },
+  },
+  {
     files: [
       'modules/shared/entities.ts',
       'modules/shared/gateways.ts',
@@ -426,8 +439,10 @@ module.exports = defineConfig([
                 '@/app/*',
                 '@/data',
                 '@/data/*',
+                '@/data/**',
                 '@/lib',
                 '@/lib/*',
+                '@/lib/**',
                 '@/constants',
                 '@/constants/*',
                 '@/modules/features',
@@ -463,11 +478,44 @@ module.exports = defineConfig([
                 '@/app/*',
                 '@/data',
                 '@/data/*',
+                '@/data/**',
                 '@/modules',
                 '@/modules/*',
                 '@/modules/**',
               ],
               message: 'Clock helpers must stay free of modules and data/.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['lib/clock/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/lib/board', '@/lib/board/*', '@/lib/board/**'],
+              message: 'lib/clock must not import lib/board.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['lib/board/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/lib/clock', '@/lib/clock/*', '@/lib/clock/**'],
+              message: 'lib/board must not import lib/clock.',
             },
           ],
         },
@@ -541,6 +589,7 @@ module.exports = defineConfig([
                 '@/constants/*',
                 '@/lib',
                 '@/lib/*',
+                '@/lib/**',
                 '@/modules/features',
                 '@/modules/features/**',
                 '@/modules/shared/components',

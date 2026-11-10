@@ -14,11 +14,11 @@ Fast, Independent, Repeatable, Self-validating, Timely.
 
 ## AAA
 
-Arrange / Act / Assert. One concept per test. Names say behavior (`matchStatus returns live inside the live window`).
+Arrange / Act / Assert. One concept per test. Names say behavior (`matchStatus returns live inside the live window`). Vertical blanks follow the three phases: dense within arrange, act, and assert; one blank line between them. Production `padding-line-between-statements` is off here so declaration/if/return padding does not split a phase.
 
 ## Dual standard
 
-Production size/complexity gates stay strict. Spec, `*.test`, harness, and `__tests__` files may relax max-lines / complexity / max-classes — keep naming and “no empty catch” discipline.
+Production size/complexity gates stay strict. Spec, `*.test`, harness, and `__tests__` files may relax max-lines / complexity / max-classes — keep naming and “no empty catch” discipline. `padding-line-between-statements` is off on specs/`*.test` only; harnesses keep production padding.
 
 ## Harness / DSL
 
