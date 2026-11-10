@@ -2,7 +2,7 @@
 
 Source: Robert C. Martin, _Clean Code_. Stack: **typescript** (Expo SDK 58 / React Native).
 
-Lint entrypoint: `npm run lint` (`eslint .`). Typecheck: `npm run typecheck`. Combined gate: `npm run check` (lint + typecheck + tests + knip + jscpd; husky pre-commit). Do not use `npx expo lint` as the gate — it only covers `app/`, `src/`, and `components/`.
+Lint entrypoint: `npm run lint` (`eslint .`). Typecheck: `npm run typecheck`. Combined gate: `npm run check` (lint + typecheck + tests + knip + jscpd; husky pre-commit). Commit messages: `npm run commitlint` (husky `commit-msg`). Do not use `npx expo lint` as the gate — it only covers `app/`, `src/`, and `components/`.
 
 ## Tags
 
@@ -16,7 +16,7 @@ Lint entrypoint: `npm run lint` (`eslint .`). Typecheck: `npm run typecheck`. Co
 
 | Layer                  | Location                                          | Role                                                  |
 | ---------------------- | ------------------------------------------------- | ----------------------------------------------------- |
-| Automated gates        | `eslint.config.js` + Prettier + knip + jscpd, via `npm run check` | Chapter `automate` rows               |
+| Automated gates        | `eslint.config.js` + Prettier + knip + jscpd, via `npm run check`; `commitlint.config.js` via husky `commit-msg` | Chapter `automate` rows               |
 | Agent / human judgment | `.cursor/rules/clean-code.mdc`                    | Meaningful Names through Smells                       |
 | Unit-test judgment     | `.cursor/rules/unit-tests.mdc`                    | FIRST / AAA / dual standard (`*.spec.*` / `*.test.*`) |
 | Agent entrypoint       | `AGENTS.md`                                       | Pointer to this inventory only                        |
@@ -26,7 +26,7 @@ Lint entrypoint: `npm run lint` (`eslint .`). Typecheck: `npm run typecheck`. Co
 
 - Default: one `.cursor/rules/clean-code.mdc` for judgment (`alwaysApply: true`)
 - Split only for different globs or a real boundary seam — currently `unit-tests.mdc` for test files
-- Guide-heavy chapters (1, 6, 12, 14, much of 13) stay in the rule file — no extra ESLint plugin for those alone
+- Guide-heavy chapters (1, 6, 12, much of 13) stay in the rule file — no extra ESLint plugin for those alone
 
 ## Stack-specific plugins / tools
 
@@ -45,6 +45,7 @@ Prefer MIT/Apache tooling. Do **not** enable `eslint-plugin-sonarjs` (LGPL).
 | Classes (Ch.10)      | `max-classes-per-file` 1, `max-lines` 100, `exports/max-value-exports` 1 (`max: 0` on type modules), `exports/no-mixed-exports`, `exports/no-barrel` |
 | Concurrency (Ch.13)  | `@typescript-eslint/await-thenable`, `@typescript-eslint/require-await` (type-aware `projectService`)                                            |
 | Smells (Ch.17)       | `eslint-plugin-unicorn@65` (MIT, last ESLint 9-compatible; Expo pins ESLint 9), `jscpd`, `knip`                                                  |
+| Commits (Ch.14)      | `@commitlint/cli` + `@commitlint/config-conventional`; husky `commit-msg`                                                                          |
 
 ### VIPER + Clean Architecture layer map (React-adapted)
 
@@ -89,7 +90,7 @@ These are noisy on React Native screens; keep the default gates until an intenti
 | 11    | Systems                     | Construction vs use; one-way dependencies                           | `automate`, `guide` | Builders pass `scheduleSource()` into `useScheduleSnapshot`, then inject loaded `board` and `scheduleClock(now, timezone)` into presenters; `no-restricted-imports` and `exports/no-barrel` enforce the layer map |
 | 12    | Emergence                   | Runs tests; no duplication; expresses intent; fewest elements       | `automate`, `guide` | `npm run check` includes knip + jscpd (threshold 0)                                                                                            |
 | 13    | Concurrency                 | Clear async boundaries; no false thread myths                       | `automate`, `guide` | `await-thenable`, `require-await`; RN JS thread + Reanimated worklets stay guide                                                               |
-| 14    | Successive Refinement       | Draft → refine → green → commit; no broken main                     | `guide`             | Feature branch; commit when asked; CI/hooks only if already present                                                                            |
+| 14    | Successive Refinement       | Draft → refine → green → commit; no broken main                     | `automate`, `guide` | Feature branch; commit when asked; husky `commit-msg` runs commitlint (Conventional Commits)                                                    |
 | 15–16 | Case studies                | —                                                                   | out of scope        | Fold heuristics into Ch.17                                                                                                                     |
 | 17    | Smells and Heuristics       | G5 duplication; dead code; nesting; negated conditions              | `automate`, `guide` | unicorn: `no-nested-ternary`, `no-lonely-if`, `prefer-array-find`; `jscpd .` (threshold 0); `knip`                                              |
 

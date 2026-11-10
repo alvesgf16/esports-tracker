@@ -19,12 +19,15 @@ npm run lint                # lint (eslint . — whole project, not expo lint)
 npm run typecheck           # tsc --noEmit
 npm test                    # unit tests (jest-expo)
 npm run check               # lint + typecheck + tests + knip + jscpd (also runs on git pre-commit via husky)
+npm run commitlint          # lint a commit message from stdin (also runs on git commit-msg via husky)
 npm run test:coverage       # unit tests with coverage report in coverage/
 npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
 ```
 
 Run `npm run check` before declaring any task done. Commits are blocked unless it passes.
+
+Commit messages follow Conventional Commits. Husky runs commitlint on `commit-msg`. Example: `feat: add expo hosting so the schedule can run as a phone web app`.
 
 ## Navigation & Routing
 

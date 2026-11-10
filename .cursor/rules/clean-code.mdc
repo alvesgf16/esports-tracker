@@ -76,7 +76,7 @@ Prefer clear async boundaries. `useNow` owns the interval clock in Builders; don
 
 ## Successive Refinement (Ch.14)
 
-Make it work, then refine with the bar green. Feature branch; no broken main. Commit when the human asks.
+Make it work, then refine with the bar green. Feature branch; no broken main. Commit when the human asks. Commit messages follow Conventional Commits (`commitlint.config.js`).
 
 ## Smells and Heuristics (Ch.17)
 

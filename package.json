@@ -25,6 +25,8 @@
     "uniwind": "^1.13.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
     "@testing-library/react-native": "^14.1.0",
     "@types/jest": "30.0.0",
     "@types/react": "~19.3.0",
@@ -57,6 +59,7 @@
     "check": "npm run lint && npm run typecheck && npm test && npm run knip && npm run jscpd",
     "knip": "knip",
     "jscpd": "jscpd .",
+    "commitlint": "commitlint",
     "uniwind:types": "uniwind generate-artifacts --css ./global.css --dts ./uniwind-types.d.ts",
     "prepare": "husky"
   },
