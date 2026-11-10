@@ -1,25 +1,20 @@
-import type { Match, Team } from '@/modules/shared/entities';
+import type { Match } from '@/modules/shared/entities';
 import type { GameCatalog } from '@/modules/shared/gateways';
-import { matchDisplayStatus } from '@/modules/shared/use-cases/match-display-status';
 
 import type {
   DayGroup,
   DaySectionModel,
-  MatchCardModel,
   MatchLabels,
+  MatchRowModel,
   ScheduleClock,
 } from '../contracts';
 import { groupByDay } from '../use-cases/group-by-day';
+import { matchRow } from './match-row';
 
 type MatchContext = {
   games: GameCatalog;
   now: number;
   labels: MatchLabels;
-};
-
-type MatchSides = {
-  left: string;
-  right: string;
 };
 
 export function matchDays(
@@ -42,50 +37,11 @@ export function matchDays(
 function matchDay(group: DayGroup, context: MatchContext): DaySectionModel {
   const { dayKey, label, matches } = group;
 
-  const toMatchCard = (match: Match): MatchCardModel =>
-    matchCard(match, context);
+  const toMatchRow = (match: Match): MatchRowModel => matchRow(match, context);
 
   return {
     dayKey,
     label,
-    matches: matches.map(toMatchCard),
+    matches: matches.map(toMatchRow),
   };
-}
-
-function matchCard(match: Match, context: MatchContext): MatchCardModel {
-  const { format, game, id, startsAt, status, tournament } = match;
-  const { games, labels, now } = context;
-
-  const displayStatus = matchDisplayStatus(startsAt, now, status);
-  const matchGame = games.get(game);
-  const isLive = displayStatus === 'live';
-  const { left, right } = sidesFor(match);
-
-  return {
-    id,
-    kickoffLabel: isLive ? 'LIVE' : labels.kickoff(startsAt),
-    countdownLabel: isLive ? '' : labels.countdown(startsAt),
-    isLive,
-    left,
-    right,
-    meta: `${matchGame.shortName} · ${tournament} · ${format}`,
-  };
-}
-
-function sidesFor(match: Match): MatchSides {
-  const { name, teams } = match;
-
-  return teams.length > 2
-    ? {
-        left: name,
-        right: `${teams.length} teams`,
-      }
-    : {
-        left: nameFor(teams[0]),
-        right: nameFor(teams[1]),
-      };
-}
-
-function nameFor(team?: Team): string {
-  return team?.name ?? 'TBD';
 }

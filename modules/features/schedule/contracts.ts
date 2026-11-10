@@ -37,7 +37,7 @@ export type ChipModel = {
   onPress: () => void;
 };
 
-export type MatchCardModel = {
+export type MatchRowModel = {
   id: string;
   kickoffLabel: string;
   countdownLabel: string;
@@ -50,7 +50,7 @@ export type MatchCardModel = {
 export type DaySectionModel = {
   dayKey: string;
   label: string;
-  matches: MatchCardModel[];
+  matches: MatchRowModel[];
 };
 
 export type SchedulePresenter = {
