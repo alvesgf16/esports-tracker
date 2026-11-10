@@ -1,4 +1,4 @@
-import { G2_VS_FNC } from './live.harness';
+import { G2_VS_FNC } from '../live.harness';
 import { toMatch } from './to-match';
 
 describe('toMatch', () => {

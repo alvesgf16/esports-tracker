@@ -1,7 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react-native';
 
-import { gameCatalog } from '@/data/game-catalog';
-import { matchCatalog } from '@/data/match-catalog';
+import { gameCatalog } from '@/data/catalogs/game-catalog';
+import { matchCatalog } from '@/data/catalogs/match-catalog';
 import type {
   ScheduleBoardState,
   ScheduleLoadState,

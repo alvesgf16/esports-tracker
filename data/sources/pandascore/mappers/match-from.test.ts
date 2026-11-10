@@ -1,5 +1,6 @@
-import { aVendorMatch, aVendorOpponent } from './pandascore.harness';
-import type { VendorMatch } from './vendor-types';
+import { aVendorMatch, aVendorOpponent } from '../pandascore.harness';
+import type { VendorMatch } from '../vendor-types';
+
 import duel from './fixtures/duel.json';
 import eSoccer from './fixtures/e-soccer.json';
 import lobby from './fixtures/lobby.json';

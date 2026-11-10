@@ -1,8 +1,8 @@
 import type { Game, Match } from '@/modules/shared/entities';
 
-import { gameFrom } from './game-from';
+import { gameFrom } from './mappers/game-from';
 import { mapWithPool } from './map-with-pool';
-import { matchFrom } from './match-from';
+import { matchFrom } from './mappers/match-from';
 import type { ScheduleBoard } from './schedule-board';
 import type { VendorMatch, VendorVideogame } from './vendor-types';
 

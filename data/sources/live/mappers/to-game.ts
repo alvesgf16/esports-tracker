@@ -1,6 +1,5 @@
+import { asOrNull } from '@/data/mappers/as-or-null';
 import type { Game } from '@/modules/shared/entities';
-
-import { asOrNull } from './as-or-null';
 
 export function toGame(value: unknown): Game | null {
   const gameRecord = asOrNull.record(value);

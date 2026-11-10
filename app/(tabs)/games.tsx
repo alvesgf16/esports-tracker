@@ -1,4 +1,4 @@
-import { scheduleSource } from '@/lib/schedule-source';
+import { scheduleSource } from '@/lib/board/schedule-source';
 import { useScheduleSnapshot } from '@/lib/use-schedule-snapshot';
 import { useGamesPresenter } from '@/modules/features/games/presenter';
 import GamesView from '@/modules/features/games/view';

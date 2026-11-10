@@ -1,4 +1,4 @@
-import { gameCatalog } from '@/data/game-catalog';
+import { gameCatalog } from '@/data/catalogs/game-catalog';
 import type { Game } from '@/modules/shared/entities';
 
 const GAMES: Game[] = [

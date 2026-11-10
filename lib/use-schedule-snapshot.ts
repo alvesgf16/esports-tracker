@@ -1,8 +1,8 @@
 import type { ScheduleBoardSource } from '@/modules/shared/gateways';
 
-import { deviceTimeZone } from './device-time-zone';
-import { useNow } from './use-now';
-import { useScheduleBoard } from './use-schedule-board';
+import { useScheduleBoard } from './board/use-schedule-board';
+import { deviceTimeZone } from './clock/device-time-zone';
+import { useNow } from './clock/use-now';
 
 export function useScheduleSnapshot(source: ScheduleBoardSource) {
   const now = useNow();

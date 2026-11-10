@@ -1,6 +1,7 @@
-import { asOrNull } from './as-or-null';
-import { parseAll } from './parse-all';
-import type { LiveSchedulePayload } from './schedule-result';
+import { asOrNull } from '@/data/mappers/as-or-null';
+import { parseAll } from '@/data/mappers/parse-all';
+
+import type { LiveSchedulePayload } from '../schedule-result';
 import { toGame } from './to-game';
 import { toMatch } from './to-match';
 

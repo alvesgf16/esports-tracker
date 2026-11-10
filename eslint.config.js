@@ -252,7 +252,7 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['data/pandascore/vendor-types.ts'],
+    files: ['data/sources/pandascore/vendor-types.ts'],
     rules: {
       '@typescript-eslint/naming-convention': [
         'error',
@@ -351,9 +351,9 @@ module.exports = defineConfig([
       'modules/shared/entities.ts',
       'modules/shared/gateways.ts',
       'modules/features/*/contracts.ts',
-      'data/live/schedule-result.ts',
-      'data/pandascore/schedule-board.ts',
-      'data/pandascore/vendor-types.ts',
+      'data/sources/live/schedule-result.ts',
+      'data/sources/pandascore/schedule-board.ts',
+      'data/sources/pandascore/vendor-types.ts',
     ],
     rules: {
       'exports/max-value-exports': ['error', { max: 0 }],
@@ -441,7 +441,7 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['lib/format-*.ts', 'lib/calendar-day.ts', 'lib/schedule-clock.ts'],
+    files: ['lib/clock/calendar-day.ts', 'lib/clock/schedule-clock.ts'],
     rules: {
       'no-restricted-imports': [
         'error',

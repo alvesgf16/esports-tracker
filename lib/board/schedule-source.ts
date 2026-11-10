@@ -1,7 +1,7 @@
-import { gameCatalog } from '@/data/game-catalog';
-import { cachedLiveSchedule } from '@/data/live/cached-schedule';
-import type { LiveScheduleResult } from '@/data/live/schedule-result';
-import { matchCatalog } from '@/data/match-catalog';
+import { gameCatalog } from '@/data/catalogs/game-catalog';
+import { matchCatalog } from '@/data/catalogs/match-catalog';
+import { cachedLiveSchedule } from '@/data/sources/live/cached-schedule';
+import type { LiveScheduleResult } from '@/data/sources/live/schedule-result';
 import type {
   ScheduleBoardSource,
   ScheduleBoardState,

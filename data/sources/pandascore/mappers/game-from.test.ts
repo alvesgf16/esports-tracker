@@ -1,5 +1,5 @@
 import { gameFrom } from './game-from';
-import { aVendorVideogame } from './pandascore.harness';
+import { aVendorVideogame } from '../pandascore.harness';
 
 describe('gameFrom', () => {
   it('maps a traditional title from the vendor slug', () => {

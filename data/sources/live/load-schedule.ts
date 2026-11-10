@@ -1,7 +1,7 @@
-import { gameCatalog } from '@/data/game-catalog';
-import { matchCatalog } from '@/data/match-catalog';
+import { gameCatalog } from '@/data/catalogs/game-catalog';
+import { matchCatalog } from '@/data/catalogs/match-catalog';
 
-import { parseLiveSchedulePayload } from './parse-live-schedule-payload';
+import { parseLiveSchedulePayload } from './mappers/parse-live-schedule-payload';
 import { scheduleError } from './schedule-error';
 import type {
   LiveSchedulePayload,

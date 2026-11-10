@@ -1,7 +1,7 @@
 import type { Game } from '@/modules/shared/entities';
 
+import type { VendorVideogame } from '../vendor-types';
 import { isSimulatedSport } from './is-simulated-sport';
-import type { VendorVideogame } from './vendor-types';
 
 const KNOWN_SHORT_NAMES: Record<string, string> = {
   'league-of-legends': 'LoL',

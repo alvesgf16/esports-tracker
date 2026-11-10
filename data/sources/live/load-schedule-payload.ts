@@ -1,4 +1,4 @@
-import { createCachedScheduleBoardLoader } from '@/data/pandascore/create-cached-schedule-board-loader';
+import { createCachedScheduleBoardLoader } from '@/data/sources/pandascore/create-cached-schedule-board-loader';
 
 import { scheduleError } from './schedule-error';
 import type { LiveSchedulePayload } from './schedule-result';

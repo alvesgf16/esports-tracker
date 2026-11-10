@@ -1,4 +1,4 @@
-import { G2_VS_FNC, LOL, OK_PAYLOAD } from './live.harness';
+import { G2_VS_FNC, LOL, OK_PAYLOAD } from '../live.harness';
 import { parseLiveSchedulePayload } from './parse-live-schedule-payload';
 
 describe('parseLiveSchedulePayload', () => {

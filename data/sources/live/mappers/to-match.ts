@@ -1,8 +1,7 @@
+import { asOrNull } from '@/data/mappers/as-or-null';
+import { parseAll } from '@/data/mappers/parse-all';
+import { parseOptional } from '@/data/mappers/parse-optional';
 import type { Match, MatchStatus, Team } from '@/modules/shared/entities';
-
-import { asOrNull } from './as-or-null';
-import { parseAll } from './parse-all';
-import { parseOptional } from './parse-optional';
 
 type MatchCore = {
   id: string;

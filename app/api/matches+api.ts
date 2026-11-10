@@ -1,4 +1,4 @@
-import { loadSchedulePayload } from '@/data/live/load-schedule-payload';
+import { loadSchedulePayload } from '@/data/sources/live/load-schedule-payload';
 
 export async function GET(): Promise<Response> {
   const payload = await loadSchedulePayload(

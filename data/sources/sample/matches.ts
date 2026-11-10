@@ -1,4 +1,4 @@
-import { matchCatalog } from '@/data/match-catalog';
+import { matchCatalog } from '@/data/catalogs/match-catalog';
 import type { Match } from '@/modules/shared/entities';
 
 import { EARLY_MATCHES } from './matches-early';

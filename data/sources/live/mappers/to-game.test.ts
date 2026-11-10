@@ -1,4 +1,4 @@
-import { LOL } from './live.harness';
+import { LOL } from '../live.harness';
 import { toGame } from './to-game';
 
 describe('toGame', () => {

@@ -1,7 +1,7 @@
 import type { Match, MatchStatus, Team } from '@/modules/shared/entities';
 
+import type { VendorMatch, VendorOpponent } from '../vendor-types';
 import { isSimulatedSport } from './is-simulated-sport';
-import type { VendorMatch, VendorOpponent } from './vendor-types';
 
 const FINISHED = new Set(['finished', 'canceled', 'postponed']);
 

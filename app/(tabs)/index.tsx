@@ -1,5 +1,5 @@
-import { scheduleClock } from '@/lib/schedule-clock';
-import { scheduleSource } from '@/lib/schedule-source';
+import { scheduleSource } from '@/lib/board/schedule-source';
+import { scheduleClock } from '@/lib/clock/schedule-clock';
 import { useScheduleSnapshot } from '@/lib/use-schedule-snapshot';
 import { useSchedulePresenter } from '@/modules/features/schedule/presenter';
 import ScheduleView from '@/modules/features/schedule/view';

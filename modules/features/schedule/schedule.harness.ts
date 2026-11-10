@@ -1,4 +1,4 @@
-import { calendarDay } from '@/lib/calendar-day';
+import { calendarDay } from '@/lib/clock/calendar-day';
 import type { Game } from '@/modules/shared/entities';
 import type { GameCatalog, MatchCatalog } from '@/modules/shared/gateways';
 import {
