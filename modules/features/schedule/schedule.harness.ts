@@ -27,8 +27,8 @@ export function stubMatchCatalog(
   return { list: () => [], ...overrides };
 }
 
-export function stubDayCalendar(timeZone = TEST_TIME_ZONE) {
-  return calendarDay.forZone(timeZone);
+export function stubDayCalendar(timezone = TEST_TIME_ZONE) {
+  return calendarDay.forZone(timezone);
 }
 
 export function stubScheduleClock(
@@ -38,8 +38,8 @@ export function stubScheduleClock(
     now: FIXED_NOW,
     calendar: stubDayCalendar(),
     labels: {
-      kickoff: (startsAt) => `kickoff:${startsAt}`,
-      countdown: (startsAt) => `countdown:${startsAt}`,
+      kickoff: (startingTime) => `kickoff:${startingTime}`,
+      countdown: (startingTime) => `countdown:${startingTime}`,
     },
     ...overrides,
   };

@@ -36,17 +36,19 @@ export function matchDays(
   const toMatchDay = (group: DayGroup): DaySectionModel =>
     matchDay(group, context);
 
-  return groupByDay(matches, clock.now, clock.calendar).map(toMatchDay);
+  return groupByDay(matches, clock).map(toMatchDay);
 }
 
 function matchDay(group: DayGroup, context: MatchContext): DaySectionModel {
+  const { dayKey, label, matches } = group;
+
   const toMatchCard = (match: Match): MatchCardModel =>
     matchCard(match, context);
 
   return {
-    key: group.key,
-    label: group.label,
-    matches: group.matches.map(toMatchCard),
+    dayKey,
+    label,
+    matches: matches.map(toMatchCard),
   };
 }
 

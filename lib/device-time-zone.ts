@@ -12,16 +12,16 @@ export function deviceTimeZone(): string {
 
 function calendarTimeZone(): string | null {
   try {
-    const timeZone = getCalendars()[0]?.timeZone?.trim();
+    const timezone = getCalendars()[0]?.timeZone?.trim();
 
-    return timeZone || null;
+    return timezone || null;
   } catch {
     return null;
   }
 }
 
 function intlTimeZone(): string | null {
-  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone?.trim();
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone?.trim();
 
-  return timeZone || null;
+  return timezone || null;
 }

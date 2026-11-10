@@ -48,9 +48,9 @@ describe('deviceTimeZone', () => {
   });
 });
 
-function stubIntlZone(timeZone: string): void {
+function stubIntlZone(timezone: string): void {
   jest.spyOn(Intl, 'DateTimeFormat').mockReturnValue({
-    resolvedOptions: () => ({ timeZone }),
+    resolvedOptions: () => ({ timeZone: timezone }),
   } as never);
 }
 

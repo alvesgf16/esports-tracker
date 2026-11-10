@@ -25,7 +25,7 @@ export default function MatchDayList({ groups, emptyMessage }: Props) {
   return (
     <ScrollView className="flex-1" contentContainerClassName="px-4 pb-8">
       {hasGroups ? (
-        groups.map((day) => <MatchDaySection key={day.key} day={day} />)
+        groups.map((day) => <MatchDaySection key={day.dayKey} day={day} />)
       ) : (
         <Text className="mt-12 text-center text-[15px] text-muted">
           {emptyMessage}

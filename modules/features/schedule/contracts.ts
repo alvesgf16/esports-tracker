@@ -7,22 +7,22 @@ export type ScheduleRouter = {
   setGameFilter: (game: GameFilter) => void;
 };
 
-export type DayCalendar = {
-  key: (instant: string | number) => string;
+type DayCalendar = {
+  dayKey: (instant: string | number) => string;
   todayKey: (now: number) => string;
   tomorrowKey: (now: number) => string;
-  heading: (key: string) => string;
+  heading: (dayKey: string) => string;
 };
 
 export type DayGroup = {
-  key: string;
+  dayKey: string;
   label: string;
   matches: Match[];
 };
 
 export type MatchLabels = {
-  kickoff: (startsAt: string) => string;
-  countdown: (startsAt: string) => string;
+  kickoff: (startingTime: string) => string;
+  countdown: (startingTime: string) => string;
 };
 
 export type ScheduleClock = {
@@ -48,7 +48,7 @@ export type MatchCardModel = {
 };
 
 export type DaySectionModel = {
-  key: string;
+  dayKey: string;
   label: string;
   matches: MatchCardModel[];
 };

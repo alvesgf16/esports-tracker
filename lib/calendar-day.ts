@@ -4,24 +4,25 @@ const DAY_KEY = 'YYYY-MM-DD';
 const DAY_HEADING = 'dddd, MMM D';
 
 export const calendarDay = {
-  key(instant: string | number, timeZone: string): string {
-    return formatDayKey(instantInZone(instant, timeZone));
+  dayKey(instant: string | number, timezone: string): string {
+    return formatDayKey(instantInZone(instant, timezone));
   },
-  todayKey(now: number, timeZone: string): string {
-    return formatDayKey(startOfCalendarDay(now, timeZone));
+  todayKey(now: number, timezone: string): string {
+    return formatDayKey(startOfCalendarDay(now, timezone));
   },
-  tomorrowKey(now: number, timeZone: string): string {
-    return formatDayKey(startOfCalendarDay(now, timeZone).add(1, 'day'));
+  tomorrowKey(now: number, timezone: string): string {
+    return formatDayKey(startOfCalendarDay(now, timezone).add(1, 'day'));
   },
-  heading(key: string, timeZone: string): string {
-    return parseDayKey(key, timeZone).format(DAY_HEADING);
+  heading(dayKey: string, timezone: string): string {
+    return parseDayKey(dayKey, timezone).format(DAY_HEADING);
   },
-  forZone(timeZone: string) {
+  forZone(timezone: string) {
     return {
-      key: (instant: string | number) => calendarDay.key(instant, timeZone),
-      todayKey: (now: number) => calendarDay.todayKey(now, timeZone),
-      tomorrowKey: (now: number) => calendarDay.tomorrowKey(now, timeZone),
-      heading: (key: string) => calendarDay.heading(key, timeZone),
+      dayKey: (instant: string | number) =>
+        calendarDay.dayKey(instant, timezone),
+      todayKey: (now: number) => calendarDay.todayKey(now, timezone),
+      tomorrowKey: (now: number) => calendarDay.tomorrowKey(now, timezone),
+      heading: (dayKey: string) => calendarDay.heading(dayKey, timezone),
     };
   },
 };
@@ -30,14 +31,14 @@ function formatDayKey(zoned: moment.Moment) {
   return zoned.format(DAY_KEY);
 }
 
-function instantInZone(instant: string | number, timeZone: string) {
-  return moment.tz(instant, timeZone);
+function instantInZone(instant: string | number, timezone: string) {
+  return moment.tz(instant, timezone);
 }
 
-function startOfCalendarDay(now: number, timeZone: string) {
-  return instantInZone(now, timeZone).startOf('day');
+function startOfCalendarDay(now: number, timezone: string) {
+  return instantInZone(now, timezone).startOf('day');
 }
 
-function parseDayKey(key: string, timeZone: string) {
-  return moment.tz(key, DAY_KEY, timeZone);
+function parseDayKey(dayKey: string, timezone: string) {
+  return moment.tz(dayKey, DAY_KEY, timezone);
 }

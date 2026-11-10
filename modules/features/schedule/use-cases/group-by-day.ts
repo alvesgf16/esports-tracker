@@ -1,58 +1,42 @@
 import type { Match } from '@/modules/shared/entities';
 
-import type { DayCalendar, DayGroup } from '../contracts';
+import type { DayGroup, ScheduleClock } from '../contracts';
 
-type DayBuckets = {
-  groups: Map<string, DayGroup>;
-  todayKey: string;
-  tomorrowKey: string;
-  calendar: DayCalendar;
-};
+type DayEntry = readonly [string, Match[]];
 
-export function groupByDay(
-  matches: Match[],
-  now: number,
-  calendar: DayCalendar
-): DayGroup[] {
-  const buckets: DayBuckets = {
-    groups: new Map(),
-    todayKey: calendar.todayKey(now),
-    tomorrowKey: calendar.tomorrowKey(now),
-    calendar,
+export function groupByDay(matches: Match[], clock: ScheduleClock): DayGroup[] {
+  const { calendar } = clock;
+
+  const dayKey = (match: Match): string => calendar.dayKey(match.startsAt);
+
+  const matchesByDay = Map.groupBy(matches, dayKey);
+  const toDayGroup = (dayEntry: DayEntry): DayGroup =>
+    dayGroup(dayEntry, clock);
+
+  return Array.from(matchesByDay, toDayGroup);
+}
+
+function dayGroup([dayKey, matches]: DayEntry, clock: ScheduleClock): DayGroup {
+  return {
+    dayKey,
+    label: dayLabel(dayKey, clock),
+    matches,
   };
-
-  for (const match of matches) {
-    addToDayGroup(match, buckets);
-  }
-
-  return [...buckets.groups.values()];
 }
 
-function addToDayGroup(match: Match, buckets: DayBuckets): void {
-  const key = buckets.calendar.key(match.startsAt);
-  const existing = buckets.groups.get(key);
+function dayLabel(dayKey: string, clock: ScheduleClock): string {
+  const { calendar, now } = clock;
 
-  if (existing) {
-    existing.matches.push(match);
+  const todayKey = calendar.todayKey(now);
+  const tomorrowKey = calendar.tomorrowKey(now);
 
-    return;
-  }
-
-  buckets.groups.set(key, {
-    key,
-    label: dayLabel(key, buckets),
-    matches: [match],
-  });
-}
-
-function dayLabel(key: string, buckets: DayBuckets): string {
-  if (key === buckets.todayKey) {
+  if (dayKey === todayKey) {
     return 'Today';
   }
 
-  if (key === buckets.tomorrowKey) {
+  if (dayKey === tomorrowKey) {
     return 'Tomorrow';
   }
 
-  return buckets.calendar.heading(key);
+  return calendar.heading(dayKey);
 }

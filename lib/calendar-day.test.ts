@@ -4,7 +4,7 @@ const edmontonDawn = Date.parse('2026-11-05T05:30:00Z');
 
 describe('calendarDay', () => {
   it('keys an instant in the given IANA zone', () => {
-    expect(calendarDay.key('2026-11-05T06:30:00Z', 'America/Edmonton')).toBe(
+    expect(calendarDay.dayKey('2026-11-05T06:30:00Z', 'America/Edmonton')).toBe(
       '2026-11-05'
     );
   });
@@ -25,7 +25,7 @@ describe('calendarDay', () => {
   it('binds methods to a zone', () => {
     const days = calendarDay.forZone('America/Edmonton');
 
-    expect(days.key('2026-11-05T06:30:00Z')).toBe('2026-11-05');
+    expect(days.dayKey('2026-11-05T06:30:00Z')).toBe('2026-11-05');
     expect(days.todayKey(edmontonDawn)).toBe('2026-11-04');
   });
 });
