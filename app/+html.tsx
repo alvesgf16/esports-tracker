@@ -38,6 +38,8 @@ function DocumentHead({ headNodes }: DocumentHeadProps) {
         name="viewport"
         content="width=device-width, initial-scale=1, shrink-to-fit=no"
       />
+      <meta name="theme-color" content="#0E1116" />
+      <link rel="manifest" href="/manifest.json" />
       <ScrollViewStyleReset />
       <style dangerouslySetInnerHTML={{ __html: responsiveBackground }} />
       {headNodes}

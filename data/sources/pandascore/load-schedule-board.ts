@@ -1,19 +1,17 @@
 import type { Game, Match } from '@/modules/shared/entities';
 
 import { gameFrom } from './mappers/game-from';
-import { mapWithPool } from './map-with-pool';
 import { matchFrom } from './mappers/match-from';
 import type { ScheduleBoard } from './schedule-board';
 import type { VendorMatch, VendorVideogame } from './vendor-types';
 
 const API_BASE = 'https://api.pandascore.co';
-const PAGE_SIZE = 20;
-const MATCH_CONCURRENCY = 2;
+const PAGE_SIZE = 100;
 
 export async function loadScheduleBoard(token: string): Promise<ScheduleBoard> {
   const videogames = await listVideogames(token);
   const games = mappedGames(videogames);
-  const matches = await loadMatchesForGames(videogames, games, token);
+  const matches = await loadMatches(token);
 
   return { games, matches };
 }
@@ -30,38 +28,13 @@ function mappedGames(videogames: VendorVideogame[]): Game[] {
   });
 }
 
-async function loadMatchesForGames(
-  videogames: VendorVideogame[],
-  games: Game[],
-  token: string
-): Promise<Match[]> {
-  const gameIds = new Set(games.map(toGameId));
-  const hasMatchingGame = (videogame: VendorVideogame) =>
-    gameIds.has(videogame.slug);
-  const videogamesToLoad = videogames.filter(hasMatchingGame);
-  const matchLists = await mapWithPool(videogamesToLoad, {
-    poolSize: MATCH_CONCURRENCY,
-    mapFunction: (videogame) => loadMatchesForVideogame(videogame.id, token),
-  });
-
-  return matchLists.flat();
-}
-
-function toGameId(game: Game) {
-  return game.id;
-}
-
-async function loadMatchesForVideogame(
-  videogameId: number,
-  token: string
-): Promise<Match[]> {
-  const filter = `filter[videogame]=${videogameId}&per_page=${PAGE_SIZE}`;
+async function loadMatches(token: string): Promise<Match[]> {
   const running = await getJson<VendorMatch[]>(
-    `/matches/running?${filter}`,
+    `/matches/running?per_page=${PAGE_SIZE}`,
     token
   );
   const upcoming = await getJson<VendorMatch[]>(
-    `/matches/upcoming?${filter}`,
+    `/matches/upcoming?per_page=${PAGE_SIZE}`,
     token
   );
 

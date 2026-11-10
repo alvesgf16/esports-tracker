@@ -1,0 +1,17 @@
+{
+  "short_name": "Esports",
+  "name": "Esports Tracker",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "type": "image/png",
+      "sizes": "1024x1024",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0E1116",
+  "background_color": "#0E1116"
+}

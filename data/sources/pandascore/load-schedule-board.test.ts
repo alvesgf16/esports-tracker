@@ -17,8 +17,8 @@ describe('loadScheduleBoard', () => {
         aVendorVideogame(),
         aVendorVideogame({ id: 99, name: 'eSoccer', slug: 'e-soccer' }),
       ],
-      '/matches/running?filter[videogame]=1&per_page=20': [],
-      '/matches/upcoming?filter[videogame]=1&per_page=20': [],
+      '/matches/running?per_page=100': [],
+      '/matches/upcoming?per_page=100': [],
     });
 
     const board = await loadScheduleBoard('secret');
@@ -26,22 +26,24 @@ describe('loadScheduleBoard', () => {
     expect(board.games).toEqual([
       { id: 'league-of-legends', name: 'LoL', shortName: 'LoL' },
     ]);
-    expect(fetchMock.mock.calls.map(requestPath)).not.toContain(
-      '/matches/running?filter[videogame]=99&per_page=20'
-    );
+    expect(fetchMock.mock.calls.map(requestPath)).toEqual([
+      '/videogames?per_page=50&sort=name',
+      '/matches/running?per_page=100',
+      '/matches/upcoming?per_page=100',
+    ]);
   });
 
   it('loads running and upcoming matches', async () => {
     stubRoutes({
       '/videogames?per_page=50&sort=name': [aVendorVideogame()],
-      '/matches/running?filter[videogame]=1&per_page=20': [
+      '/matches/running?per_page=100': [
         aVendorMatch({
           id: 2,
           name: 'Later',
           begin_at: '2026-11-04T18:00:00Z',
         }),
       ],
-      '/matches/upcoming?filter[videogame]=1&per_page=20': [
+      '/matches/upcoming?per_page=100': [
         aVendorMatch({
           id: 1,
           name: 'Sooner',
@@ -58,6 +60,8 @@ describe('loadScheduleBoard', () => {
   it('sends the bearer token', async () => {
     stubRoutes({
       '/videogames?per_page=50&sort=name': [],
+      '/matches/running?per_page=100': [],
+      '/matches/upcoming?per_page=100': [],
     });
 
     await loadScheduleBoard('secret');
