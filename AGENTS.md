@@ -29,6 +29,8 @@ Run `npm run check` before declaring any task done. Commits are blocked unless i
 
 Commit messages follow Conventional Commits. Husky runs commitlint on `commit-msg`. Example: `feat: add expo hosting so the schedule can run as a phone web app`.
 
+Pull request descriptions follow `.github/PULL_REQUEST_TEMPLATE.md`. The `pr-description` workflow rejects missing or placeholder What / Why / How to test / Visuals / Risks sections. Visuals may be `N/A`; Risks may be `None`.
+
 ## Navigation & Routing
 
 - Use **Expo Router** for all navigation. Routes live in `app/` — every file there is a screen / Builder, `_layout.tsx` files define navigators.

@@ -1,0 +1,55 @@
+name: PR description
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+concurrency:
+  group: pr-description-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pr-description:
+    name: pr-description
+    if: github.event.pull_request.user.type != 'Bot'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require filled template sections
+        run: |
+          python3 - <<'PY'
+          import json, os, re, sys
+
+          event = json.load(open(os.environ["GITHUB_EVENT_PATH"]))
+          body = (event.get("pull_request") or {}).get("body") or ""
+          headings = ("What", "Why", "How to test", "Visuals", "Risks")
+          comment = re.compile(r"<!--.*?-->", re.S)
+          empty_box = re.compile(r"^[ \t]*[-*][ \t]+\[[ xX]\][ \t]*$", re.M)
+          sections = {}
+          current = None
+
+          for line in body.splitlines():
+              match = re.match(r"^##\s+(.+?)\s*$", line)
+              if match:
+                  current = match.group(1)
+                  sections.setdefault(current, [])
+                  continue
+              if current is not None:
+                  sections[current].append(line)
+
+          issues = []
+          for heading in headings:
+              if heading not in sections:
+                  issues.append(f"Missing ## {heading} section.")
+                  continue
+              text = "\n".join(sections[heading])
+              text = empty_box.sub("", comment.sub("", text)).strip()
+              if not text:
+                  issues.append(f"## {heading} needs more than a placeholder.")
+
+          if issues:
+              print("\n".join(issues), file=sys.stderr)
+              sys.exit(1)
+          PY
