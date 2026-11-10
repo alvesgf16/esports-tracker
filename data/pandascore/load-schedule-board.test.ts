@@ -1,9 +1,9 @@
-import { fetchScheduleBoard } from './fetch-schedule-board';
+import { loadScheduleBoard } from './load-schedule-board';
 import { aVendorMatch, aVendorVideogame } from './pandascore.harness';
 
 const API_BASE = 'https://api.pandascore.co';
 
-describe('fetchScheduleBoard', () => {
+describe('loadScheduleBoard', () => {
   const fetchMock = jest.fn();
 
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe('fetchScheduleBoard', () => {
       '/matches/upcoming?filter[videogame]=1&per_page=20': [],
     });
 
-    const board = await fetchScheduleBoard('secret');
+    const board = await loadScheduleBoard('secret');
 
     expect(board.games).toEqual([
       { id: 'league-of-legends', name: 'LoL', shortName: 'LoL' },
@@ -50,7 +50,7 @@ describe('fetchScheduleBoard', () => {
       ],
     });
 
-    const board = await fetchScheduleBoard('secret');
+    const board = await loadScheduleBoard('secret');
 
     expect(board.matches.map((match) => match.id).sort()).toEqual(['1', '2']);
   });
@@ -60,7 +60,7 @@ describe('fetchScheduleBoard', () => {
       '/videogames?per_page=50&sort=name': [],
     });
 
-    await fetchScheduleBoard('secret');
+    await loadScheduleBoard('secret');
 
     expect(fetchMock).toHaveBeenCalledWith(
       `${API_BASE}/videogames?per_page=50&sort=name`,
@@ -76,7 +76,7 @@ describe('fetchScheduleBoard', () => {
   it('throws when PandaScore returns an error status', async () => {
     fetchMock.mockResolvedValue({ ok: false, status: 429 });
 
-    await expect(fetchScheduleBoard('secret')).rejects.toThrow(
+    await expect(loadScheduleBoard('secret')).rejects.toThrow(
       'PandaScore /videogames?per_page=50&sort=name failed: 429'
     );
   });

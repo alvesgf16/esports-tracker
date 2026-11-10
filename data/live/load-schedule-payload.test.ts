@@ -1,16 +1,16 @@
-import { cachedScheduleBoard } from '@/data/pandascore/cached-schedule-board';
+import { createCachedScheduleBoardLoader } from '@/data/pandascore/create-cached-schedule-board-loader';
 
 import { loadSchedulePayload } from './load-schedule-payload';
 
-jest.mock('@/data/pandascore/cached-schedule-board', () => {
+jest.mock('@/data/pandascore/create-cached-schedule-board-loader', () => {
   const loadCachedScheduleBoard = jest.fn();
 
   return {
-    cachedScheduleBoard: () => loadCachedScheduleBoard,
+    createCachedScheduleBoardLoader: () => loadCachedScheduleBoard,
   };
 });
 
-const loadCachedScheduleBoard = cachedScheduleBoard();
+const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
 
 const lol = { id: 'lol', name: 'League of Legends', shortName: 'LoL' };
 

@@ -1,3 +1,8 @@
+import type { Game } from '@/modules/shared/entities';
+
+import { isSimulatedSport } from './is-simulated-sport';
+import type { VendorVideogame } from './vendor-types';
+
 const KNOWN_SHORT_NAMES: Record<string, string> = {
   'league-of-legends': 'LoL',
   'cs-go': 'CS2',
@@ -16,7 +21,19 @@ const KNOWN_SHORT_NAMES: Record<string, string> = {
   'starcraft-brood-war': 'BW',
 };
 
-export function shortNameForSlug(slug: string): string {
+export function gameFrom(videogame: VendorVideogame): Game | null {
+  const { slug, name } = videogame;
+
+  return isSimulatedSport(slug)
+    ? null
+    : {
+        id: slug,
+        name,
+        shortName: shortNameForSlug(slug),
+      };
+}
+
+function shortNameForSlug(slug: string): string {
   return KNOWN_SHORT_NAMES[slug] ?? initialsFromSlug(slug);
 }
 

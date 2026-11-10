@@ -1,9 +1,9 @@
-import { cachedScheduleBoard } from '@/data/pandascore/cached-schedule-board';
+import { createCachedScheduleBoardLoader } from '@/data/pandascore/create-cached-schedule-board-loader';
 
 import { scheduleError } from './schedule-error';
 import type { LiveSchedulePayload } from './schedule-result';
 
-const loadCachedScheduleBoard = cachedScheduleBoard();
+const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
 
 export async function loadSchedulePayload(
   token: string | undefined
