@@ -185,6 +185,7 @@ module.exports = defineConfig([
     'coverage/*',
     '**/uniwind-types.d.ts',
     'expo-env.d.ts',
+    'expo-types.d.ts',
     'eslint.config.js',
     'commitlint.config.js',
     'eslint-rules/*',
