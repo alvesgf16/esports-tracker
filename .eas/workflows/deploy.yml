@@ -12,5 +12,7 @@ jobs:
     type: deploy
     name: Deploy
     environment: production
+    env:
+      EXPO_PUBLIC_LIVE_SCHEDULE: '1'
     params:
       prod: true

@@ -11,6 +11,8 @@ jobs:
   deploy:
     type: deploy
     name: Deploy PR Preview
+    env:
+      EXPO_PUBLIC_LIVE_SCHEDULE: '1'
 
   comment:
     needs: [deploy]
