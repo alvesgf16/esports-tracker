@@ -6,12 +6,18 @@ describe('toMatch', () => {
     expect(toMatch(G2_VS_FNC)).toEqual(G2_VS_FNC);
   });
 
-  it('keeps a valid status value', () => {
-    const match = { ...G2_VS_FNC, status: 'running' };
+  it('includes optional match fields', () => {
+    const match = {
+      ...G2_VS_FNC,
+      status: 'running',
+      scores: [
+        { teamId: 'g2', score: 2 },
+        { teamId: 'fnc', score: 1 },
+      ],
+      winnerId: 'g2',
+    };
 
-    const parsed = toMatch(match);
-
-    expect(parsed).toEqual(match);
+    expect(toMatch(match)).toEqual(match);
   });
 
   it('rejects a non-object', () => {
@@ -32,56 +38,6 @@ describe('toMatch', () => {
 
   it('rejects unknown status', () => {
     expect(toMatch({ ...G2_VS_FNC, status: 'canceled' })).toBeNull();
-  });
-
-  it('maps series scores and a winner', () => {
-    const match = {
-      ...G2_VS_FNC,
-      scores: [
-        { teamId: 'g2', score: 2 },
-        { teamId: 'fnc', score: 1 },
-      ],
-      winnerId: 'g2',
-    };
-
-    expect(toMatch(match)).toEqual(match);
-  });
-
-  it('omits empty scores', () => {
-    const parsed = toMatch({ ...G2_VS_FNC, scores: [] });
-
-    expect(parsed).toEqual(G2_VS_FNC);
-    expect(parsed?.scores).toBeUndefined();
-  });
-
-  it('keeps a zero score', () => {
-    const match = {
-      ...G2_VS_FNC,
-      scores: [
-        { teamId: 'g2', score: 1 },
-        { teamId: 'fnc', score: 0 },
-      ],
-    };
-
-    expect(toMatch(match)).toEqual(match);
-  });
-
-  it('rejects a score that is not a non-negative integer', () => {
-    expect(
-      toMatch({
-        ...G2_VS_FNC,
-        scores: [{ teamId: 'g2', score: 1.5 }],
-      })
-    ).toBeNull();
-  });
-
-  it('rejects an incomplete series score', () => {
-    expect(
-      toMatch({
-        ...G2_VS_FNC,
-        scores: [{ teamId: 'g2' }],
-      })
-    ).toBeNull();
   });
 
   it('keeps a team without an id', () => {

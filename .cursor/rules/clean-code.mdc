@@ -14,6 +14,7 @@ Prefer intention-revealing, searchable, pronounceable names. Prefer the more des
 ### Domain vocabulary
 
 - `Game`, `Team`, `Match`, `SeriesScore` — Entity DTOs in `modules/shared/entities.ts`
+- Ids are plain `string` (`Game.id`, `Match.game`, optional `Team.id`, `SeriesScore.teamId`, `Match.winnerId`) — not opaque aliases
 - `Match.teams`, optional `Team.id`, optional `Match.status` (`not_started` / `running` / `finished`), optional `Match.scores` / `Match.winnerId`
 - `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter` (Schedule contract: chip selection `string | 'all'`)
 - Kickoff, countdown, tournament (`league · stage`), format (`Bo3` / `Ft3`)

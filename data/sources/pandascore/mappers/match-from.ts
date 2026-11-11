@@ -1,3 +1,4 @@
+import { teamWithOptionalId } from '@/data/mappers/team-with-optional-id';
 import type { Match, MatchStatus, Team } from '@/modules/shared/entities';
 
 import type {
@@ -55,7 +56,7 @@ function teamFrom(opponent: VendorOpponentBody, name: string): Team {
   const id = opponent.id ? String(opponent.id) : undefined;
   const shortName = opponent.acronym?.trim() || name;
 
-  return id ? { id, name, shortName } : { name, shortName };
+  return teamWithOptionalId({ id, name, shortName });
 }
 
 function nameFrom(match: VendorMatch): string | undefined {

@@ -1,4 +1,5 @@
 import { asOrNull } from '@/data/mappers/as-or-null';
+import { hasTeamId } from '@/data/mappers/has-team-id';
 import type { SeriesScore, Team } from '@/modules/shared/entities';
 
 import type { VendorMatch, VendorResult } from '../vendor-types';
@@ -32,8 +33,8 @@ function scoreFor(team: Team, results: VendorResult[]): SeriesScore[] {
     return [];
   }
 
-  const hasTeamId = (entry: VendorResult) => opponentIdFrom(entry) === teamId;
-  const result = results.find(hasTeamId);
+  const forTeam = (entry: VendorResult) => opponentIdFrom(entry) === teamId;
+  const result = results.find(forTeam);
 
   return mappedScore(teamId, result);
 }
@@ -58,7 +59,6 @@ function winnerFields(
   teams: Team[]
 ): SeriesFields {
   const id = winnerId ? String(winnerId) : undefined;
-  const hasId = (team: Team): boolean => team.id === id;
 
-  return id && teams.some(hasId) ? { winnerId: id } : {};
+  return hasTeamId(id, teams) ? { winnerId: id } : {};
 }
