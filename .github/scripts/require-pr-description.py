@@ -14,7 +14,7 @@ PLACEHOLDERS = frozenset({"todo", "tbd"})
 COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 EMPTY_BOX = re.compile(r"^[ \t]*[-*][ \t]+\[[ xX]\][ \t]*$", re.MULTILINE)
 HEADING = re.compile(r"^##\s+(.+?)\s*$")
-FOOTER = re.compile(r"^made with(\s+|\[)cursor", re.IGNORECASE)
+FOOTER = re.compile(r"^made with\s+\[?cursor", re.IGNORECASE)
 
 
 def main() -> None:
