@@ -11,6 +11,10 @@ describe('loadScheduleBoard', () => {
     globalThis.fetch = fetchMock as typeof fetch;
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('maps traditional games and skips simulated sports', async () => {
     stubRoutes({
       '/videogames?per_page=50&sort=name': [
@@ -79,14 +83,46 @@ describe('loadScheduleBoard', () => {
   });
 
   it('throws when PandaScore does not respond in time', async () => {
-    const timeout = new Error('The operation was aborted due to timeout');
+    jest.spyOn(AbortSignal, 'timeout').mockImplementation(() => {
+      const controller = new AbortController();
 
-    timeout.name = 'TimeoutError';
-    fetchMock.mockRejectedValue(timeout);
+      queueMicrotask(() => controller.abort());
+
+      return controller.signal;
+    });
+    fetchMock.mockImplementation((_url: string, init?: RequestInit) => {
+      return new Promise((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => {
+          reject(aTimeoutError());
+        });
+      });
+    });
 
     await expect(loadScheduleBoard('secret')).rejects.toThrow(
       'PandaScore /videogames?per_page=50&sort=name failed: timeout'
     );
+    expect(AbortSignal.timeout).toHaveBeenCalledWith(10_000);
+  });
+
+  it('throws when the PandaScore response body stalls', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: () => Promise.reject(aTimeoutError()),
+    });
+
+    await expect(loadScheduleBoard('secret')).rejects.toThrow(
+      'PandaScore /videogames?per_page=50&sort=name failed: timeout'
+    );
+  });
+
+  it('includes the request path when PandaScore fetch fails', async () => {
+    fetchMock.mockRejectedValue(new Error('network down'));
+
+    await expect(loadScheduleBoard('secret')).rejects.toMatchObject({
+      message:
+        'PandaScore /videogames?per_page=50&sort=name failed: network down',
+      cause: expect.objectContaining({ message: 'network down' }),
+    });
   });
 
   it('throws when PandaScore returns an error status', async () => {
@@ -116,4 +152,12 @@ describe('loadScheduleBoard', () => {
 
 function requestPath(call: unknown[]): string {
   return String(call[0]).replace(API_BASE, '');
+}
+
+function aTimeoutError(): Error {
+  const timeout = new Error('The operation was aborted due to timeout');
+
+  timeout.name = 'TimeoutError';
+
+  return timeout;
 }

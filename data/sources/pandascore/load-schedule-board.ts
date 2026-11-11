@@ -57,7 +57,15 @@ async function getJson<T>(path: string, token: string): Promise<T> {
     throw new Error(`PandaScore ${path} failed: ${response.status}`);
   }
 
-  return (await response.json()) as T;
+  return jsonFrom(path, response);
+}
+
+async function jsonFrom<T>(path: string, response: Response): Promise<T> {
+  try {
+    return (await response.json()) as T;
+  } catch (error) {
+    throw pandascoreRequestFailure(path, error);
+  }
 }
 
 async function fetchPandaScore(path: string, token: string): Promise<Response> {
@@ -80,7 +88,9 @@ function pandascoreRequestFailure(path: string, error: unknown): Error {
   }
 
   if (error instanceof Error) {
-    return error;
+    return new Error(`PandaScore ${path} failed: ${error.message}`, {
+      cause: error,
+    });
   }
 
   return new Error(`PandaScore ${path} failed`);
