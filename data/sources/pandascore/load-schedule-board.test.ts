@@ -83,18 +83,10 @@ describe('loadScheduleBoard', () => {
   });
 
   it('throws when PandaScore does not respond in time', async () => {
-    jest.spyOn(AbortSignal, 'timeout').mockImplementation(() => {
-      const controller = new AbortController();
-
-      queueMicrotask(() => controller.abort());
-
-      return controller.signal;
-    });
+    abortOnTimeoutSignal();
     fetchMock.mockImplementation((_url: string, init?: RequestInit) => {
       return new Promise((_resolve, reject) => {
-        init?.signal?.addEventListener('abort', () => {
-          reject(aTimeoutError());
-        });
+        rejectWhenAborted(init?.signal, reject);
       });
     });
 
@@ -105,9 +97,15 @@ describe('loadScheduleBoard', () => {
   });
 
   it('throws when the PandaScore response body stalls', async () => {
-    fetchMock.mockResolvedValue({
-      ok: true,
-      json: () => Promise.reject(aTimeoutError()),
+    abortOnTimeoutSignal();
+    fetchMock.mockImplementation((_url: string, init?: RequestInit) => {
+      return Promise.resolve({
+        ok: true,
+        json: () =>
+          new Promise((_resolve, reject) => {
+            rejectWhenAborted(init?.signal, reject);
+          }),
+      });
     });
 
     await expect(loadScheduleBoard('secret')).rejects.toThrow(
@@ -152,6 +150,31 @@ describe('loadScheduleBoard', () => {
 
 function requestPath(call: unknown[]): string {
   return String(call[0]).replace(API_BASE, '');
+}
+
+function abortOnTimeoutSignal(): void {
+  jest.spyOn(AbortSignal, 'timeout').mockImplementation(() => {
+    const controller = new AbortController();
+
+    queueMicrotask(() => controller.abort());
+
+    return controller.signal;
+  });
+}
+
+function rejectWhenAborted(
+  signal: AbortSignal | null | undefined,
+  reject: (error: Error) => void
+): void {
+  if (signal?.aborted) {
+    reject(aTimeoutError());
+
+    return;
+  }
+
+  signal?.addEventListener('abort', () => {
+    reject(aTimeoutError());
+  });
 }
 
 function aTimeoutError(): Error {

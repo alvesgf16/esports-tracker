@@ -10,10 +10,11 @@ type CacheEntry = {
 
 type CacheStore = {
   entry: CacheEntry | null;
+  inFlightRequest: Promise<ScheduleBoard> | null;
 };
 
 export function createCachedScheduleBoardLoader() {
-  const store: CacheStore = { entry: null };
+  const store: CacheStore = { entry: null, inFlightRequest: null };
 
   return (token: string) => loadCached(store, token);
 }
@@ -21,9 +22,23 @@ export function createCachedScheduleBoardLoader() {
 function loadCached(store: CacheStore, token: string): Promise<ScheduleBoard> {
   const now = Date.now();
 
-  return isFresh(store.entry, now)
-    ? Promise.resolve(store.entry.board)
-    : refresh(store, now, token);
+  if (isFresh(store.entry, now)) {
+    return Promise.resolve(store.entry.board);
+  }
+
+  return store.inFlightRequest ?? startRefresh(store, now, token);
+}
+
+function startRefresh(
+  store: CacheStore,
+  now: number,
+  token: string
+): Promise<ScheduleBoard> {
+  store.inFlightRequest = refresh(store, now, token).finally(() => {
+    store.inFlightRequest = null;
+  });
+
+  return store.inFlightRequest;
 }
 
 function isFresh(entry: CacheEntry | null, now: number): entry is CacheEntry {
