@@ -1,0 +1,20 @@
+name: PR Preview
+
+on:
+  pull_request: {}
+
+concurrency:
+  group: ${{ workflow.filename }}-${{ github.ref }}
+  cancel_in_progress: true
+
+jobs:
+  deploy:
+    type: deploy
+    name: Deploy PR Preview
+    # Preview env has no PANDASCORE_TOKEN. Omit EXPO_PUBLIC_LIVE_SCHEDULE so
+    # the client renders sampleBoard instead of calling /api/matches.
+    environment: preview
+
+  comment:
+    needs: [deploy]
+    type: github-comment

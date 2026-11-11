@@ -39,4 +39,72 @@ describe('createCachedScheduleBoardLoader', () => {
 
     expect(loadScheduleBoard).toHaveBeenCalledTimes(2);
   });
+
+  it('shares one refresh when two loads miss the cache', async () => {
+    const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
+    const { promise, resolve } = deferredBoard(emptyBoard);
+
+    jest.mocked(loadScheduleBoard).mockReturnValue(promise);
+
+    const first = loadCachedScheduleBoard('secret');
+    const second = loadCachedScheduleBoard('secret');
+
+    resolve();
+
+    await expect(first).resolves.toBe(emptyBoard);
+    await expect(second).resolves.toBe(emptyBoard);
+    expect(loadScheduleBoard).toHaveBeenCalledTimes(1);
+  });
+
+  it('cools down from when the refresh fails', async () => {
+    const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
+    const { promise, reject } = deferredBoard(emptyBoard);
+
+    jest.mocked(loadScheduleBoard).mockReturnValue(promise);
+
+    const pending = loadCachedScheduleBoard('secret');
+
+    jest.setSystemTime(Date.now() + 10_000);
+    reject(new Error('down'));
+
+    await expect(pending).rejects.toThrow('down');
+    await expect(loadCachedScheduleBoard('secret')).rejects.toThrow('down');
+    expect(loadScheduleBoard).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call PandaScore during the failure cooldown', async () => {
+    const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
+
+    jest.mocked(loadScheduleBoard).mockRejectedValue(new Error('down'));
+
+    await expect(loadCachedScheduleBoard('secret')).rejects.toThrow('down');
+    await expect(loadCachedScheduleBoard('secret')).rejects.toThrow('down');
+    expect(loadScheduleBoard).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries after the failure cooldown', async () => {
+    const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
+
+    jest
+      .mocked(loadScheduleBoard)
+      .mockRejectedValueOnce(new Error('down'))
+      .mockResolvedValueOnce(emptyBoard);
+
+    await expect(loadCachedScheduleBoard('secret')).rejects.toThrow('down');
+    jest.setSystemTime(Date.now() + 10_000 + 1);
+
+    await expect(loadCachedScheduleBoard('secret')).resolves.toBe(emptyBoard);
+    expect(loadScheduleBoard).toHaveBeenCalledTimes(2);
+  });
 });
+
+function deferredBoard(board: typeof emptyBoard) {
+  let resolve = () => {};
+  let reject = (_error: Error) => {};
+  const promise = new Promise<typeof emptyBoard>((next, fail) => {
+    resolve = () => next(board);
+    reject = fail;
+  });
+
+  return { promise, resolve, reject };
+}

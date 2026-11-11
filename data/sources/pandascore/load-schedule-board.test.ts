@@ -11,6 +11,10 @@ describe('loadScheduleBoard', () => {
     globalThis.fetch = fetchMock as typeof fetch;
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('maps traditional games and skips simulated sports', async () => {
     stubRoutes({
       '/videogames?per_page=50&sort=name': [
@@ -73,8 +77,53 @@ describe('loadScheduleBoard', () => {
           Accept: 'application/json',
           Authorization: 'Bearer secret',
         },
+        signal: expect.any(AbortSignal),
       })
     );
+  });
+
+  it('throws when PandaScore does not respond in time', async () => {
+    abortOnTimeoutSignal();
+    fetchMock.mockImplementation((_url: string, init?: RequestInit) => {
+      return new Promise((_resolve, reject) => {
+        rejectWhenAborted(init?.signal, reject);
+      });
+    });
+
+    await expect(loadScheduleBoard('secret')).rejects.toThrow(
+      'PandaScore /videogames?per_page=50&sort=name failed: timeout'
+    );
+    expect(AbortSignal.timeout).toHaveBeenCalledWith(10_000);
+  });
+
+  it('throws when the PandaScore response body stalls', async () => {
+    const controller = new AbortController();
+
+    jest.spyOn(AbortSignal, 'timeout').mockReturnValue(controller.signal);
+    fetchMock.mockImplementation((_url: string, init?: RequestInit) => {
+      return Promise.resolve({
+        ok: true,
+        json: () =>
+          new Promise((_resolve, reject) => {
+            rejectWhenAborted(init?.signal, reject);
+            queueMicrotask(() => controller.abort());
+          }),
+      });
+    });
+
+    await expect(loadScheduleBoard('secret')).rejects.toThrow(
+      'PandaScore /videogames?per_page=50&sort=name failed: timeout'
+    );
+  });
+
+  it('includes the request path when PandaScore fetch fails', async () => {
+    fetchMock.mockRejectedValue(new Error('network down'));
+
+    await expect(loadScheduleBoard('secret')).rejects.toMatchObject({
+      message:
+        'PandaScore /videogames?per_page=50&sort=name failed: network down',
+      cause: expect.objectContaining({ message: 'network down' }),
+    });
   });
 
   it('throws when PandaScore returns an error status', async () => {
@@ -104,4 +153,37 @@ describe('loadScheduleBoard', () => {
 
 function requestPath(call: unknown[]): string {
   return String(call[0]).replace(API_BASE, '');
+}
+
+function abortOnTimeoutSignal(): void {
+  jest.spyOn(AbortSignal, 'timeout').mockImplementation(() => {
+    const controller = new AbortController();
+
+    queueMicrotask(() => controller.abort());
+
+    return controller.signal;
+  });
+}
+
+function rejectWhenAborted(
+  signal: AbortSignal | null | undefined,
+  reject: (error: Error) => void
+): void {
+  if (signal?.aborted) {
+    reject(aTimeoutError());
+
+    return;
+  }
+
+  signal?.addEventListener('abort', () => {
+    reject(aTimeoutError());
+  });
+}
+
+function aTimeoutError(): Error {
+  const timeout = new Error('The operation was aborted due to timeout');
+
+  timeout.name = 'TimeoutError';
+
+  return timeout;
 }

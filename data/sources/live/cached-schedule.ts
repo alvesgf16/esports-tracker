@@ -3,13 +3,13 @@ import type { LiveScheduleResult } from './schedule-result';
 
 type CacheStore = {
   result: LiveScheduleResult | null;
-  pending: Promise<LiveScheduleResult> | null;
+  inFlightRequest: Promise<LiveScheduleResult> | null;
 };
 
 export function cachedLiveSchedule(
   load: () => Promise<LiveScheduleResult> = loadLiveSchedule
 ) {
-  const store: CacheStore = { result: null, pending: null };
+  const store: CacheStore = { result: null, inFlightRequest: null };
 
   return () => readCache(load, store);
 }
@@ -22,11 +22,11 @@ function readCache(
     return Promise.resolve(store.result);
   }
 
-  if (!store.pending) {
-    store.pending = loadAndStore(load, store);
+  if (!store.inFlightRequest) {
+    store.inFlightRequest = loadAndStore(load, store);
   }
 
-  return store.pending;
+  return store.inFlightRequest;
 }
 
 async function loadAndStore(
@@ -36,7 +36,7 @@ async function loadAndStore(
   try {
     return rememberResult(await load(), store);
   } finally {
-    store.pending = null;
+    store.inFlightRequest = null;
   }
 }
 

@@ -1,0 +1,20 @@
+name: Deploy
+
+on:
+  push:
+    branches: ['main']
+
+concurrency:
+  group: ${{ workflow.filename }}-${{ github.ref }}
+
+jobs:
+  deploy:
+    type: deploy
+    name: Deploy
+    # Default for deploy jobs; kept explicit so PANDASCORE_TOKEN is loaded.
+    environment: production
+    env:
+      # Missing token → unconfigured with HTTP 200, not 502. See AGENTS.md.
+      EXPO_PUBLIC_LIVE_SCHEDULE: '1'
+    params:
+      prod: true
