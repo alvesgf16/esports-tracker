@@ -11,6 +11,7 @@ jobs:
   deploy:
     type: deploy
     name: Deploy PR Preview
+    environment: production
     env:
       EXPO_PUBLIC_LIVE_SCHEDULE: '1'
 

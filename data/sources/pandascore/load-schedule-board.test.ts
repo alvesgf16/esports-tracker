@@ -73,7 +73,19 @@ describe('loadScheduleBoard', () => {
           Accept: 'application/json',
           Authorization: 'Bearer secret',
         },
+        signal: expect.any(AbortSignal),
       })
+    );
+  });
+
+  it('throws when PandaScore does not respond in time', async () => {
+    const timeout = new Error('The operation was aborted due to timeout');
+
+    timeout.name = 'TimeoutError';
+    fetchMock.mockRejectedValue(timeout);
+
+    await expect(loadScheduleBoard('secret')).rejects.toThrow(
+      'PandaScore /videogames?per_page=50&sort=name failed: timeout'
     );
   });
 
