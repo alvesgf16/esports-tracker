@@ -11,6 +11,8 @@ jobs:
   deploy:
     type: deploy
     name: Deploy PR Preview
+    # Preview env has no PANDASCORE_TOKEN. Omit EXPO_PUBLIC_LIVE_SCHEDULE so
+    # the client renders sampleBoard instead of calling /api/matches.
     environment: preview
 
   comment:

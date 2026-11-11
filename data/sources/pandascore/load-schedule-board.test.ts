@@ -97,13 +97,16 @@ describe('loadScheduleBoard', () => {
   });
 
   it('throws when the PandaScore response body stalls', async () => {
-    abortOnTimeoutSignal();
+    const controller = new AbortController();
+
+    jest.spyOn(AbortSignal, 'timeout').mockReturnValue(controller.signal);
     fetchMock.mockImplementation((_url: string, init?: RequestInit) => {
       return Promise.resolve({
         ok: true,
         json: () =>
           new Promise((_resolve, reject) => {
             rejectWhenAborted(init?.signal, reject);
+            queueMicrotask(() => controller.abort());
           }),
       });
     });
