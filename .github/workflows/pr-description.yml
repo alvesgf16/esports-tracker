@@ -1,0 +1,47 @@
+name: PR description
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+concurrency:
+  group: pr-description-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  pr-description:
+    name: pr-description
+    # Bots skip this job: the template is for human PRs (Dependabot, etc.).
+    if: github.event.pull_request.user.type != 'Bot'
+    runs-on: ubuntu-latest
+    steps:
+      # pull_request always checks out the PR, so the checker is PR-controlled.
+      # Fetch the body with a trusted action, then clear GITHUB_TOKEN on Python.
+      # Pinning the script to main cannot work until this workflow exists there.
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Fetch pull request body
+        env:
+          PR_BODY_PATH: ${{ runner.temp }}/pr-body.md
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+
+            const { data } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+
+            fs.writeFileSync(process.env.PR_BODY_PATH, data.body ?? '', 'utf8');
+      - name: Require filled template sections
+        env:
+          PR_BODY_PATH: ${{ runner.temp }}/pr-body.md
+          GITHUB_TOKEN: '' # untrusted PR script; see AGENTS.md
+        run: python3 .github/scripts/require-pr-description.py
