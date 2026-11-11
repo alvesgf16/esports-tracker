@@ -27,6 +27,19 @@ describe('asOrNull.string', () => {
   });
 });
 
+describe('asOrNull.number', () => {
+  it('returns a non-negative integer', () => {
+    expect(asOrNull.number(0)).toBe(0);
+    expect(asOrNull.number(2)).toBe(2);
+  });
+
+  it('rejects fractions, negatives, and non-numbers', () => {
+    expect(asOrNull.number(1.5)).toBeNull();
+    expect(asOrNull.number(-1)).toBeNull();
+    expect(asOrNull.number('2')).toBeNull();
+  });
+});
+
 describe('asOrNull.array', () => {
   it('returns an array', () => {
     const value = ['lol'];

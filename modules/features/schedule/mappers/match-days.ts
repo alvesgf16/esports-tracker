@@ -5,7 +5,6 @@ import type {
   DayGroup,
   DaySectionModel,
   MatchLabels,
-  MatchRowModel,
   ScheduleClock,
 } from '../contracts';
 import { groupByDay } from '../use-cases/group-by-day';
@@ -28,8 +27,7 @@ export function matchDays(
     labels: clock.labels,
   };
 
-  const toMatchDay = (group: DayGroup): DaySectionModel =>
-    matchDay(group, context);
+  const toMatchDay = (group: DayGroup) => matchDay(group, context);
 
   return groupByDay(matches, clock).map(toMatchDay);
 }
@@ -37,7 +35,7 @@ export function matchDays(
 function matchDay(group: DayGroup, context: MatchContext): DaySectionModel {
   const { dayKey, label, matches } = group;
 
-  const toMatchRow = (match: Match): MatchRowModel => matchRow(match, context);
+  const toMatchRow = (match: Match) => matchRow(match, context);
 
   return {
     dayKey,

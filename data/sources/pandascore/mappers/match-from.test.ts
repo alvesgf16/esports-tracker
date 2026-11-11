@@ -19,8 +19,8 @@ describe('matchFrom', () => {
       format: 'Bo5',
       startsAt: '2026-11-04T19:00:00Z',
       teams: [
-        { name: 'G2 Esports', shortName: 'G2' },
-        { name: 'Fnatic', shortName: 'FNC' },
+        { id: '126269', name: 'G2 Esports', shortName: 'G2' },
+        { id: '398', name: 'Fnatic', shortName: 'FNC' },
       ],
       status: 'not_started',
     });

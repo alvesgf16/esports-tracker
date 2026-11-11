@@ -9,13 +9,15 @@
   "opponents": [
     {
       "type": "Team",
-      "opponent": { "name": "G2 Esports", "acronym": "G2" }
+      "opponent": { "id": 126269, "name": "G2 Esports", "acronym": "G2" }
     },
     {
       "type": "Team",
-      "opponent": { "name": "Fnatic", "acronym": "FNC" }
+      "opponent": { "id": 398, "name": "Fnatic", "acronym": "FNC" }
     }
   ],
+  "results": [],
+  "winner_id": null,
   "league": { "name": "LEC" },
   "tournament": { "name": "Spring Playoffs" },
   "videogame": { "name": "LoL", "slug": "league-of-legends" },

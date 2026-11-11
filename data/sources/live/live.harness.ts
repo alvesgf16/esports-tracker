@@ -12,8 +12,8 @@ export const G2_VS_FNC = {
   format: 'Bo5',
   startsAt: '2026-03-15T18:00:00.000Z',
   teams: [
-    { name: 'G2 Esports', shortName: 'G2' },
-    { name: 'Fnatic', shortName: 'FNC' },
+    { id: 'g2', name: 'G2 Esports', shortName: 'G2' },
+    { id: 'fnc', name: 'Fnatic', shortName: 'FNC' },
   ],
 };
 

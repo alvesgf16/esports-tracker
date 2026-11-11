@@ -6,12 +6,21 @@ export type VendorVideogame = {
   slug: string;
 };
 
+export type VendorOpponentBody = {
+  id?: number | null;
+  name: string | null;
+  acronym?: string | null;
+};
+
 export type VendorOpponent = {
   type: string;
-  opponent: {
-    name: string | null;
-    acronym?: string | null;
-  } | null;
+  opponent: VendorOpponentBody | null;
+};
+
+export type VendorResult = {
+  team_id?: number | null;
+  player_id?: number | null;
+  score?: number | null;
 };
 
 export type VendorMatch = {
@@ -23,6 +32,8 @@ export type VendorMatch = {
   begin_at: string | null;
   scheduled_at: string | null;
   opponents: VendorOpponent[];
+  results?: VendorResult[] | null;
+  winner_id?: number | null;
   league: { name: string | null } | null;
   tournament: { name: string | null } | null;
   videogame: { name: string; slug: string } | null;

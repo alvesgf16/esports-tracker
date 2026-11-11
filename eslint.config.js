@@ -381,6 +381,13 @@ module.exports = defineConfig([
       'exports/max-value-exports': ['error', { max: 3 }],
     },
   },
+  {
+    files: ['data/sources/sample/catalogs/matches/index.ts'],
+    rules: {
+      // Sample match catalog owns the folder; not a re-export barrel.
+      'exports/no-barrel': 'off',
+    },
+  },
   // VIPER + Clean Architecture — Clean Code Ch.8 / Ch.11
   {
     files: ['modules/features/*/presenter.ts'],

@@ -10,8 +10,7 @@ export function groupByDay(matches: Match[], clock: ScheduleClock): DayGroup[] {
   const dayKey = (match: Match): string => calendar.dayKey(match.startsAt);
 
   const matchesByDay = Map.groupBy(matches, dayKey);
-  const toDayGroup = (dayEntry: DayEntry): DayGroup =>
-    dayGroup(dayEntry, clock);
+  const toDayGroup = (dayEntry: DayEntry) => dayGroup(dayEntry, clock);
 
   return Array.from(matchesByDay, toDayGroup);
 }

@@ -1,11 +1,9 @@
-import type { GameId } from '@/modules/shared/entities';
-
 export type GamesRouter = {
-  openSchedule: (gameId: GameId) => void;
+  openSchedule: (gameId: string) => void;
 };
 
 export type GameRowModel = {
-  id: GameId;
+  id: string;
   name: string;
   shortName: string;
   upcomingLabel: string;

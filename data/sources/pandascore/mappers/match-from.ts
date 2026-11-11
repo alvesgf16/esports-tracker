@@ -1,7 +1,12 @@
 import type { Match, MatchStatus, Team } from '@/modules/shared/entities';
 
-import type { VendorMatch, VendorOpponent } from '../vendor-types';
+import type {
+  VendorMatch,
+  VendorOpponent,
+  VendorOpponentBody,
+} from '../vendor-types';
 import { isSimulatedSport } from './is-simulated-sport';
+import { seriesFrom } from './series-from';
 
 const FINISHED = new Set(['finished', 'canceled', 'postponed']);
 
@@ -20,6 +25,7 @@ export function matchFrom(match: VendorMatch): Match | null {
         startsAt,
         teams,
         status: statusFrom(match.status),
+        ...seriesFrom(match, teams),
       }
     : null;
 }
@@ -39,13 +45,17 @@ function teamsFrom(opponents: VendorOpponent[]): Team[] {
 }
 
 function toTeam(entry: VendorOpponent): Team[] {
-  const name = entry.opponent?.name?.trim();
+  const { opponent } = entry;
+  const name = opponent?.name?.trim();
 
-  return name ? [{ name, shortName: acronymFrom(entry) || name }] : [];
+  return opponent && name ? [teamFrom(opponent, name)] : [];
 }
 
-function acronymFrom(entry: VendorOpponent) {
-  return entry.opponent?.acronym?.trim();
+function teamFrom(opponent: VendorOpponentBody, name: string): Team {
+  const id = opponent.id ? String(opponent.id) : undefined;
+  const shortName = opponent.acronym?.trim() || name;
+
+  return id ? { id, name, shortName } : { name, shortName };
 }
 
 function nameFrom(match: VendorMatch): string | undefined {

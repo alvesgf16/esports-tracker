@@ -1,7 +1,7 @@
 import type { Match } from '@/modules/shared/entities';
 
-import { duel } from './duel';
-import { sampleKickoff } from './sample-kickoff';
+import { duel } from '../../duel';
+import { sampleKickoff } from '../../sample-kickoff';
 
 /** Later board plus titles that still appear empty on the Games tab. */
 export const LATER_MATCHES: Match[] = [
@@ -11,8 +11,8 @@ export const LATER_MATCHES: Match[] = [
     name: 'Fnatic vs Team Heretics',
     tournament: 'VCT · EMEA',
     format: 'Bo3',
-    startsAt: sampleKickoff(22),
-    teams: duel(['Fnatic', 'FNC'], ['Team Heretics', 'TH']),
+    startsAt: sampleKickoff.onTheHour(22),
+    teams: duel(['Fnatic', 'FNC', 'fnc'], ['Team Heretics', 'TH', 'th']),
   },
   {
     id: 'r6-invite',
@@ -20,8 +20,8 @@ export const LATER_MATCHES: Match[] = [
     name: 'w7m esports vs FaZe Clan',
     tournament: 'Six Invitational · Playoffs',
     format: 'Bo3',
-    startsAt: sampleKickoff(26, 30),
-    teams: duel(['w7m esports', 'w7m'], ['FaZe Clan', 'FaZe']),
+    startsAt: sampleKickoff.onTheHour(26, 30),
+    teams: duel(['w7m esports', 'w7m', 'w7m'], ['FaZe Clan', 'FaZe', 'faze']),
   },
   {
     id: 'mlbb-worlds',
@@ -29,8 +29,11 @@ export const LATER_MATCHES: Match[] = [
     name: 'ONIC Esports vs Falcons AP.Bren',
     tournament: 'M5 · World Championship',
     format: 'Bo5',
-    startsAt: sampleKickoff(28),
-    teams: duel(['ONIC Esports', 'ONIC'], ['Falcons AP.Bren', 'AP.Bren']),
+    startsAt: sampleKickoff.onTheHour(28),
+    teams: duel(
+      ['ONIC Esports', 'ONIC', 'onic'],
+      ['Falcons AP.Bren', 'AP.Bren', 'apbren']
+    ),
   },
   {
     id: 'rl-major',
@@ -38,8 +41,8 @@ export const LATER_MATCHES: Match[] = [
     name: 'Karmine Corp vs Team BDS',
     tournament: 'RLCS · Major',
     format: 'Bo7',
-    startsAt: sampleKickoff(30, 20),
-    teams: duel(['Karmine Corp', 'KC'], ['Team BDS', 'BDS']),
+    startsAt: sampleKickoff.onTheHour(30, 20),
+    teams: duel(['Karmine Corp', 'KC', 'kc'], ['Team BDS', 'BDS', 'bds']),
   },
   {
     id: 'cod-cdl',
@@ -47,8 +50,8 @@ export const LATER_MATCHES: Match[] = [
     name: 'OpTic Texas vs Atlanta FaZe',
     tournament: 'CDL · Major',
     format: 'Bo5',
-    startsAt: sampleKickoff(46),
-    teams: duel(['OpTic Texas', 'TX'], ['Atlanta FaZe', 'ATL']),
+    startsAt: sampleKickoff.onTheHour(46),
+    teams: duel(['OpTic Texas', 'TX', 'tx'], ['Atlanta FaZe', 'ATL', 'atl']),
   },
   {
     id: 'fifa-fc',
@@ -56,8 +59,8 @@ export const LATER_MATCHES: Match[] = [
     name: 'ManuBachoore vs lev',
     tournament: 'eChampions League · Finals',
     format: 'Bo3',
-    startsAt: sampleKickoff(50, 15),
-    teams: duel(['ManuBachoore', 'Manu'], ['lev', 'lev']),
+    startsAt: sampleKickoff.onTheHour(50, 15),
+    teams: duel(['ManuBachoore', 'Manu', 'manu'], ['lev', 'lev', 'lev']),
   },
   {
     id: 'dota-ti',
@@ -65,7 +68,7 @@ export const LATER_MATCHES: Match[] = [
     name: 'Xtreme Gaming vs PARIVISION',
     tournament: 'The International · Playoffs',
     format: 'Bo3',
-    startsAt: sampleKickoff(54),
-    teams: duel(['Xtreme Gaming', 'XG'], ['PARIVISION', 'PARI']),
+    startsAt: sampleKickoff.onTheHour(54),
+    teams: duel(['Xtreme Gaming', 'XG', 'xg'], ['PARIVISION', 'PARI', 'pari']),
   },
 ];

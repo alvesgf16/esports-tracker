@@ -1,8 +1,8 @@
-import type { GameId, Match, MatchesSnapshot } from '../entities';
+import type { Match, MatchesSnapshot } from '../entities';
 import { matchDisplayStatus } from './match-display-status';
 
 export function visibleMatchesFor(
-  gameId: GameId | null,
+  gameId: string | null,
   matchesSnapshot: MatchesSnapshot
 ): Match[] {
   const { matches, referenceTime } = matchesSnapshot;
@@ -15,7 +15,7 @@ export function visibleMatchesFor(
 
 function isVisibleMatch(
   match: Match,
-  gameId: GameId | null,
+  gameId: string | null,
   now: number
 ): boolean {
   const isFromSelectedGame = !gameId || match.game === gameId;

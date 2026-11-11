@@ -17,11 +17,12 @@ export function aVendorVideogame(
 
 export function aVendorOpponent(
   name: string | null,
-  acronym?: string | null
+  acronym?: string | null,
+  id?: number | null
 ): VendorOpponent {
   return {
     type: 'Team',
-    opponent: { name, acronym },
+    opponent: { id, name, acronym },
   };
 }
 
@@ -37,9 +38,11 @@ export function aVendorMatch(
     begin_at: '2026-11-04T12:00:00Z',
     scheduled_at: '2026-11-04T12:00:00Z',
     opponents: [
-      aVendorOpponent('Alpha', 'ALP'),
-      aVendorOpponent('Beta', 'BET'),
+      aVendorOpponent('Alpha', 'ALP', 11),
+      aVendorOpponent('Beta', 'BET', 22),
     ],
+    results: [],
+    winner_id: null,
     league: { name: 'LEC' },
     tournament: { name: 'Spring' },
     videogame: { name: 'LoL', slug: 'league-of-legends' },

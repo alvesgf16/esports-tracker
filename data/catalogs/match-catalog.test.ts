@@ -10,8 +10,8 @@ const match: Match = {
   format: 'Bo3',
   startsAt: '2026-03-15T14:00:00.000Z',
   teams: [
-    { name: 'Alpha', shortName: 'ALP' },
-    { name: 'Beta', shortName: 'BET' },
+    { id: 'alpha', name: 'Alpha', shortName: 'ALP' },
+    { id: 'beta', name: 'Beta', shortName: 'BET' },
   ],
 };
 

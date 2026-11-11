@@ -34,6 +34,25 @@ describe('parseLiveSchedulePayload', () => {
     expect(parseLiveSchedulePayload(payload)).toEqual(payload);
   });
 
+  it('accepts a match with series scores', () => {
+    const payload = {
+      status: 'ok' as const,
+      games: [LOL],
+      matches: [
+        {
+          ...G2_VS_FNC,
+          scores: [
+            { teamId: 'g2', score: 2 },
+            { teamId: 'fnc', score: 1 },
+          ],
+          winnerId: 'g2',
+        },
+      ],
+    };
+
+    expect(parseLiveSchedulePayload(payload)).toEqual(payload);
+  });
+
   it('rejects a non-object', () => {
     expect(parseLiveSchedulePayload(null)).toBeNull();
     expect(parseLiveSchedulePayload([])).toBeNull();

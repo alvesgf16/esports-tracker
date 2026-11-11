@@ -1,7 +1,5 @@
-export type GameId = string;
-
 export type Game = {
-  id: GameId;
+  id: string;
   name: string;
   shortName: string;
 };
@@ -9,19 +7,27 @@ export type Game = {
 export type MatchStatus = 'not_started' | 'running' | 'finished';
 
 export type Team = {
+  id?: string;
   name: string;
   shortName: string;
 };
 
+export type SeriesScore = {
+  teamId: string;
+  score: number;
+};
+
 export type Match = {
   id: string;
-  game: GameId;
+  game: string;
   name: string;
   tournament: string;
   format: string;
   startsAt: string;
   teams: Team[];
   status?: MatchStatus;
+  scores?: SeriesScore[];
+  winnerId?: string;
 };
 
 export type MatchesSnapshot = {

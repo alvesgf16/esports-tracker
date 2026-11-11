@@ -59,7 +59,10 @@ function namedValueExports(node) {
 }
 
 function namedTypeExports(node) {
-  if (node.exportKind === 'type' || TYPE_DECLARATIONS.has(node.declaration?.type)) {
+  if (
+    node.exportKind === 'type' ||
+    TYPE_DECLARATIONS.has(node.declaration?.type)
+  ) {
     if (node.declaration) {
       return declarationNames(node.declaration).map((name) => ({
         node,
@@ -118,8 +121,7 @@ module.exports = {
       meta: {
         type: 'problem',
         docs: {
-          description:
-            'Limit runtime exports so each module owns one value.',
+          description: 'Limit runtime exports so each module owns one value.',
         },
         schema: [
           {
