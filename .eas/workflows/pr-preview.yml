@@ -1,0 +1,17 @@
+name: PR Preview
+
+on:
+  pull_request: {}
+
+concurrency:
+  group: ${{ workflow.filename }}-${{ github.ref }}
+  cancel_in_progress: true
+
+jobs:
+  deploy:
+    type: deploy
+    name: Deploy PR Preview
+
+  comment:
+    needs: [deploy]
+    type: github-comment
