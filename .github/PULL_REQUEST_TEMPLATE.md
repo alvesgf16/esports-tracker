@@ -1,5 +1,6 @@
 <!--
-Fill every section. CI rejects empty placeholders.
+Fill every section with the real change. CI rejects empty, TODO, and TBD
+(including list items and **TODO**). It does not detect generic filler.
 Visuals: screenshots/recording, or N/A.
 Risks: caveats, or None.
 -->

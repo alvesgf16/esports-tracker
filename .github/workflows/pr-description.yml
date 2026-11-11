@@ -19,6 +19,9 @@ jobs:
     if: github.event.pull_request.user.type != 'Bot'
     runs-on: ubuntu-latest
     steps:
+      # pull_request always checks out the PR, so the checker is PR-controlled.
+      # Fetch the body with a trusted action, then clear GITHUB_TOKEN on Python.
+      # Pinning the script to main cannot work until this workflow exists there.
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
@@ -29,14 +32,16 @@ jobs:
         with:
           script: |
             const fs = require('fs');
+
             const { data } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
             });
+
             fs.writeFileSync(process.env.PR_BODY_PATH, data.body ?? '', 'utf8');
       - name: Require filled template sections
         env:
           PR_BODY_PATH: ${{ runner.temp }}/pr-body.md
-          GITHUB_TOKEN: ''
+          GITHUB_TOKEN: '' # untrusted PR script; see AGENTS.md
         run: python3 .github/scripts/require-pr-description.py

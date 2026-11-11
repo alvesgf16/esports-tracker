@@ -29,7 +29,7 @@ Run `npm run check` before declaring any task done. Commits are blocked unless i
 
 Commit messages follow Conventional Commits. Husky runs commitlint on `commit-msg`. Example: `feat: add expo hosting so the schedule can run as a phone web app`.
 
-Pull request descriptions follow `.github/PULL_REQUEST_TEMPLATE.md`. GitHub requires that reserved filename (not kebab-case). The `pr-description` workflow runs `.github/scripts/require-pr-description.py` and rejects missing or placeholder What / Why / How to test / Visuals / Risks sections. Visuals may be `N/A`; Risks may be `None`.
+Pull request descriptions follow `.github/PULL_REQUEST_TEMPLATE.md`. GitHub requires that reserved filename (not kebab-case). The `pr-description` workflow fetches the live PR body with `actions/github-script`, then runs `.github/scripts/require-pr-description.py` with `GITHUB_TOKEN` cleared so the PR-controlled checker cannot use the token. Like other `pull_request` workflows, the job uses the PR’s workflow and script; it does not pin those files to `main`. The checker rejects missing sections, empty sections, and `TODO` / `TBD` at the start of a section (including after a list marker or wrapping markup). Visuals may be `N/A`; Risks may be `None`. Generic filler such as `Add details here` is out of scope.
 
 ## Navigation & Routing
 
