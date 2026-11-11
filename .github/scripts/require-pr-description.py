@@ -3,7 +3,6 @@ import json
 import os
 import re
 import sys
-import urllib.request
 from typing import cast
 
 HEADINGS = ("What", "Why", "How to test", "Visuals", "Risks")
@@ -13,10 +12,11 @@ OPTIONAL_EMPTY = {
 }
 PLACEHOLDER_PREFIX = re.compile(r"(todo|tbd)\b", re.IGNORECASE)
 CHECKBOX_PREFIX = re.compile(r"^[ \t]*[-*][ \t]+\[[ xX]\][ \t]*", re.MULTILINE)
+LIST_PREFIX = re.compile(r"^([-*+]|\d+\.)[ \t]+")
+WRAP_MARKUP = re.compile(r"^[`*_~]+|[`*_~]+$")
 HEADING = re.compile(r"^ {0,3}##\s+(.+?)(?:\s+#*)?\s*$")
 FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 FOOTER = re.compile(r"^made with\s+\[?cursor", re.IGNORECASE)
-GITHUB_API = "https://api.github.com/"
 
 
 def main() -> None:
@@ -28,59 +28,35 @@ def main() -> None:
 
 
 def load_pr_body() -> str:
-    payload = event_pull_request()
+    path = os.environ.get("PR_BODY_PATH")
 
-    if payload is None:
-        return ""
+    if path:
+        return read_body_file(path)
 
-    fetched = fetched_pr_body(payload)
+    payload = load_event_pull_request()
 
-    return fetched if fetched is not None else event_pr_body(payload)
+    return "" if payload is None else read_pull_request_body(payload)
 
 
-def event_pull_request() -> dict[str, object] | None:
+def read_body_file(path: str) -> str:
+    with open(path, encoding="utf-8") as handle:
+        return handle.read()
+
+
+def load_event_pull_request() -> dict[str, object] | None:
     with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as handle:
-        event = json_object(json.load(handle))
+        event = parse_json_object(json.load(handle))
 
-    return None if event is None else json_object(event.get("pull_request"))
+    return None if event is None else parse_json_object(event.get("pull_request"))
 
 
-def event_pr_body(payload: dict[str, object]) -> str:
+def read_pull_request_body(payload: dict[str, object]) -> str:
     body = payload.get("body")
 
     return body if isinstance(body, str) else ""
 
 
-def fetched_pr_body(payload: dict[str, object]) -> str | None:
-    url = payload.get("url")
-    token = os.environ.get("GITHUB_TOKEN")
-
-    if not isinstance(url, str) or not url.startswith(GITHUB_API):
-        return None
-
-    if not token:
-        return None
-
-    request = urllib.request.Request(url, headers=github_headers(token))
-
-    try:
-        with urllib.request.urlopen(request, timeout=10) as response:
-            fetched = json_object(json.loads(response.read().decode()))
-    except (OSError, UnicodeError, json.JSONDecodeError):
-        return None
-
-    return None if fetched is None else event_pr_body(fetched)
-
-
-def github_headers(token: str) -> dict[str, str]:
-    return {
-        "Accept": "application/vnd.github+json",
-        "Authorization": f"Bearer {token}",
-        "User-Agent": "require-pr-description",
-    }
-
-
-def json_object(value: object) -> dict[str, object] | None:
+def parse_json_object(value: object) -> dict[str, object] | None:
     return (
         cast(dict[str, object], value) if isinstance(value, dict) else None
     )
@@ -88,7 +64,7 @@ def json_object(value: object) -> dict[str, object] | None:
 
 def check_description(body: str) -> list[str]:
     sections = parse_sections(
-        without_fenced_blocks(without_comments(body))
+        remove_fenced_blocks(remove_comments(body))
     )
     issues: list[str] = []
 
@@ -97,7 +73,7 @@ def check_description(body: str) -> list[str]:
             issues.append(f"Missing ## {heading} section.")
             continue
 
-        text = section_text(heading, sections[heading])
+        text = read_section_text(heading, sections[heading])
 
         if not text:
             issues.append(f"## {heading} needs more than a placeholder.")
@@ -105,7 +81,7 @@ def check_description(body: str) -> list[str]:
     return issues
 
 
-def without_comments(body: str) -> str:
+def remove_comments(body: str) -> str:
     parts: list[str] = []
     cursor = 0
 
@@ -119,7 +95,7 @@ def without_comments(body: str) -> str:
         end = body.find("-->", start + 4)
 
         if end == -1:
-            parts.append(body[cursor:])
+            parts.append(body[cursor:start])
             break
 
         parts.append(body[cursor:start])
@@ -128,13 +104,13 @@ def without_comments(body: str) -> str:
     return "".join(parts)
 
 
-def without_fenced_blocks(body: str) -> str:
+def remove_fenced_blocks(body: str) -> str:
     lines: list[str] = []
     fence: tuple[str, int] | None = None
 
     for line in body.splitlines():
         if fence is None:
-            fence = opening_fence(line)
+            fence = read_opening_fence(line)
 
             if fence is None:
                 lines.append(line)
@@ -147,7 +123,7 @@ def without_fenced_blocks(body: str) -> str:
     return "\n".join(lines)
 
 
-def opening_fence(line: str) -> tuple[str, int] | None:
+def read_opening_fence(line: str) -> tuple[str, int] | None:
     match = FENCE.match(line)
 
     if match is None:
@@ -170,7 +146,7 @@ def closes_fence(line: str, fence: tuple[str, int]) -> bool:
     if marker[0] != char or len(marker) < length:
         return False
 
-    return line[match.end():].strip() == ""
+    return line[match.end() :].strip() == ""
 
 
 def parse_sections(body: str) -> dict[str, list[str]]:
@@ -191,16 +167,16 @@ def parse_sections(body: str) -> dict[str, list[str]]:
     return sections
 
 
-def section_text(heading: str, lines: list[str]) -> str:
+def read_section_text(heading: str, lines: list[str]) -> str:
     text = CHECKBOX_PREFIX.sub("", "\n".join(lines)).strip()
 
     if heading == "Risks":
-        text = without_footer_lines(text)
+        text = remove_footer_lines(text)
 
     return "" if is_placeholder(heading, text) else text
 
 
-def without_footer_lines(text: str) -> str:
+def remove_footer_lines(text: str) -> str:
     kept = [
         line for line in text.splitlines() if not FOOTER.match(line.strip())
     ]
@@ -209,15 +185,30 @@ def without_footer_lines(text: str) -> str:
 
 
 def is_placeholder(heading: str, text: str) -> bool:
-    if PLACEHOLDER_PREFIX.match(text):
+    normalized = normalize_placeholder(text)
+
+    if PLACEHOLDER_PREFIX.match(normalized):
         return True
 
-    lowered = text.lower()
+    lowered = normalized.lower()
 
     if lowered in {"n/a", "none"}:
         return lowered not in OPTIONAL_EMPTY.get(heading, frozenset())
 
     return False
+
+
+def normalize_placeholder(text: str) -> str:
+    first = text.splitlines()[0] if text else ""
+    stripped = LIST_PREFIX.sub("", first.strip())
+
+    while True:
+        next_text = WRAP_MARKUP.sub("", stripped).strip()
+
+        if next_text == stripped:
+            return next_text
+
+        stripped = next_text
 
 
 if __name__ == "__main__":

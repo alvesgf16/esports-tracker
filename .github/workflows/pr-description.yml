@@ -22,7 +22,21 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Fetch pull request body
+        env:
+          PR_BODY_PATH: ${{ runner.temp }}/pr-body.md
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('fs');
+            const { data } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+            fs.writeFileSync(process.env.PR_BODY_PATH, data.body ?? '', 'utf8');
       - name: Require filled template sections
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BODY_PATH: ${{ runner.temp }}/pr-body.md
+          GITHUB_TOKEN: ''
         run: python3 .github/scripts/require-pr-description.py
