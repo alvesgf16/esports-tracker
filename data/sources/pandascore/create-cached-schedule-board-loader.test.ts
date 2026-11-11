@@ -56,7 +56,17 @@ describe('createCachedScheduleBoardLoader', () => {
     expect(loadScheduleBoard).toHaveBeenCalledTimes(1);
   });
 
-  it('retries after a failed refresh', async () => {
+  it('does not call PandaScore during the failure cooldown', async () => {
+    const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
+
+    jest.mocked(loadScheduleBoard).mockRejectedValue(new Error('down'));
+
+    await expect(loadCachedScheduleBoard('secret')).rejects.toThrow('down');
+    await expect(loadCachedScheduleBoard('secret')).rejects.toThrow('down');
+    expect(loadScheduleBoard).toHaveBeenCalledTimes(1);
+  });
+
+  it('retries after the failure cooldown', async () => {
     const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
 
     jest
@@ -65,6 +75,8 @@ describe('createCachedScheduleBoardLoader', () => {
       .mockResolvedValueOnce(emptyBoard);
 
     await expect(loadCachedScheduleBoard('secret')).rejects.toThrow('down');
+    jest.setSystemTime(Date.now() + 10_000 + 1);
+
     await expect(loadCachedScheduleBoard('secret')).resolves.toBe(emptyBoard);
     expect(loadScheduleBoard).toHaveBeenCalledTimes(2);
   });
