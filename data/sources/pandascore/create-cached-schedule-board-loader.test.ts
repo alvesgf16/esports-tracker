@@ -56,6 +56,22 @@ describe('createCachedScheduleBoardLoader', () => {
     expect(loadScheduleBoard).toHaveBeenCalledTimes(1);
   });
 
+  it('cools down from when the refresh fails', async () => {
+    const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
+    const { promise, reject } = deferredBoard(emptyBoard);
+
+    jest.mocked(loadScheduleBoard).mockReturnValue(promise);
+
+    const pending = loadCachedScheduleBoard('secret');
+
+    jest.setSystemTime(Date.now() + 10_000);
+    reject(new Error('down'));
+
+    await expect(pending).rejects.toThrow('down');
+    await expect(loadCachedScheduleBoard('secret')).rejects.toThrow('down');
+    expect(loadScheduleBoard).toHaveBeenCalledTimes(1);
+  });
+
   it('does not call PandaScore during the failure cooldown', async () => {
     const loadCachedScheduleBoard = createCachedScheduleBoardLoader();
 
@@ -84,9 +100,11 @@ describe('createCachedScheduleBoardLoader', () => {
 
 function deferredBoard(board: typeof emptyBoard) {
   let resolve = () => {};
-  const promise = new Promise<typeof emptyBoard>((next) => {
+  let reject = (_error: Error) => {};
+  const promise = new Promise<typeof emptyBoard>((next, fail) => {
     resolve = () => next(board);
+    reject = fail;
   });
 
-  return { promise, resolve };
+  return { promise, resolve, reject };
 }

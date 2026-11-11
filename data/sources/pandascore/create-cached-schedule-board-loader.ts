@@ -71,7 +71,7 @@ async function refresh(
   try {
     return rememberBoard(await loadScheduleBoard(token), store, now);
   } catch (error) {
-    return rememberFailure(error, store, now);
+    return rememberFailure(error, store);
   }
 }
 
@@ -85,17 +85,13 @@ function rememberBoard(
   return board;
 }
 
-function rememberFailure(
-  error: unknown,
-  store: CacheStore,
-  now: number
-): never {
+function rememberFailure(error: unknown, store: CacheStore): never {
   const failure = asError(error);
 
   store.entry = {
     kind: 'failure',
     error: failure,
-    expiresAt: now + FAILURE_COOLDOWN_MS,
+    expiresAt: Date.now() + FAILURE_COOLDOWN_MS,
   };
 
   throw failure;
