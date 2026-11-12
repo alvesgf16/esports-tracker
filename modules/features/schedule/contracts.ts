@@ -37,13 +37,21 @@ export type ChipModel = {
   onPress: () => void;
 };
 
+export type SideEmphasis = 'winner' | 'loser' | 'undecided';
+
+export type MatchSideModel = {
+  name: string;
+  score: string | null;
+  emphasis: SideEmphasis;
+};
+
 export type MatchRowModel = {
   id: string;
   kickoffLabel: string;
   countdownLabel: string;
   isLive: boolean;
-  left: string;
-  right: string;
+  left: MatchSideModel;
+  right: MatchSideModel;
   meta: string;
 };
 
