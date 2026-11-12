@@ -29,14 +29,11 @@ export default function MatchDayList({ groups, emptyMessage }: Props) {
 }
 
 function MatchDaySection({ day }: MatchDaySectionProps) {
-  const { label, matches } = day;
+  const { matches } = day;
   const lastIndex = matches.length - 1;
 
   return (
-    <View className="mb-2">
-      <Text className="mt-4 mb-1 text-[13px] font-bold tracking-[0.4px] text-muted uppercase">
-        {label}
-      </Text>
+    <View className="mb-2 mt-2">
       {matches.map((match, index) => (
         <MatchRow key={match.id} match={match} isLast={index === lastIndex} />
       ))}

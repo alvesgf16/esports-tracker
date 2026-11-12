@@ -7,11 +7,12 @@ export type ScheduleRouter = {
   setGameFilter: (game: GameFilter) => void;
 };
 
-type DayCalendar = {
+export type DayCalendar = {
   dayKey: (instant: string | number) => string;
   todayKey: (now: number) => string;
   tomorrowKey: (now: number) => string;
   heading: (dayKey: string) => string;
+  shiftKey: (dayKey: string, days: number) => string;
 };
 
 export type DayGroup = {
@@ -35,6 +36,12 @@ export type ChipModel = {
   id: GameFilter;
   label: string;
   onPress: () => void;
+};
+
+export type DayPagerModel = {
+  label: string;
+  onPrev: () => void;
+  onNext: () => void;
 };
 
 export type SideEmphasis = 'winner' | 'loser' | 'undecided';
@@ -64,6 +71,7 @@ export type DaySectionModel = {
 export type SchedulePresenter = {
   selectedChip: GameFilter;
   chips: ChipModel[];
+  dayPager: DayPagerModel;
   groups: DaySectionModel[];
   emptyMessage: string;
   notice: string | null;

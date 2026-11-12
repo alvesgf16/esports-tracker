@@ -393,6 +393,8 @@ module.exports = defineConfig([
     files: ['modules/features/*/presenter.ts'],
     rules: {
       'no-restricted-imports': ['error', presenterImports()],
+      // Presenters assemble the view model; extracting for line count only splits that wiring.
+      'max-lines-per-function': 'off',
     },
   },
   {

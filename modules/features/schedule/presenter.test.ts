@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-native';
+import { act, renderHook } from '@testing-library/react-native';
 
 import type {
   GameCatalog,
@@ -6,7 +6,7 @@ import type {
   ScheduleBoardState,
   ScheduleLoadState,
 } from '@/modules/shared/gateways';
-import { aMatch } from '@/modules/shared/shared.harness';
+import { aMatch, hoursFromNow } from '@/modules/shared/shared.harness';
 
 import type { ScheduleClock } from './contracts';
 import { useSchedulePresenter } from './presenter';
@@ -40,20 +40,33 @@ function stubBoard(overrides: BoardOverrides = {}): ScheduleBoardState {
   };
 }
 
-async function present(overrides: PresentOverrides = {}) {
+async function presentHook(overrides: PresentOverrides = {}) {
   jest.mocked(useScheduleRouter).mockReturnValue({
     gameFilter: overrides.gameFilter,
     setGameFilter: jest.fn(),
   });
 
-  const { result } = await renderHook(() =>
+  return renderHook(() =>
     useSchedulePresenter(
       stubBoard(overrides),
       overrides.clock ?? stubScheduleClock()
     )
   );
+}
+
+async function present(overrides: PresentOverrides = {}) {
+  const { result } = await presentHook(overrides);
 
   return result.current;
+}
+
+function twoDayCatalog(): MatchCatalog {
+  return stubMatchCatalog({
+    list: () => [
+      aMatch({ id: 'today', startsAt: hoursFromNow(2) }),
+      aMatch({ id: 'tomorrow', startsAt: hoursFromNow(26) }),
+    ],
+  });
 }
 
 describe('useSchedulePresenter', () => {
@@ -81,5 +94,47 @@ describe('useSchedulePresenter', () => {
       kickoffLabel: `kickoff:${match.startsAt}`,
       countdownLabel: `countdown:${match.startsAt}`,
     });
+  });
+
+  it('defaults the pager to Today', async () => {
+    const presenter = await present();
+
+    expect(presenter.dayPager.label).toBe('Today');
+  });
+
+  it('hides matches from other days', async () => {
+    const presenter = await present({
+      matches: twoDayCatalog(),
+    });
+
+    expect(presenter.groups[0].matches.map((match) => match.id)).toEqual([
+      'today',
+    ]);
+  });
+
+  it('pages to the next calendar day', async () => {
+    const { result } = await presentHook({
+      matches: twoDayCatalog(),
+    });
+
+    await act(() => {
+      result.current.dayPager.onNext();
+    });
+
+    expect(result.current.dayPager.label).toBe('Tomorrow');
+    expect(result.current.groups[0].matches.map((match) => match.id)).toEqual([
+      'tomorrow',
+    ]);
+  });
+
+  it('uses the empty message when the selected day has no matches', async () => {
+    const { result } = await presentHook();
+
+    await act(() => {
+      result.current.dayPager.onPrev();
+    });
+
+    expect(result.current.groups).toEqual([]);
+    expect(result.current.emptyMessage).toBe('No upcoming matches.');
   });
 });
