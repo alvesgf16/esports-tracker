@@ -1,5 +1,6 @@
 import { asOrNull } from '@/data/mappers/as-or-null';
 import { parseAll } from '@/data/mappers/parse-all';
+import { parseSome } from '@/data/mappers/parse-some';
 
 import type { LiveSchedulePayload } from '../schedule-result';
 import { toGame } from './to-game';
@@ -47,7 +48,7 @@ function okPayloadFrom(
   record: Record<string, unknown>
 ): LiveSchedulePayload | null {
   const games = parseAll(record.games, toGame);
-  const matches = parseAll(record.matches, toMatch);
+  const matches = parseSome(record.matches, toMatch);
 
   return games && matches ? { status: 'ok', games, matches } : null;
 }

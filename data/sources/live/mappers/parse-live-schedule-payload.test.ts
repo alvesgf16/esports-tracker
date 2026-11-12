@@ -72,24 +72,45 @@ describe('parseLiveSchedulePayload', () => {
     ).toBeNull();
   });
 
-  it('rejects an ok payload with a bad match', () => {
-    expect(
-      parseLiveSchedulePayload({
-        status: 'ok',
-        games: [LOL],
-        matches: [{ ...G2_VS_FNC, teams: [{ name: 'G2' }] }],
-      })
-    ).toBeNull();
+  it('skips a bad match and keeps the payload', () => {
+    const payload = {
+      status: 'ok' as const,
+      games: [LOL],
+      matches: [G2_VS_FNC, { ...G2_VS_FNC, teams: [{ name: 'G2' }] }],
+    };
+
+    expect(parseLiveSchedulePayload(payload)).toEqual({
+      status: 'ok',
+      games: [LOL],
+      matches: [G2_VS_FNC],
+    });
   });
 
-  it('rejects a match with unknown status', () => {
+  it('skips a match with unknown status', () => {
     expect(
       parseLiveSchedulePayload({
         status: 'ok',
         games: [LOL],
         matches: [{ ...G2_VS_FNC, status: 'canceled' }],
       })
-    ).toBeNull();
+    ).toEqual({ status: 'ok', games: [LOL], matches: [] });
+  });
+
+  it('skips a match with a malformed score', () => {
+    const payload = {
+      status: 'ok' as const,
+      games: [LOL],
+      matches: [
+        G2_VS_FNC,
+        { ...G2_VS_FNC, scores: [{ teamId: 'g2', score: 1.5 }] },
+      ],
+    };
+
+    expect(parseLiveSchedulePayload(payload)).toEqual({
+      status: 'ok',
+      games: [LOL],
+      matches: [G2_VS_FNC],
+    });
   });
 
   it('rejects an error whose message is not a string', () => {
