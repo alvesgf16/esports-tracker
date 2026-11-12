@@ -1,8 +1,8 @@
-import type { Game, GameId, Match } from './entities';
+import type { Game, Match } from './entities';
 
 export type GameCatalog = {
   list: () => Game[];
-  get: (id: GameId) => Game;
+  get: (id: string) => Game;
 };
 
 export type MatchCatalog = {

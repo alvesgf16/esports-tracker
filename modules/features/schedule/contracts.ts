@@ -1,6 +1,6 @@
-import type { GameId, Match } from '@/modules/shared/entities';
+import type { Match } from '@/modules/shared/entities';
 
-export type GameFilter = GameId | 'all';
+export type GameFilter = string | 'all';
 
 export type ScheduleRouter = {
   gameFilter?: string;

@@ -6,7 +6,7 @@ export function gameChips(
   games: Game[],
   setGameFilter: (game: GameFilter) => void
 ): ChipModel[] {
-  const toGameChip = (game: Game): ChipModel => gameChip(game, setGameFilter);
+  const toGameChip = (game: Game) => gameChip(game, setGameFilter);
 
   return [
     { id: 'all', label: 'All', onPress: () => setGameFilter('all') },

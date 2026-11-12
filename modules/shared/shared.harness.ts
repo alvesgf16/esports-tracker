@@ -21,8 +21,8 @@ export function aMatch(overrides: Partial<Match> = {}): Match {
     format: 'Bo3',
     startsAt: hoursFromNow(2),
     teams: [
-      { name: 'Alpha', shortName: 'ALP' },
-      { name: 'Beta', shortName: 'BET' },
+      { id: 'alpha', name: 'Alpha', shortName: 'ALP' },
+      { id: 'beta', name: 'Beta', shortName: 'BET' },
     ],
     ...overrides,
   };

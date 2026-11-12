@@ -1,7 +1,10 @@
 import { asOrNull } from '@/data/mappers/as-or-null';
 import { parseAll } from '@/data/mappers/parse-all';
 import { parseOptional } from '@/data/mappers/parse-optional';
-import type { Match, MatchStatus, Team } from '@/modules/shared/entities';
+import { teamWithOptionalId } from '@/data/mappers/team-with-optional-id';
+import type { Match, Team } from '@/modules/shared/entities';
+
+import { matchOptionalsFrom } from './match-optionals-from';
 
 type MatchCore = {
   id: string;
@@ -27,13 +30,9 @@ export function toMatch(value: unknown): Match | null {
 function matchFrom(record: Record<string, unknown>): Match | null {
   const core = matchCoreFrom(record);
   const teams = parseAll(record.teams, toTeam);
-  const status = parseOptional(record.status, toMatchStatus);
+  const optionals = teams && matchOptionalsFrom(record, teams);
 
-  if (!core || !teams || status === null) {
-    return null;
-  }
-
-  return status ? { ...core, teams, status } : { ...core, teams };
+  return core && teams && optionals ? { ...core, teams, ...optionals } : null;
 }
 
 function matchCoreFrom(record: Record<string, unknown>): MatchCore | null {
@@ -57,16 +56,16 @@ function matchMetaFrom(record: Record<string, unknown>): MatchMeta | null {
 
 function toTeam(value: unknown): Team | null {
   const record = asOrNull.record(value);
-  const name = record && asOrNull.string(record.name);
-  const shortName = record && asOrNull.string(record.shortName);
 
-  return name && shortName ? { name, shortName } : null;
+  return record && teamFrom(record);
 }
 
-function toMatchStatus(value: unknown): MatchStatus | null {
-  return isMatchStatus(value) ? value : null;
-}
+function teamFrom(record: Record<string, unknown>): Team | null {
+  const name = asOrNull.string(record.name);
+  const shortName = asOrNull.string(record.shortName);
+  const id = parseOptional(record.id, asOrNull.string);
 
-function isMatchStatus(value: unknown): value is MatchStatus {
-  return value === 'not_started' || value === 'running' || value === 'finished';
+  return name && shortName && id !== null
+    ? teamWithOptionalId({ id, name, shortName })
+    : null;
 }

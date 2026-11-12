@@ -7,9 +7,15 @@
   "begin_at": "2026-11-04T16:00:00Z",
   "scheduled_at": "2026-11-04T16:00:00Z",
   "opponents": [
-    { "type": "Team", "opponent": { "name": "Twisted Minds", "acronym": "TWIS" } },
+    {
+      "type": "Team",
+      "opponent": { "name": "Twisted Minds", "acronym": "TWIS" }
+    },
     { "type": "Team", "opponent": { "name": "Falcons", "acronym": "FLC" } },
-    { "type": "Team", "opponent": { "name": "Natus Vincere", "acronym": "NAVI" } },
+    {
+      "type": "Team",
+      "opponent": { "name": "Natus Vincere", "acronym": "NAVI" }
+    },
     { "type": "Team", "opponent": { "name": "Soniqs", "acronym": "SON" } },
     { "type": "Team", "opponent": { "name": "GEN.G", "acronym": "GEN" } },
     { "type": "Team", "opponent": { "name": "TSM", "acronym": "TSM" } },
@@ -18,9 +24,15 @@
     { "type": "Team", "opponent": { "name": "Fnatic", "acronym": "FNC" } },
     { "type": "Team", "opponent": { "name": "Virtus.pro", "acronym": "VP" } },
     { "type": "Team", "opponent": { "name": "Team Spirit", "acronym": "TS" } },
-    { "type": "Team", "opponent": { "name": "Gaimin Gladiators", "acronym": "GG" } },
+    {
+      "type": "Team",
+      "opponent": { "name": "Gaimin Gladiators", "acronym": "GG" }
+    },
     { "type": "Team", "opponent": { "name": "Eternal Fire", "acronym": "EF" } },
-    { "type": "Team", "opponent": { "name": "The MongolZ", "acronym": "MNGZ" } },
+    {
+      "type": "Team",
+      "opponent": { "name": "The MongolZ", "acronym": "MNGZ" }
+    },
     { "type": "Team", "opponent": { "name": "MOUZ", "acronym": "MOUZ" } },
     { "type": "Team", "opponent": { "name": "Vitality", "acronym": "VIT" } }
   ],

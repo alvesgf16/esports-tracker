@@ -1,8 +1,8 @@
-import type { GameId, MatchesSnapshot } from '@/modules/shared/entities';
+import type { MatchesSnapshot } from '@/modules/shared/entities';
 import { visibleMatchesFor } from '@/modules/shared/use-cases/visible-matches-for';
 
 export function countUpcomingMatchesFor(
-  gameId: GameId,
+  gameId: string,
   matchesSnapshot: MatchesSnapshot
 ): number {
   const upcomingMatches = visibleMatchesFor(gameId, matchesSnapshot);

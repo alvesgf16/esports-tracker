@@ -13,9 +13,10 @@ Prefer intention-revealing, searchable, pronounceable names. Prefer the more des
 
 ### Domain vocabulary
 
-- `Game`, `GameId` (opaque string), `Team`, `Match` — Entity DTOs in `modules/shared/entities.ts`
-- `Match.teams`, optional `Match.status` (`not_started` / `running` / `finished`)
-- `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter` (Schedule contract: chip selection `GameId | 'all'`)
+- `Game`, `Team`, `Match`, `SeriesScore` — Entity DTOs in `modules/shared/entities.ts`
+- Ids are plain `string` (`Game.id`, `Match.game`, optional `Team.id`, `SeriesScore.teamId`, `Match.winnerId`) — not opaque aliases
+- `Match.teams`, optional `Team.id`, optional `Match.status` (`not_started` / `running` / `finished`), optional `Match.scores` / `Match.winnerId`
+- `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayGroup`, `GameFilter` (Schedule contract: chip selection `string | 'all'`)
 - Kickoff, countdown, tournament (`league · stage`), format (`Bo3` / `Ft3`)
 - VIPER features: Schedule (`modules/features/schedule/`), Games (`modules/features/games/`)
 - Shared kernel: `modules/shared/` — entities, gateways, cross-feature use cases, shared UI
@@ -40,7 +41,7 @@ Objects hide data behind operations; data structures expose data. `Match`, `Team
 
 ## Error Handling (Ch.7)
 
-Prefer exceptions over error codes for unexpected failures (`GameCatalog.get` throwing on unknown `GameId` is the pattern). No empty catches. Provide context. Don’t use throw for expected validation — return a named outcome (`GameId | null`). Be deliberate with null/optional.
+Prefer exceptions over error codes for unexpected failures (`GameCatalog.get` throwing on unknown game id is the pattern). No empty catches. Provide context. Don’t use throw for expected validation — return a named outcome (`string | null`). Be deliberate with null/optional.
 
 ## Boundaries (Ch.8)
 
@@ -48,7 +49,7 @@ Wrap third-party APIs behind owned façades. Sample catalogs in `data/sources/sa
 
 ## Classes (Ch.10)
 
-Small, cohesive, single responsibility. This app is function- and type-first VIPER + Clean Architecture (contracts + functions); don’t introduce classes unless they earn cohesion. Organize for change. Expo Router layout / `ErrorBoundary` conventions stay framework-owned when they conflict with purity. One runtime export per file (`exports/max-value-exports`); a function module must not export types (`exports/no-mixed-exports`); type-only modules export types and nothing else; no `index.ts` / `export *` barrels. Specs, harnesses, and `app/_layout.tsx` are documented exceptions. Single-caller helpers stay unexported next to their caller.
+Small, cohesive, single responsibility. This app is function- and type-first VIPER + Clean Architecture (contracts + functions); don’t introduce classes unless they earn cohesion. Organize for change. Expo Router layout / `ErrorBoundary` conventions stay framework-owned when they conflict with purity. One runtime export per file (`exports/max-value-exports`); a function module must not export types (`exports/no-mixed-exports`); type-only modules export types and nothing else; no `index.ts` / `export *` barrels. Specs, harnesses, `app/_layout.tsx`, and `data/sources/sample/catalogs/matches/index.ts` are documented exceptions. Single-caller helpers stay unexported next to their caller.
 
 ## Systems (Ch.11)
 
