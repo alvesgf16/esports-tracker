@@ -1,6 +1,7 @@
 import { ScrollView, Text, View } from 'react-native';
 
-import type { DaySectionModel, MatchRowModel } from '../contracts';
+import type { DaySectionModel } from '../contracts';
+import MatchRow from './match-row';
 
 type Props = {
   groups: DaySectionModel[];
@@ -9,19 +10,6 @@ type Props = {
 
 type MatchDaySectionProps = {
   day: DaySectionModel;
-};
-
-type MatchRowProps = {
-  match: MatchRowModel;
-  isLast: boolean;
-};
-
-type MatchRowContentProps = {
-  match: MatchRowModel;
-};
-
-type SideLabelProps = {
-  label: string;
 };
 
 export default function MatchDayList({ groups, emptyMessage }: Props) {
@@ -53,56 +41,5 @@ function MatchDaySection({ day }: MatchDaySectionProps) {
         <MatchRow key={match.id} match={match} isLast={index === lastIndex} />
       ))}
     </View>
-  );
-}
-
-function MatchRow({ match, isLast }: MatchRowProps) {
-  const rowBorder = isLast ? '' : 'border-b border-border';
-
-  return (
-    <View className={`flex-row items-center gap-3 py-2.5 ${rowBorder}`}>
-      <MatchKickoffColumn match={match} />
-      <MatchBody match={match} />
-    </View>
-  );
-}
-
-function MatchKickoffColumn({ match }: MatchRowContentProps) {
-  const kickoffTone = match.isLive ? 'text-live' : 'text-foreground';
-
-  return (
-    <View className="w-16">
-      <Text className={`text-sm font-bold ${kickoffTone}`}>
-        {match.kickoffLabel}
-      </Text>
-      {match.countdownLabel ? (
-        <Text className="mt-0.5 text-xs font-semibold text-muted">
-          {match.countdownLabel}
-        </Text>
-      ) : null}
-    </View>
-  );
-}
-
-function MatchBody({ match }: MatchRowContentProps) {
-  return (
-    <View className="flex-1 gap-0.5">
-      <SideLabel label={match.left} />
-      <SideLabel label={match.right} />
-      <Text className="mt-0.5 text-xs text-muted" numberOfLines={1}>
-        {match.meta}
-      </Text>
-    </View>
-  );
-}
-
-function SideLabel({ label }: SideLabelProps) {
-  return (
-    <Text
-      className="text-[15px] font-semibold text-foreground"
-      numberOfLines={1}
-    >
-      {label}
-    </Text>
   );
 }

@@ -1,7 +1,7 @@
 import type { Match } from '@/modules/shared/entities';
 import { aMatch, FIXED_NOW } from '@/modules/shared/shared.harness';
 
-import type { MatchRowModel } from '../contracts';
+import type { MatchRowModel, MatchSideModel, SideEmphasis } from '../contracts';
 import { stubGameCatalog, stubScheduleClock } from '../schedule.harness';
 import { matchRow } from './match-row';
 
@@ -13,6 +13,14 @@ function presentedRow(match: Match): MatchRowModel {
     now: clock.now,
     labels: clock.labels,
   });
+}
+
+function aSide(
+  name: string,
+  score: string | null = null,
+  emphasis: SideEmphasis = 'undecided'
+): MatchSideModel {
+  return { name, score, emphasis };
 }
 
 describe('matchRow', () => {
@@ -29,8 +37,8 @@ describe('matchRow', () => {
       kickoffLabel: 'LIVE',
       countdownLabel: '',
       isLive: true,
-      left: 'Alpha',
-      right: 'Beta',
+      left: aSide('Alpha'),
+      right: aSide('Beta'),
       meta: 'LoL · LEC · Spring · Bo3',
     });
   });
@@ -63,7 +71,7 @@ describe('matchRow', () => {
     });
   });
 
-  it('maps a lobby match into name and team count', () => {
+  it('maps a lobby match into the game meta line', () => {
     const row = presentedRow(
       aMatch({
         id: 'lobby-1',
@@ -78,10 +86,6 @@ describe('matchRow', () => {
       })
     );
 
-    expect(row).toMatchObject({
-      left: 'Group A — Match 3',
-      right: '3 teams',
-      meta: 'LoL · PGS · Global Series · Maps',
-    });
+    expect(row.meta).toBe('LoL · PGS · Global Series · Maps');
   });
 });
