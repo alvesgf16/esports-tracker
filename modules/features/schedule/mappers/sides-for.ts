@@ -62,20 +62,23 @@ function scoreLabel(
 }
 
 function shouldShowScore(match: Match, displayStatus: DisplayStatus): boolean {
-  return (
-    hasTwoTeams(match) && hasStarted(match, displayStatus) && hasScores(match)
-  );
+  return isTwoTeamSeries(match) && hasStarted(match, displayStatus);
 }
 
-function hasTwoTeams(match: Match) {
-  return match.teams.length === 2;
+function isTwoTeamSeries(match: Match) {
+  return match.teams.length === 2 && Boolean(match.scores?.length);
 }
 
 function hasStarted(match: Match, displayStatus: DisplayStatus) {
   return (
-    isLiveOrFinished(displayStatus) ||
-    Boolean(match.winnerId) ||
-    (match.scores?.some(isPositiveScore) ?? false)
+    hasProgress(match) ||
+    (!isNotStarted(match) && isLiveOrFinished(displayStatus))
+  );
+}
+
+function hasProgress(match: Match) {
+  return (
+    Boolean(match.winnerId) || (match.scores?.some(isPositiveScore) ?? false)
   );
 }
 
@@ -83,12 +86,12 @@ function isPositiveScore(entry: SeriesScore): boolean {
   return entry.score > 0;
 }
 
-function isLiveOrFinished(displayStatus: string) {
-  return displayStatus === 'live' || displayStatus === 'finished';
+function isNotStarted(match: Match) {
+  return match.status === 'not_started';
 }
 
-function hasScores(match: Match): boolean {
-  return Boolean(match.scores?.length);
+function isLiveOrFinished(displayStatus: string) {
+  return displayStatus === 'live' || displayStatus === 'finished';
 }
 
 function mappedScore(

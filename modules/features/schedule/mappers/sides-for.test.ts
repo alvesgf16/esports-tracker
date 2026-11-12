@@ -16,6 +16,11 @@ function aSide(
   return { name, score, emphasis };
 }
 
+const ZERO_SERIES = [
+  { teamId: 'alpha', score: 0 },
+  { teamId: 'beta', score: 0 },
+];
+
 describe('sidesFor', () => {
   it('maps a lobby match into name and team count without scores', () => {
     const sides = presentedSides(
@@ -101,14 +106,23 @@ describe('sidesFor', () => {
     });
   });
 
+  it('hides a delayed not_started 0–0 even inside the live window', () => {
+    const match = aMatch({
+      startsAt: new Date(FIXED_NOW - 60_000).toISOString(),
+      status: 'not_started',
+      scores: ZERO_SERIES,
+    });
+    const sides = presentedSides(match);
+
+    expect(sides.left.score).toBeNull();
+    expect(sides.right.score).toBeNull();
+  });
+
   it('hides an upcoming 0–0 so it does not look decided', () => {
     const sides = presentedSides(
       aMatch({
         status: 'not_started',
-        scores: [
-          { teamId: 'alpha', score: 0 },
-          { teamId: 'beta', score: 0 },
-        ],
+        scores: ZERO_SERIES,
       })
     );
 
