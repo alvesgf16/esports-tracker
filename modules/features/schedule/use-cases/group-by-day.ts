@@ -1,6 +1,7 @@
 import type { Match } from '@/modules/shared/entities';
 
 import type { DayGroup, ScheduleClock } from '../contracts';
+import { labelDay } from './label-day';
 
 type DayEntry = readonly [string, Match[]];
 
@@ -18,24 +19,7 @@ export function groupByDay(matches: Match[], clock: ScheduleClock): DayGroup[] {
 function dayGroup([dayKey, matches]: DayEntry, clock: ScheduleClock): DayGroup {
   return {
     dayKey,
-    label: dayLabel(dayKey, clock),
+    label: labelDay(dayKey, clock),
     matches,
   };
-}
-
-function dayLabel(dayKey: string, clock: ScheduleClock): string {
-  const { calendar, now } = clock;
-
-  const todayKey = calendar.todayKey(now);
-  const tomorrowKey = calendar.tomorrowKey(now);
-
-  if (dayKey === todayKey) {
-    return 'Today';
-  }
-
-  if (dayKey === tomorrowKey) {
-    return 'Tomorrow';
-  }
-
-  return calendar.heading(dayKey);
 }
