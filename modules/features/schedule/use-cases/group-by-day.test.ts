@@ -4,7 +4,7 @@ import { stubDayCalendar, stubScheduleClock } from '../schedule.harness';
 import { groupByDay } from './group-by-day';
 
 describe('groupByDay', () => {
-  it('labels today and tomorrow relative to now', () => {
+  it('buckets matches by calendar day', () => {
     const matches = [
       aMatch({ id: 'today', startsAt: hoursFromNow(3) }),
       aMatch({ id: 'tomorrow', startsAt: hoursFromNow(24) }),
@@ -12,7 +12,10 @@ describe('groupByDay', () => {
 
     const groups = groupByDay(matches, stubScheduleClock());
 
-    expect(groups.map((group) => group.label)).toEqual(['Today', 'Tomorrow']);
+    expect(groups.map((group) => group.dayKey)).toEqual([
+      '2026-03-15',
+      '2026-03-16',
+    ]);
     expect(groups[0].matches.map((match) => match.id)).toEqual(['today']);
     expect(groups[1].matches.map((match) => match.id)).toEqual(['tomorrow']);
   });
@@ -42,6 +45,6 @@ describe('groupByDay', () => {
       })
     );
 
-    expect(groups[0].label).toBe('Tomorrow');
+    expect(groups[0].dayKey).toBe('2026-11-05');
   });
 });

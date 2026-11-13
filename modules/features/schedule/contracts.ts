@@ -15,9 +15,10 @@ export type DayCalendar = {
   shiftKey: (dayKey: string, days: number) => string;
 };
 
+export type DayRelation = 'today' | 'tomorrow';
+
 export type DayGroup = {
   dayKey: string;
-  label: string;
   matches: Match[];
 };
 

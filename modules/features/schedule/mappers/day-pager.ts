@@ -1,5 +1,5 @@
 import type { DayCalendar, DayPagerModel, ScheduleClock } from '../contracts';
-import { labelDay } from '../use-cases/label-day';
+import { dayLabel } from './day-label';
 
 type DayKeySetter = (update: (dayKey: string) => string) => void;
 
@@ -9,7 +9,7 @@ export function dayPager(
   setDayKey: DayKeySetter
 ): DayPagerModel {
   return {
-    label: labelDay(dayKey, clock),
+    label: dayLabel(dayKey, clock),
     onPrev: () => setDayKey(shiftDay(clock.calendar, -1)),
     onNext: () => setDayKey(shiftDay(clock.calendar, 1)),
   };
