@@ -14,9 +14,10 @@ Prefer intention-revealing, searchable, pronounceable names. Prefer the more des
 ### Domain vocabulary
 
 - `Game`, `Team`, `Match`, `SeriesScore` — Entity DTOs in `modules/shared/entities.ts`
+- `CompetitionGroup` — Schedule grouping DTO in `modules/features/schedule/entities.ts`
 - Ids are plain `string` (`Game.id`, `Match.game`, optional `Team.id`, `SeriesScore.teamId`, `Match.winnerId`) — not opaque aliases
 - `Match.teams`, optional `Team.id`, optional `Match.status` (`not_started` / `running` / `finished`), optional `Match.scores` / `Match.winnerId`
-- `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `CompetitionGroup`, `DayRelation` (`today` / `tomorrow`), `GameFilter` (Schedule contract: chip selection `string | 'all'`)
+- `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayRelation` (`today` / `tomorrow`), `GameFilter` (Schedule contract: chip selection `string | 'all'`)
 - Kickoff, countdown, tournament (`league · stage`), format (`Bo3` / `Ft3`)
 - VIPER features: Schedule (`modules/features/schedule/`), Games (`modules/features/games/`)
 - Use cases are verbs (`listMatchesFor`, `relateDay`, `groupByCompetition`); mappers are nouns (`dayPager`, `dayLabel`, `matchRow`, `competitionDisclosures`, `gameChips`)

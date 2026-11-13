@@ -1,11 +1,8 @@
 import type { Match } from '@/modules/shared/entities';
 import type { GameCatalog } from '@/modules/shared/gateways';
 
-import type {
-  CompetitionDisclosureModel,
-  CompetitionGroup,
-  ScheduleClock,
-} from '../contracts';
+import type { CompetitionDisclosureModel, ScheduleClock } from '../contracts';
+import type { CompetitionGroup } from '../entities';
 import { groupByCompetition } from '../use-cases/group-by-competition';
 import { matchRow } from './match-row';
 

@@ -392,6 +392,7 @@ module.exports = defineConfig([
     files: [
       'modules/shared/entities.ts',
       'modules/shared/gateways.ts',
+      'modules/features/*/entities.ts',
       'modules/features/*/contracts.ts',
       'data/sources/live/schedule-result.ts',
       'data/sources/pandascore/schedule-board.ts',

@@ -1,6 +1,6 @@
 import type { Match } from '@/modules/shared/entities';
 
-import type { CompetitionGroup } from '../contracts';
+import type { CompetitionGroup } from '../entities';
 
 type CompetitionEntry = readonly [string, Match[]];
 

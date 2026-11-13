@@ -1,5 +1,3 @@
-import type { Match } from '@/modules/shared/entities';
-
 export type GameFilter = string | 'all';
 
 export type ScheduleRouter = {
@@ -21,13 +19,6 @@ export type DayCalendar = {
 };
 
 export type DayRelation = 'today' | 'tomorrow';
-
-export type CompetitionGroup = {
-  id: string;
-  game: string;
-  tournament: string;
-  matches: Match[];
-};
 
 export type MatchLabels = {
   kickoff: (startingTime: string) => string;
