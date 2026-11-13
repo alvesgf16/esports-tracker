@@ -9,7 +9,7 @@ import {
   TEST_TIME_ZONE,
 } from '@/modules/shared/shared.harness';
 
-import type { ScheduleClock } from './contracts';
+import type { DayCalendar, ScheduleClock } from './contracts';
 
 const lol: Game = {
   id: 'lol',
@@ -36,7 +36,7 @@ export function todayAndTomorrowMatches(): Match[] {
   ];
 }
 
-export function stubDayCalendar(timezone = TEST_TIME_ZONE) {
+export function stubDayCalendar(timezone = TEST_TIME_ZONE): DayCalendar {
   return calendarDay.forZone(timezone);
 }
 

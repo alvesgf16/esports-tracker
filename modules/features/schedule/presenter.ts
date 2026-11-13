@@ -1,9 +1,8 @@
-import { useState } from 'react';
-
 import type { ScheduleBoardState } from '@/modules/shared/gateways';
 import { notice } from '@/modules/shared/mappers/notice';
 
 import type { ScheduleClock, SchedulePresenter } from './contracts';
+import { useDayKey } from './hooks/use-day-key';
 import { dayPager } from './mappers/day-pager';
 import { emptyMessage } from './mappers/empty-message';
 import { gameChips } from './mappers/game-chips';
@@ -17,10 +16,10 @@ export function useSchedulePresenter(
   clock: ScheduleClock
 ): SchedulePresenter {
   const { games, matches, loadState } = board;
-  const todayKey = () => clock.calendar.todayKey(clock.now);
+  const todayKey = clock.calendar.todayKey(clock.now);
 
   const { gameFilter, setGameFilter } = useScheduleRouter();
-  const [dayKey, setDayKey] = useState(todayKey);
+  const { dayKey, selectDayFromKey } = useDayKey(todayKey);
 
   const listedGames = games.list();
   const selectedGame = selectGameFromFilter(gameFilter, listedGames);
@@ -33,7 +32,7 @@ export function useSchedulePresenter(
   return {
     selectedChip,
     chips: gameChips(listedGames, setGameFilter),
-    dayPager: dayPager(dayKey, clock, setDayKey),
+    dayPager: dayPager(dayKey, clock, selectDayFromKey),
     groups: matchDays(listedMatches, games, clock),
     emptyMessage: emptyMessage(selectedChip, listedGames),
     notice: notice(loadState),

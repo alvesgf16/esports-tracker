@@ -7,6 +7,11 @@ export type ScheduleRouter = {
   setGameFilter: (game: GameFilter) => void;
 };
 
+export type DayKeyState = {
+  dayKey: string;
+  selectDayFromKey: (dayKey: string) => void;
+};
+
 export type DayCalendar = {
   dayKey: (instant: string | number) => string;
   todayKey: (now: number) => string;

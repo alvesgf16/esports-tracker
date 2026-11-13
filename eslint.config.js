@@ -33,6 +33,33 @@ const dataLayer = {
     'Feature and shared tests fake gateway ports; they must not import data/.',
 };
 
+function hookImports() {
+  return {
+    paths: [
+      {
+        name: 'expo-router',
+        message: 'Feature hooks must not import Expo Router; use router.ts.',
+      },
+      {
+        name: 'react-native',
+        message: 'Feature hooks must not import React Native.',
+      },
+    ],
+    patterns: [
+      {
+        group: ['@/lib', '@/lib/*', '@/lib/**'],
+        message:
+          'Builders own lib/; inject the board and scheduleClock into the Presenter.',
+      },
+      {
+        group: ['@/app', '@/app/*', '@/data', '@/data/*', '@/data/**'],
+        message: 'Feature hooks must not import app/ or data/.',
+      },
+      siblingFeatures,
+    ],
+  };
+}
+
 function presenterImports() {
   return {
     paths: [
@@ -395,6 +422,12 @@ module.exports = defineConfig([
       'no-restricted-imports': ['error', presenterImports()],
       // Presenters assemble the view model; extracting for line count only splits that wiring.
       'max-lines-per-function': 'off',
+    },
+  },
+  {
+    files: ['modules/features/*/hooks/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': ['error', hookImports()],
     },
   },
   {
