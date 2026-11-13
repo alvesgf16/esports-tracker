@@ -1,3 +1,4 @@
+import { matchesForKnownGames } from '@/data/mappers/matches-for-known-games';
 import type { Game, Match } from '@/modules/shared/entities';
 
 import { gameFrom } from './mappers/game-from';
@@ -12,7 +13,7 @@ const REQUEST_TIMEOUT_MS = 10_000;
 export async function loadScheduleBoard(token: string): Promise<ScheduleBoard> {
   const videogames = await listVideogames(token);
   const games = mappedGames(videogames);
-  const matches = await loadMatches(token);
+  const matches = matchesForKnownGames(games, await loadMatches(token));
 
   return { games, matches };
 }

@@ -61,6 +61,23 @@ describe('loadScheduleBoard', () => {
     expect(board.matches.map((match) => match.id).sort()).toEqual(['1', '2']);
   });
 
+  it('drops matches whose game is not on the board', async () => {
+    stubRoutes({
+      '/videogames?per_page=50&sort=name': [aVendorVideogame()],
+      '/matches/running?per_page=100': [
+        aVendorMatch({
+          id: 2,
+          videogame: { name: 'CS2', slug: 'cs-go' },
+        }),
+      ],
+      '/matches/upcoming?per_page=100': [aVendorMatch()],
+    });
+
+    const board = await loadScheduleBoard('secret');
+
+    expect(board.matches.map((match) => match.id)).toEqual(['1']);
+  });
+
   it('sends the bearer token', async () => {
     stubRoutes({
       '/videogames?per_page=50&sort=name': [],

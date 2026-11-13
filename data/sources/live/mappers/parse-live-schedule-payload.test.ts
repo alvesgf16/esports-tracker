@@ -72,6 +72,20 @@ describe('parseLiveSchedulePayload', () => {
     ).toBeNull();
   });
 
+  it('skips a match whose game is not in the catalog', () => {
+    expect(
+      parseLiveSchedulePayload({
+        status: 'ok',
+        games: [LOL],
+        matches: [G2_VS_FNC, { ...G2_VS_FNC, id: 'orphan', game: 'cs2' }],
+      })
+    ).toEqual({
+      status: 'ok',
+      games: [LOL],
+      matches: [G2_VS_FNC],
+    });
+  });
+
   it('skips a bad match and keeps the payload', () => {
     const payload = {
       status: 'ok' as const,

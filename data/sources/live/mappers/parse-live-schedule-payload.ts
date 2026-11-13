@@ -1,4 +1,5 @@
 import { asOrNull } from '@/data/mappers/as-or-null';
+import { matchesForKnownGames } from '@/data/mappers/matches-for-known-games';
 import { parseAll } from '@/data/mappers/parse-all';
 import { parseSome } from '@/data/mappers/parse-some';
 
@@ -50,5 +51,7 @@ function okPayloadFrom(
   const games = parseAll(record.games, toGame);
   const matches = parseSome(record.matches, toMatch);
 
-  return games && matches ? { status: 'ok', games, matches } : null;
+  return games && matches
+    ? { status: 'ok', games, matches: matchesForKnownGames(games, matches) }
+    : null;
 }
