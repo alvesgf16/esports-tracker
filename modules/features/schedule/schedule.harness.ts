@@ -1,13 +1,15 @@
 import { calendarDay } from '@/lib/clock/calendar-day';
-import type { Game } from '@/modules/shared/entities';
+import type { Game, Match } from '@/modules/shared/entities';
 import type { GameCatalog, MatchCatalog } from '@/modules/shared/gateways';
 import {
   aGameCatalog,
+  aMatch,
   FIXED_NOW,
+  hoursFromNow,
   TEST_TIME_ZONE,
 } from '@/modules/shared/shared.harness';
 
-import type { ScheduleClock } from './contracts';
+import type { DayCalendar, ScheduleClock } from './contracts';
 
 const lol: Game = {
   id: 'lol',
@@ -27,7 +29,14 @@ export function stubMatchCatalog(
   return { list: () => [], ...overrides };
 }
 
-export function stubDayCalendar(timezone = TEST_TIME_ZONE) {
+export function todayAndTomorrowMatches(): Match[] {
+  return [
+    aMatch({ id: 'today', startsAt: hoursFromNow(2) }),
+    aMatch({ id: 'tomorrow', startsAt: hoursFromNow(26) }),
+  ];
+}
+
+export function stubDayCalendar(timezone = TEST_TIME_ZONE): DayCalendar {
   return calendarDay.forZone(timezone);
 }
 

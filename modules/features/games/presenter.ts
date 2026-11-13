@@ -1,9 +1,8 @@
-import type { Game } from '@/modules/shared/entities';
 import type { ScheduleBoardState } from '@/modules/shared/gateways';
 import { notice } from '@/modules/shared/mappers/notice';
 
 import type { GamesPresenter } from './contracts';
-import { gameRow } from './mappers/game-row';
+import { gameRows } from './mappers/game-rows';
 import { useGamesRouter } from './router';
 
 export function useGamesPresenter(
@@ -17,11 +16,9 @@ export function useGamesPresenter(
   const listedGames = games.list();
   const listedMatches = matches.list();
   const matchesSnapshot = { matches: listedMatches, referenceTime: now };
-  const toGameRow = (game: Game) =>
-    gameRow(game, matchesSnapshot, () => openSchedule(game.id));
 
   return {
-    rows: listedGames.map(toGameRow),
+    rows: gameRows(listedGames, matchesSnapshot, openSchedule),
     notice: notice(loadState),
   };
 }

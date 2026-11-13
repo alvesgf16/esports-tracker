@@ -27,5 +27,17 @@ describe('calendarDay', () => {
 
     expect(days.dayKey('2026-11-05T06:30:00Z')).toBe('2026-11-05');
     expect(days.todayKey(edmontonDawn)).toBe('2026-11-04');
+    expect(days.shiftKey('2026-11-04', 1)).toBe('2026-11-05');
+  });
+
+  it('shifts a day key by a signed number of days', () => {
+    expect(calendarDay.shiftKey('2026-03-15', 1, 'UTC')).toBe('2026-03-16');
+    expect(calendarDay.shiftKey('2026-03-15', -1, 'UTC')).toBe('2026-03-14');
+  });
+
+  it('shifts across months in the given zone', () => {
+    expect(calendarDay.shiftKey('2026-11-01', -1, 'America/Edmonton')).toBe(
+      '2026-10-31'
+    );
   });
 });
