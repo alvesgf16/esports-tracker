@@ -14,7 +14,7 @@ Prefer intention-revealing, searchable, pronounceable names. Prefer the more des
 ### Domain vocabulary
 
 - `Game`, `Team`, `Match`, `SeriesScore` — Entity DTOs in `modules/shared/entities.ts`
-- `CompetitionGroup` — Schedule grouping DTO in `modules/features/schedule/entities.ts`
+- `CompetitionGroup` — Schedule grouping DTO in `modules/features/schedule/entities.ts`. `groupByCompetition` keys on `game` and `Match.tournament` (required). PandaScore maps missing league and stage to `Tournament` at ingest; those matches share one group per game. Owned JSON drops a row with no tournament. Grouping does not invent a separate identity for missing titles.
 - Ids are plain `string` (`Game.id`, `Match.game`, optional `Team.id`, `SeriesScore.teamId`, `Match.winnerId`) — not opaque aliases
 - `Match.teams`, optional `Team.id`, optional `Match.status` (`not_started` / `running` / `finished`), optional `Match.scores` / `Match.winnerId`
 - `MatchStatus` (`live` / `soon` / `upcoming` / `finished`), `DayRelation` (`today` / `tomorrow`), `GameFilter` (Schedule contract: chip selection `string | 'all'`)
