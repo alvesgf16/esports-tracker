@@ -1,9 +1,11 @@
 import { calendarDay } from '@/lib/clock/calendar-day';
-import type { Game } from '@/modules/shared/entities';
+import type { Game, Match } from '@/modules/shared/entities';
 import type { GameCatalog, MatchCatalog } from '@/modules/shared/gateways';
 import {
   aGameCatalog,
+  aMatch,
   FIXED_NOW,
+  hoursFromNow,
   TEST_TIME_ZONE,
 } from '@/modules/shared/shared.harness';
 
@@ -25,6 +27,13 @@ export function stubMatchCatalog(
   overrides: Partial<MatchCatalog> = {}
 ): MatchCatalog {
   return { list: () => [], ...overrides };
+}
+
+export function todayAndTomorrowMatches(): Match[] {
+  return [
+    aMatch({ id: 'today', startsAt: hoursFromNow(2) }),
+    aMatch({ id: 'tomorrow', startsAt: hoursFromNow(26) }),
+  ];
 }
 
 export function stubDayCalendar(timezone = TEST_TIME_ZONE) {

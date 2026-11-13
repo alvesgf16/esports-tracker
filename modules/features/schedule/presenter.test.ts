@@ -6,7 +6,7 @@ import type {
   ScheduleBoardState,
   ScheduleLoadState,
 } from '@/modules/shared/gateways';
-import { aMatch, hoursFromNow } from '@/modules/shared/shared.harness';
+import { aMatch } from '@/modules/shared/shared.harness';
 
 import type { ScheduleClock } from './contracts';
 import { useSchedulePresenter } from './presenter';
@@ -15,6 +15,7 @@ import {
   stubGameCatalog,
   stubMatchCatalog,
   stubScheduleClock,
+  todayAndTomorrowMatches,
 } from './schedule.harness';
 
 jest.mock('./router', () => ({
@@ -60,15 +61,6 @@ async function present(overrides: PresentOverrides = {}) {
   return result.current;
 }
 
-function twoDayCatalog(): MatchCatalog {
-  return stubMatchCatalog({
-    list: () => [
-      aMatch({ id: 'today', startsAt: hoursFromNow(2) }),
-      aMatch({ id: 'tomorrow', startsAt: hoursFromNow(26) }),
-    ],
-  });
-}
-
 describe('useSchedulePresenter', () => {
   it('defaults an invalid game filter to all', async () => {
     const presenter = await present({ gameFilter: 'chess' });
@@ -104,7 +96,9 @@ describe('useSchedulePresenter', () => {
 
   it('hides matches from other days', async () => {
     const presenter = await present({
-      matches: twoDayCatalog(),
+      matches: stubMatchCatalog({
+        list: todayAndTomorrowMatches,
+      }),
     });
 
     expect(presenter.groups[0].matches.map((match) => match.id)).toEqual([
@@ -114,7 +108,9 @@ describe('useSchedulePresenter', () => {
 
   it('pages to the next calendar day', async () => {
     const { result } = await presentHook({
-      matches: twoDayCatalog(),
+      matches: stubMatchCatalog({
+        list: todayAndTomorrowMatches,
+      }),
     });
 
     await act(() => {
