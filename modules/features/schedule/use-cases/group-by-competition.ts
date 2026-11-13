@@ -11,7 +11,7 @@ export function groupByCompetition(matches: Match[]): CompetitionGroup[] {
 }
 
 function competitionKey(match: Match): string {
-  return `${match.game}:${match.tournament}`;
+  return JSON.stringify([match.game, match.tournament]);
 }
 
 function toCompetitionGroup([id, matches]: CompetitionEntry): CompetitionGroup {

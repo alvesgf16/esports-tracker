@@ -44,4 +44,17 @@ describe('groupByCompetition', () => {
 
     expect(groups.map((group) => group.game)).toEqual(['lol', 'cs2']);
   });
+
+  it('keeps competitions distinct when titles share a colon', () => {
+    const matches = [
+      aMatch({ id: 'a', game: 'lol', tournament: 'LEC:Spring' }),
+      aMatch({ id: 'b', game: 'lol:LEC', tournament: 'Spring' }),
+    ];
+
+    const groups = groupByCompetition(matches);
+
+    expect(
+      groups.map((group) => group.matches.map((match) => match.id))
+    ).toEqual([['a'], ['b']]);
+  });
 });
