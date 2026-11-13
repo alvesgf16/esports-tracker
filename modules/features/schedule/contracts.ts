@@ -22,8 +22,10 @@ export type DayCalendar = {
 
 export type DayRelation = 'today' | 'tomorrow';
 
-export type DayGroup = {
-  dayKey: string;
+export type CompetitionGroup = {
+  id: string;
+  game: string;
+  tournament: string;
   matches: Match[];
 };
 
@@ -68,8 +70,8 @@ export type MatchRowModel = {
   format: string;
 };
 
-export type DaySectionModel = {
-  dayKey: string;
+export type CompetitionDisclosureModel = {
+  id: string;
   label: string;
   matches: MatchRowModel[];
 };
@@ -78,7 +80,7 @@ export type SchedulePresenter = {
   selectedChip: GameFilter;
   chips: ChipModel[];
   dayPager: DayPagerModel;
-  groups: DaySectionModel[];
+  groups: CompetitionDisclosureModel[];
   emptyMessage: string;
   notice: string | null;
 };

@@ -17,10 +17,20 @@ const lol: Game = {
   shortName: 'LoL',
 };
 
+const cs2: Game = {
+  id: 'cs2',
+  name: 'Counter-Strike 2',
+  shortName: 'CS2',
+};
+
 export function stubGameCatalog(
   overrides: Partial<GameCatalog> = {}
 ): GameCatalog {
   return { ...aGameCatalog([lol]), ...overrides };
+}
+
+export function mixedGameCatalog(): GameCatalog {
+  return aGameCatalog([lol, cs2]);
 }
 
 export function stubMatchCatalog(
@@ -36,7 +46,7 @@ export function todayAndTomorrowMatches(): Match[] {
   ];
 }
 
-export function stubDayCalendar(timezone = TEST_TIME_ZONE): DayCalendar {
+function stubDayCalendar(timezone = TEST_TIME_ZONE): DayCalendar {
   return calendarDay.forZone(timezone);
 }
 

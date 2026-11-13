@@ -17,6 +17,15 @@ export const EARLY_MATCHES: Match[] = [
     scores: seriesScores(['g2', 1], ['fnc', 1]),
   },
   {
+    id: 'lec-playoffs-2',
+    game: 'lol',
+    name: 'MAD Lions vs KOI',
+    tournament: 'LEC · Spring Playoffs',
+    format: 'Bo5',
+    startsAt: sampleKickoff.onTheHour(4),
+    teams: duel(['MAD Lions', 'MAD', 'mad'], ['KOI', 'KOI', 'koi']),
+  },
+  {
     id: 'live-status',
     game: 'cs2',
     name: 'Natus Vincere vs Vitality',

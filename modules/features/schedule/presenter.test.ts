@@ -12,6 +12,7 @@ import type { ScheduleClock } from './contracts';
 import { useSchedulePresenter } from './presenter';
 import { useScheduleRouter } from './router';
 import {
+  mixedGameCatalog,
   stubGameCatalog,
   stubMatchCatalog,
   stubScheduleClock,
@@ -113,6 +114,32 @@ describe('useSchedulePresenter', () => {
 
     expect(presenter.groups[0].matches.map((match) => match.id)).toEqual([
       'today',
+    ]);
+  });
+
+  it('groups the selected day by competition', async () => {
+    const presenter = await present({
+      games: mixedGameCatalog(),
+      matches: stubMatchCatalog({
+        list: () => [
+          aMatch({ id: 'lec-1' }),
+          aMatch({
+            id: 'blast',
+            game: 'cs2',
+            tournament: 'BLAST · Open',
+          }),
+          aMatch({ id: 'lec-2' }),
+        ],
+      }),
+    });
+
+    expect(presenter.groups.map((group) => group.label)).toEqual([
+      'LEC · Spring · LoL',
+      'BLAST · Open · CS2',
+    ]);
+    expect(presenter.groups[0].matches.map((match) => match.id)).toEqual([
+      'lec-1',
+      'lec-2',
     ]);
   });
 
