@@ -100,6 +100,17 @@ describe('matchFrom', () => {
     expect(match?.tournament).toBe('Tournament');
   });
 
+  it('strips surrounding space from league and stage', () => {
+    const match = matchFrom(
+      aVendorMatch({
+        league: { name: '  LEC  ' },
+        tournament: { name: '  Spring  ' },
+      })
+    );
+
+    expect(match?.tournament).toBe('LEC · Spring');
+  });
+
   it('maps finished vendor statuses', () => {
     expect(matchFrom(aVendorMatch({ status: 'finished' }))?.status).toBe(
       'finished'
