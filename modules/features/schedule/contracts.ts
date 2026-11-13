@@ -65,7 +65,7 @@ export type MatchRowModel = {
   isLive: boolean;
   left: MatchSideModel;
   right: MatchSideModel;
-  meta: string;
+  format: string;
 };
 
 export type DaySectionModel = {

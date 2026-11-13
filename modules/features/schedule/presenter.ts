@@ -33,7 +33,7 @@ export function useSchedulePresenter(
     selectedChip,
     chips: gameChips(listedGames, setGameFilter),
     dayPager: dayPager(dayKey, clock, selectDayFromKey),
-    groups: matchDays(listedMatches, games, clock),
+    groups: matchDays(listedMatches, clock),
     emptyMessage: emptyMessage(selectedChip, listedGames),
     notice: notice(loadState),
   };

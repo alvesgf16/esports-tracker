@@ -77,7 +77,7 @@ Runs all the tests; no duplication; expresses intent; fewest elements that still
 
 ## Concurrency (Ch.13)
 
-Prefer clear async boundaries. `useNow` owns the interval clock in Builders; don’t scatter `setInterval` in cards. Snapshot times (`now`) when status can go stale. Reanimated worklets are a different runtime — don’t pretend they share React state. OS thread material is N/A unless native modules truly use threads.
+Prefer clear async boundaries. `useNow` owns the interval clock in Builders; don’t scatter `setInterval` in cards. Snapshot times (`referenceTime`) when status can go stale. Reanimated worklets are a different runtime — don’t pretend they share React state. OS thread material is N/A unless native modules truly use threads.
 
 ## Successive Refinement (Ch.14)
 

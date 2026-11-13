@@ -1,45 +1,23 @@
 import type { Match } from '@/modules/shared/entities';
-import type { GameCatalog } from '@/modules/shared/gateways';
 
-import type {
-  DayGroup,
-  DaySectionModel,
-  MatchLabels,
-  ScheduleClock,
-} from '../contracts';
+import type { DayGroup, DaySectionModel, ScheduleClock } from '../contracts';
 import { groupByDay } from '../use-cases/group-by-day';
 import { dayLabel } from './day-label';
 import { matchRow } from './match-row';
 
-type MatchContext = {
-  games: GameCatalog;
-  now: number;
-  labels: MatchLabels;
-};
-
 export function matchDays(
   matches: Match[],
-  games: GameCatalog,
   clock: ScheduleClock
 ): DaySectionModel[] {
-  const context = {
-    games,
-    now: clock.now,
-    labels: clock.labels,
-  };
-
-  const toMatchDay = (group: DayGroup) => matchDay(group, clock, context);
+  const toMatchDay = (group: DayGroup) => matchDay(group, clock);
 
   return groupByDay(matches, clock).map(toMatchDay);
 }
 
-function matchDay(
-  group: DayGroup,
-  clock: ScheduleClock,
-  context: MatchContext
-): DaySectionModel {
+function matchDay(group: DayGroup, clock: ScheduleClock): DaySectionModel {
   const { dayKey, matches } = group;
-  const toMatchRow = (match: Match) => matchRow(match, context);
+  const toMatchRow = (match: Match) =>
+    matchRow(match, { referenceTime: clock.now, labels: clock.labels });
 
   return {
     dayKey,

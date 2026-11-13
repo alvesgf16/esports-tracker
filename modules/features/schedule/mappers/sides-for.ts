@@ -10,9 +10,9 @@ type MatchSides = {
 
 type DisplayStatus = 'live' | 'soon' | 'upcoming' | 'finished';
 
-export function sidesFor(match: Match, now: number): MatchSides {
+export function sidesFor(match: Match, referenceTime: number): MatchSides {
   const { name, startsAt, status, teams } = match;
-  const displayStatus = matchDisplayStatus(startsAt, now, status);
+  const displayStatus = matchDisplayStatus(startsAt, referenceTime, status);
 
   return teams.length > 2
     ? lobbySides(name, teams.length)

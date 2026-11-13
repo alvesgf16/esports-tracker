@@ -2,15 +2,14 @@ import type { Match } from '@/modules/shared/entities';
 import { aMatch, FIXED_NOW } from '@/modules/shared/shared.harness';
 
 import type { MatchRowModel, MatchSideModel, SideEmphasis } from '../contracts';
-import { stubGameCatalog, stubScheduleClock } from '../schedule.harness';
+import { stubScheduleClock } from '../schedule.harness';
 import { matchRow } from './match-row';
 
 function presentedRow(match: Match): MatchRowModel {
   const clock = stubScheduleClock();
 
   return matchRow(match, {
-    games: stubGameCatalog(),
-    now: clock.now,
+    referenceTime: clock.now,
     labels: clock.labels,
   });
 }
@@ -39,7 +38,7 @@ describe('matchRow', () => {
       isLive: true,
       left: aSide('Alpha'),
       right: aSide('Beta'),
-      meta: 'LoL · LEC · Spring · Bo3',
+      format: 'Bo3',
     });
   });
 
@@ -71,7 +70,7 @@ describe('matchRow', () => {
     });
   });
 
-  it('maps a lobby match into the game meta line', () => {
+  it('maps a lobby match into the format line', () => {
     const row = presentedRow(
       aMatch({
         id: 'lobby-1',
@@ -86,6 +85,6 @@ describe('matchRow', () => {
       })
     );
 
-    expect(row.meta).toBe('LoL · PGS · Global Series · Maps');
+    expect(row.format).toBe('Maps');
   });
 });

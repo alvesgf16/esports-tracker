@@ -54,7 +54,7 @@ function MatchBody({ match }: MatchRowContentProps) {
       <SideRow side={match.left} />
       <SideRow side={match.right} />
       <Text className="mt-0.5 text-xs text-muted" numberOfLines={1}>
-        {match.meta}
+        {match.format}
       </Text>
     </View>
   );
