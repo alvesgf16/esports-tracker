@@ -13,7 +13,7 @@ function aSide(
   score: string | null = null,
   emphasis: SideEmphasis = 'undecided'
 ): MatchSideModel {
-  return { name, score, emphasis };
+  return { name, score, emphasis, imageUrl: null };
 }
 
 const ZERO_SERIES = [
@@ -39,8 +39,8 @@ describe('sidesFor', () => {
     );
 
     expect(sides).toEqual({
-      left: aSide('Group A — Match 3'),
-      right: aSide('3 teams'),
+      left: { name: 'Group A — Match 3', score: null, emphasis: 'undecided' },
+      right: { name: '3 teams', score: null, emphasis: 'undecided' },
     });
   });
 
@@ -174,5 +174,24 @@ describe('sidesFor', () => {
       left: aSide('Alpha'),
       right: aSide('TBD'),
     });
+  });
+
+  it('copies a team image url onto the side', () => {
+    const sides = presentedSides(
+      aMatch({
+        teams: [
+          {
+            id: 'alpha',
+            name: 'Alpha',
+            shortName: 'ALP',
+            imageUrl: 'https://cdn.example/alpha.png',
+          },
+          { id: 'beta', name: 'Beta', shortName: 'BET' },
+        ],
+      })
+    );
+
+    expect(sides.left.imageUrl).toBe('https://cdn.example/alpha.png');
+    expect(sides.right.imageUrl).toBeNull();
   });
 });

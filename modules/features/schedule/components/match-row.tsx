@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 
-import type { MatchRowModel, MatchSideModel, SideEmphasis } from '../contracts';
+import type { MatchRowModel } from '../contracts';
+import SideRow from './side-row';
 
 type Props = {
   match: MatchRowModel;
@@ -9,15 +10,6 @@ type Props = {
 
 type MatchRowContentProps = {
   match: MatchRowModel;
-};
-
-type SideRowProps = {
-  side: MatchSideModel;
-};
-
-type SideScoreProps = {
-  score: string | null;
-  tone: string;
 };
 
 export default function MatchRow({ match, isLast }: Props) {
@@ -58,35 +50,4 @@ function MatchBody({ match }: MatchRowContentProps) {
       </Text>
     </View>
   );
-}
-
-function SideRow({ side }: SideRowProps) {
-  const tone = sideTone(side.emphasis);
-
-  return (
-    <View className="flex-row items-center gap-2">
-      <Text className={`min-w-0 flex-1 text-[15px] ${tone}`} numberOfLines={1}>
-        {side.name}
-      </Text>
-      <SideScore score={side.score} tone={tone} />
-    </View>
-  );
-}
-
-function SideScore({ score, tone }: SideScoreProps) {
-  return (
-    <Text className={`w-6 text-right text-[15px] ${tone}`}>{score ?? ''}</Text>
-  );
-}
-
-function sideTone(emphasis: SideEmphasis): string {
-  if (emphasis === 'winner') {
-    return 'font-bold text-foreground';
-  }
-
-  if (emphasis === 'loser') {
-    return 'font-semibold text-muted';
-  }
-
-  return 'font-semibold text-foreground';
 }

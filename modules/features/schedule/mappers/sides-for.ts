@@ -48,6 +48,7 @@ function sideFor(
     name: team?.name ?? 'TBD',
     score: scoreLabel(team, match, displayStatus),
     emphasis: emphasisFor(team, match.winnerId),
+    imageUrl: team?.imageUrl ?? null,
   };
 }
 
