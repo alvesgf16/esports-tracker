@@ -1,4 +1,4 @@
-import type { Game, Match } from './entities';
+import type { Competition, Game, Match } from './entities';
 import type { GameCatalog } from './gateways';
 
 /** UTC noon on a fixed calendar day — stable across host time zones. */
@@ -12,12 +12,16 @@ export function hoursFromNow(hours: number, now = FIXED_NOW): string {
   return new Date(now + hours * HOUR_MS).toISOString();
 }
 
+export function aCompetition(title: string, imageUrl?: string): Competition {
+  return imageUrl ? { title, imageUrl } : { title };
+}
+
 export function aMatch(overrides: Partial<Match> = {}): Match {
   return {
     id: 'm1',
     game: 'lol',
     name: 'Alpha vs Beta',
-    tournament: 'LEC · Spring',
+    competition: aCompetition('LEC · Spring'),
     format: 'Bo3',
     startsAt: hoursFromNow(2),
     teams: [
