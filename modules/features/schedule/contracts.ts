@@ -1,5 +1,3 @@
-import type { Match } from '@/modules/shared/entities';
-
 export type GameFilter = string | 'all';
 
 export type ScheduleRouter = {
@@ -21,11 +19,6 @@ export type DayCalendar = {
 };
 
 export type DayRelation = 'today' | 'tomorrow';
-
-export type DayGroup = {
-  dayKey: string;
-  matches: Match[];
-};
 
 export type MatchLabels = {
   kickoff: (startingTime: string) => string;
@@ -65,11 +58,11 @@ export type MatchRowModel = {
   isLive: boolean;
   left: MatchSideModel;
   right: MatchSideModel;
-  meta: string;
+  format: string;
 };
 
-export type DaySectionModel = {
-  dayKey: string;
+export type CompetitionDisclosureModel = {
+  id: string;
   label: string;
   matches: MatchRowModel[];
 };
@@ -78,7 +71,7 @@ export type SchedulePresenter = {
   selectedChip: GameFilter;
   chips: ChipModel[];
   dayPager: DayPagerModel;
-  groups: DaySectionModel[];
+  groups: CompetitionDisclosureModel[];
   emptyMessage: string;
   notice: string | null;
 };

@@ -1,24 +1,21 @@
+import { matchesForKnownGames } from '@/data/mappers/matches-for-known-games';
 import type { Game, Match } from '@/modules/shared/entities';
 
+import { listVideogames } from './list-videogames';
 import { gameFrom } from './mappers/game-from';
 import { matchFrom } from './mappers/match-from';
+import { pandascoreRequest } from './pandascore-request';
 import type { ScheduleBoard } from './schedule-board';
 import type { VendorMatch, VendorVideogame } from './vendor-types';
 
-const API_BASE = 'https://api.pandascore.co';
 const PAGE_SIZE = 100;
-const REQUEST_TIMEOUT_MS = 10_000;
 
 export async function loadScheduleBoard(token: string): Promise<ScheduleBoard> {
   const videogames = await listVideogames(token);
   const games = mappedGames(videogames);
-  const matches = await loadMatches(token);
+  const matches = matchesForKnownGames(games, await loadMatches(token));
 
   return { games, matches };
-}
-
-async function listVideogames(token: string): Promise<VendorVideogame[]> {
-  return getJson<VendorVideogame[]>(`/videogames?per_page=50&sort=name`, token);
 }
 
 function mappedGames(videogames: VendorVideogame[]): Game[] {
@@ -51,51 +48,5 @@ function mappedMatches(vendorMatches: VendorMatch[]): Match[] {
 }
 
 async function getJson<T>(path: string, token: string): Promise<T> {
-  const response = await fetchPandaScore(path, token);
-
-  if (!response.ok) {
-    throw new Error(`PandaScore ${path} failed: ${response.status}`);
-  }
-
-  return jsonFrom(path, response);
-}
-
-async function jsonFrom<T>(path: string, response: Response): Promise<T> {
-  try {
-    return (await response.json()) as T;
-  } catch (error) {
-    throw pandascoreRequestFailure(path, error);
-  }
-}
-
-async function fetchPandaScore(path: string, token: string): Promise<Response> {
-  try {
-    return await fetch(`${API_BASE}${path}`, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-    });
-  } catch (error) {
-    throw pandascoreRequestFailure(path, error);
-  }
-}
-
-function pandascoreRequestFailure(path: string, error: unknown): Error {
-  if (isTimeout(error)) {
-    return new Error(`PandaScore ${path} failed: timeout`);
-  }
-
-  if (error instanceof Error) {
-    return new Error(`PandaScore ${path} failed: ${error.message}`, {
-      cause: error,
-    });
-  }
-
-  return new Error(`PandaScore ${path} failed`);
-}
-
-function isTimeout(error: unknown): boolean {
-  return error instanceof Error && error.name === 'TimeoutError';
+  return pandascoreRequest.json(path, await pandascoreRequest.ok(path, token));
 }

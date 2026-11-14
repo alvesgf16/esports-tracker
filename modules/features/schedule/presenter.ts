@@ -3,10 +3,10 @@ import { notice } from '@/modules/shared/mappers/notice';
 
 import type { ScheduleClock, SchedulePresenter } from './contracts';
 import { useDayKey } from './hooks/use-day-key';
+import { competitionDisclosures } from './mappers/competition-disclosures';
 import { dayPager } from './mappers/day-pager';
 import { emptyMessage } from './mappers/empty-message';
 import { gameChips } from './mappers/game-chips';
-import { matchDays } from './mappers/match-days';
 import { useScheduleRouter } from './router';
 import { listMatchesFor } from './use-cases/list-matches-for';
 import { selectGameFromFilter } from './use-cases/select-game-from-filter';
@@ -33,7 +33,7 @@ export function useSchedulePresenter(
     selectedChip,
     chips: gameChips(listedGames, setGameFilter),
     dayPager: dayPager(dayKey, clock, selectDayFromKey),
-    groups: matchDays(listedMatches, games, clock),
+    groups: competitionDisclosures(listedMatches, games, clock),
     emptyMessage: emptyMessage(selectedChip, listedGames),
     notice: notice(loadState),
   };

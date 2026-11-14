@@ -7,7 +7,7 @@ const SOON_WINDOW_MS = 60 * 60 * 1000;
 
 export function matchDisplayStatus(
   startsAt: string,
-  now: number,
+  referenceTime: number,
   status?: MatchStatus
 ): MatchDisplayStatus {
   if (status === 'running') {
@@ -18,7 +18,7 @@ export function matchDisplayStatus(
     return 'finished';
   }
 
-  const delta = new Date(startsAt).getTime() - now;
+  const delta = new Date(startsAt).getTime() - referenceTime;
 
   if (delta > 0) {
     return upcomingStatus(delta);

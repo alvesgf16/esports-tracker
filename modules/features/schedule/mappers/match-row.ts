@@ -1,13 +1,11 @@
 import type { Match } from '@/modules/shared/entities';
-import type { GameCatalog } from '@/modules/shared/gateways';
 import { matchDisplayStatus } from '@/modules/shared/use-cases/match-display-status';
 
 import type { MatchLabels, MatchRowModel } from '../contracts';
 import { sidesFor } from './sides-for';
 
 type MatchContext = {
-  games: GameCatalog;
-  now: number;
+  referenceTime: number;
   labels: MatchLabels;
 };
 
@@ -18,11 +16,11 @@ type TimeColumn = {
 };
 
 export function matchRow(match: Match, context: MatchContext): MatchRowModel {
-  const { format, game, id, startsAt, status, tournament } = match;
-  const { games, labels, now } = context;
+  const { format, id, startsAt, status } = match;
+  const { labels, referenceTime } = context;
 
-  const displayStatus = matchDisplayStatus(startsAt, now, status);
-  const { left, right } = sidesFor(match, now);
+  const displayStatus = matchDisplayStatus(startsAt, referenceTime, status);
+  const { left, right } = sidesFor(match, referenceTime);
   const timeColumn = buildTimeColumn(displayStatus, startsAt, labels);
 
   return {
@@ -30,7 +28,7 @@ export function matchRow(match: Match, context: MatchContext): MatchRowModel {
     ...timeColumn,
     left,
     right,
-    meta: `${games.get(game).shortName} · ${tournament} · ${format}`,
+    format,
   };
 }
 

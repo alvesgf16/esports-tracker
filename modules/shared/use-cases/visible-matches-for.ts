@@ -16,11 +16,12 @@ export function visibleMatchesFor(
 function isVisibleMatch(
   match: Match,
   gameId: string | null,
-  now: number
+  referenceTime: number
 ): boolean {
   const isFromSelectedGame = !gameId || match.game === gameId;
   const isFinished =
-    matchDisplayStatus(match.startsAt, now, match.status) === 'finished';
+    matchDisplayStatus(match.startsAt, referenceTime, match.status) ===
+    'finished';
 
   return isFromSelectedGame && !isFinished;
 }
