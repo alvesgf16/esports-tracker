@@ -1,13 +1,10 @@
-import { teamWithOptionalId } from '@/data/mappers/team-with-optional-id';
 import type { Match, MatchStatus, Team } from '@/modules/shared/entities';
 
-import type {
-  VendorMatch,
-  VendorOpponent,
-  VendorOpponentBody,
-} from '../vendor-types';
+import type { VendorMatch } from '../vendor-types';
+import { competitionFrom } from './competition-from';
 import { isSimulatedSport } from './is-simulated-sport';
 import { seriesFrom } from './series-from';
+import { teamsFrom } from './team-from';
 
 const FINISHED = new Set(['finished', 'canceled', 'postponed']);
 
@@ -21,7 +18,7 @@ export function matchFrom(match: VendorMatch): Match | null {
         id: String(match.id),
         game: slug,
         name: nameFrom(match) || matchNameFrom(teams),
-        tournament: tournamentFrom(match),
+        competition: competitionFrom(match),
         format: formatFrom(match),
         startsAt,
         teams,
@@ -41,24 +38,6 @@ function startsAtFrom(match: VendorMatch): string | null {
   return match.begin_at ?? match.scheduled_at;
 }
 
-function teamsFrom(opponents: VendorOpponent[]): Team[] {
-  return opponents.flatMap(toTeam);
-}
-
-function toTeam(entry: VendorOpponent): Team[] {
-  const { opponent } = entry;
-  const name = opponent?.name?.trim();
-
-  return opponent && name ? [teamFrom(opponent, name)] : [];
-}
-
-function teamFrom(opponent: VendorOpponentBody, name: string): Team {
-  const id = opponent.id ? String(opponent.id) : undefined;
-  const shortName = opponent.acronym?.trim() || name;
-
-  return teamWithOptionalId({ id, name, shortName });
-}
-
 function nameFrom(match: VendorMatch): string | undefined {
   return match.name?.trim();
 }
@@ -67,22 +46,6 @@ function matchNameFrom(teams: Team[]): string {
   return teams.length === 2
     ? `${teams[0].name} vs ${teams[1].name}`
     : `${teams.length} teams`;
-}
-
-// eslint-disable-next-line complexity -- league/stage cases stay flat
-function tournamentFrom(match: VendorMatch): string {
-  const league = match.league?.name?.trim() ?? '';
-  const stage = match.tournament?.name?.trim() ?? '';
-
-  if (!league) {
-    return stage || 'Tournament';
-  }
-
-  if (!stage || league.includes(stage)) {
-    return league;
-  }
-
-  return `${league} · ${stage}`;
 }
 
 // eslint-disable-next-line complexity -- vendor match_type branches stay flat
