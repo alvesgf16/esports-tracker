@@ -15,6 +15,10 @@ describe('toMatch', () => {
         { teamId: 'fnc', score: 1 },
       ],
       winnerId: 'g2',
+      competition: {
+        title: 'LEC · Spring Playoffs',
+        imageUrl: 'https://cdn.example/lec.png',
+      },
     };
 
     expect(toMatch(match)).toEqual(match);
@@ -50,6 +54,39 @@ describe('toMatch', () => {
     };
 
     expect(toMatch(match)).toEqual(match);
+  });
+
+  it('includes a team image url', () => {
+    const match = {
+      ...G2_VS_FNC,
+      teams: [
+        {
+          id: 'g2',
+          name: 'G2 Esports',
+          shortName: 'G2',
+          imageUrl: 'https://cdn.example/g2.png',
+        },
+        { id: 'fnc', name: 'Fnatic', shortName: 'FNC' },
+      ],
+    };
+
+    expect(toMatch(match)).toEqual(match);
+  });
+
+  it('rejects a blank team image url', () => {
+    const match = {
+      ...G2_VS_FNC,
+      teams: [
+        {
+          id: 'g2',
+          name: 'G2 Esports',
+          shortName: 'G2',
+          imageUrl: '  ',
+        },
+      ],
+    };
+
+    expect(toMatch(match)).toBeNull();
   });
 
   it('rejects a blank team id', () => {

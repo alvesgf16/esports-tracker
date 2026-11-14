@@ -1,22 +1,23 @@
 import { asOrNull } from '@/data/mappers/as-or-null';
 import { parseAll } from '@/data/mappers/parse-all';
 import { parseOptional } from '@/data/mappers/parse-optional';
-import { teamWithOptionalId } from '@/data/mappers/team-with-optional-id';
-import type { Match, Team } from '@/modules/shared/entities';
+import { teamWithOptionals } from '@/data/mappers/team-with-optionals';
+import type { Competition, Match, Team } from '@/modules/shared/entities';
 
 import { matchOptionalsFrom } from './match-optionals-from';
+import { toCompetition } from './to-competition';
 
 type MatchCore = {
   id: string;
   game: string;
   name: string;
-  tournament: string;
+  competition: Competition;
   format: string;
   startsAt: string;
 };
 
 type MatchMeta = {
-  tournament: string;
+  competition: Competition;
   format: string;
   startsAt: string;
 };
@@ -45,12 +46,12 @@ function matchCoreFrom(record: Record<string, unknown>): MatchCore | null {
 }
 
 function matchMetaFrom(record: Record<string, unknown>): MatchMeta | null {
-  const tournament = asOrNull.string(record.tournament);
+  const competition = toCompetition(record.competition);
   const format = asOrNull.string(record.format);
   const startsAt = asOrNull.string(record.startsAt);
 
-  return tournament && format && startsAt
-    ? { tournament, format, startsAt }
+  return competition && format && startsAt
+    ? { competition, format, startsAt }
     : null;
 }
 
@@ -64,8 +65,9 @@ function teamFrom(record: Record<string, unknown>): Team | null {
   const name = asOrNull.string(record.name);
   const shortName = asOrNull.string(record.shortName);
   const id = parseOptional(record.id, asOrNull.string);
+  const imageUrl = parseOptional(record.imageUrl, asOrNull.string);
 
-  return name && shortName && id !== null
-    ? teamWithOptionalId({ id, name, shortName })
+  return name && shortName && id !== null && imageUrl !== null
+    ? teamWithOptionals({ id, name, shortName, imageUrl })
     : null;
 }

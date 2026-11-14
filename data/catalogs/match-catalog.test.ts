@@ -6,7 +6,7 @@ const match: Match = {
   id: '1',
   game: 'lol',
   name: 'Alpha vs Beta',
-  tournament: 'LEC · Spring',
+  competition: { title: 'LEC · Spring' },
   format: 'Bo3',
   startsAt: '2026-03-15T14:00:00.000Z',
   teams: [
