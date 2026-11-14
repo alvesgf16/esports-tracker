@@ -99,11 +99,13 @@ export function stubPandaScoreRoutes(
   });
 }
 
-export function videogamesOnTwoPages(): Record<string, unknown> {
+export function videogamesOnTwoPages(
+  nextPath: string = VIDEOGAMES_PAGE_2
+): Record<string, unknown> {
   return {
     [VIDEOGAMES_PAGE_1]: {
       body: [aVendorVideogame()],
-      link: `<${PANDASCORE_API_BASE}${VIDEOGAMES_PAGE_2}>; rel="next"`,
+      link: `<${PANDASCORE_API_BASE}${nextPath}>; rel="next"`,
     },
     [VIDEOGAMES_PAGE_2]: [
       aVendorVideogame({ id: 2, name: 'CS2', slug: 'cs-go' }),

@@ -5,6 +5,7 @@ import {
   VIDEOGAMES_PAGE_2,
   aVendorVideogame,
   mockPandaScoreFetch,
+  pandascorePath,
   stubPandaScoreRoutes,
   videogamesOnTwoPages,
 } from './pandascore.harness';
@@ -31,6 +32,21 @@ describe('listVideogames', () => {
     expect(videogames.map((game) => game.slug)).toEqual([
       'league-of-legends',
       'cs-go',
+    ]);
+  });
+
+  it('fetches page+1 when Link rel=next repeats the current page', async () => {
+    stubPandaScoreRoutes(fetchMock, videogamesOnTwoPages(VIDEOGAMES_PAGE_1));
+
+    const videogames = await listVideogames('secret');
+
+    expect(videogames.map((game) => game.slug)).toEqual([
+      'league-of-legends',
+      'cs-go',
+    ]);
+    expect(fetchMock.mock.calls.map(pandascorePath)).toEqual([
+      VIDEOGAMES_PAGE_1,
+      VIDEOGAMES_PAGE_2,
     ]);
   });
 
