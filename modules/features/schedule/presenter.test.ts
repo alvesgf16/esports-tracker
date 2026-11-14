@@ -126,7 +126,7 @@ describe('useSchedulePresenter', () => {
           aMatch({
             id: 'blast',
             game: 'cs2',
-            tournament: 'BLAST · Open',
+            competition: { title: 'BLAST · Open' },
           }),
           aMatch({ id: 'lec-2' }),
         ],

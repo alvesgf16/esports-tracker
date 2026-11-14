@@ -1,4 +1,4 @@
-import { aMatch } from '@/modules/shared/shared.harness';
+import { aCompetition, aMatch } from '@/modules/shared/shared.harness';
 
 import { mixedGameCatalog, stubScheduleClock } from '../schedule.harness';
 import { competitionDisclosures } from './competition-disclosures';
@@ -21,7 +21,7 @@ describe('competitionDisclosures', () => {
         aMatch({
           id: 'blast',
           game: 'cs2',
-          tournament: 'BLAST · Open',
+          competition: aCompetition('BLAST · Open'),
         }),
         aMatch({ id: 'lec-2' }),
       ],
@@ -37,5 +37,24 @@ describe('competitionDisclosures', () => {
       'lec-1',
       'lec-2',
     ]);
+  });
+
+  it('copies a competition image url onto the disclosure', () => {
+    const disclosures = competitionDisclosures(
+      [
+        aMatch({
+          id: 'lec-1',
+          competition: aCompetition(
+            'LEC · Spring',
+            'https://cdn.example/lec.png'
+          ),
+        }),
+        aMatch({ id: 'lec-2' }),
+      ],
+      mixedGameCatalog(),
+      stubScheduleClock()
+    );
+
+    expect(disclosures[0].imageUrl).toBe('https://cdn.example/lec.png');
   });
 });

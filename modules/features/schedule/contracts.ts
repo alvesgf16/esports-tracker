@@ -49,6 +49,7 @@ export type MatchSideModel = {
   name: string;
   score: string | null;
   emphasis: SideEmphasis;
+  imageUrl?: string | null;
 };
 
 export type MatchRowModel = {
@@ -64,6 +65,7 @@ export type MatchRowModel = {
 export type CompetitionDisclosureModel = {
   id: string;
   label: string;
+  imageUrl?: string;
   matches: MatchRowModel[];
 };
 

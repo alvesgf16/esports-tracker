@@ -22,13 +22,14 @@ function competitionDisclosure(
   games: GameCatalog,
   clock: ScheduleClock
 ): CompetitionDisclosureModel {
-  const { id, game, tournament, matches } = group;
+  const { id, game, competition, matches } = group;
   const toMatchRow = (match: Match) =>
     matchRow(match, { referenceTime: clock.now, labels: clock.labels });
 
   return {
     id,
-    label: `${tournament} · ${games.get(game).shortName}`,
+    label: `${competition.title} · ${games.get(game).shortName}`,
+    ...(competition.imageUrl ? { imageUrl: competition.imageUrl } : {}),
     matches: matches.map(toMatchRow),
   };
 }

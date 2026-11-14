@@ -1,5 +1,8 @@
+import { teamWithOptionals } from '@/data/mappers/team-with-optionals';
 import type { Team } from '@/modules/shared/entities';
 
-export function team([name, shortName, id]: [string, string, string]): Team {
-  return { id, name, shortName };
+import type { TeamFields } from './team-fields';
+
+export function team([name, shortName, id, imageUrl]: TeamFields): Team {
+  return teamWithOptionals({ id, name, shortName, imageUrl });
 }

@@ -19,7 +19,7 @@ function aSide(
   score: string | null = null,
   emphasis: SideEmphasis = 'undecided'
 ): MatchSideModel {
-  return { name, score, emphasis };
+  return { name, score, emphasis, imageUrl: null };
 }
 
 describe('matchRow', () => {
@@ -75,7 +75,7 @@ describe('matchRow', () => {
       aMatch({
         id: 'lobby-1',
         name: 'Group A — Match 3',
-        tournament: 'PGS · Global Series',
+        competition: { title: 'PGS · Global Series' },
         format: 'Maps',
         teams: [
           { name: 'Alpha', shortName: 'ALP' },
