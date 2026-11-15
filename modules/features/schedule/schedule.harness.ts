@@ -54,6 +54,27 @@ export function statusFilterBoard(): Match[] {
   ];
 }
 
+export function statusFilterDayBoard(): Match[] {
+  return [
+    aMatch({
+      id: 'live-lol',
+      game: 'lol',
+      startsAt: hoursFromNow(-0.5),
+      status: 'running',
+    }),
+    aMatch({
+      id: 'live-cs2',
+      game: 'cs2',
+      startsAt: hoursFromNow(-0.25),
+      status: 'running',
+    }),
+    aMatch({ id: 'soon-lol', game: 'lol', startsAt: hoursFromNow(0.5) }),
+    aMatch({ id: 'upcoming-lol', game: 'lol', startsAt: hoursFromNow(2) }),
+    aMatch({ id: 'tomorrow-lol', game: 'lol', startsAt: hoursFromNow(26) }),
+    aMatch({ id: 'finished-lol', game: 'lol', startsAt: hoursFromNow(-4) }),
+  ];
+}
+
 function stubDayCalendar(timezone = TEST_TIME_ZONE): DayCalendar {
   return calendarDay.forZone(timezone);
 }

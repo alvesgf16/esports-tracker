@@ -3,6 +3,13 @@ import { Pressable, ScrollView, Text } from 'react-native';
 import type { ChipModel } from '../contracts';
 
 type Props = {
+  gameChips: ChipModel[];
+  selectedGameChip: ChipModel['id'];
+  statusChips: ChipModel[];
+  selectedStatusChip: ChipModel['id'];
+};
+
+type ChipStripProps = {
   chips: ChipModel[];
   selected: ChipModel['id'];
 };
@@ -14,7 +21,21 @@ type ChipProps = {
 
 const chipStripStyle = { flexGrow: 0 };
 
-export default function GameChips({ chips, selected }: Props) {
+export default function FilterChips({
+  gameChips,
+  selectedGameChip,
+  statusChips,
+  selectedStatusChip,
+}: Props) {
+  return (
+    <>
+      <ChipStrip chips={gameChips} selected={selectedGameChip} />
+      <ChipStrip chips={statusChips} selected={selectedStatusChip} />
+    </>
+  );
+}
+
+function ChipStrip({ chips, selected }: ChipStripProps) {
   return (
     <ScrollView
       horizontal
@@ -24,13 +45,13 @@ export default function GameChips({ chips, selected }: Props) {
       contentContainerClassName="items-center gap-2 px-4 py-2.5"
     >
       {chips.map((chip) => (
-        <GameChip key={chip.id} chip={chip} selected={selected} />
+        <Chip key={chip.id} chip={chip} selected={selected} />
       ))}
     </ScrollView>
   );
 }
 
-function GameChip({ chip, selected }: ChipProps) {
+function Chip({ chip, selected }: ChipProps) {
   const active = chip.id === selected;
   const chipTone = active ? 'bg-tint' : 'bg-chip';
   const labelTone = active ? 'text-on-tint' : 'text-foreground';

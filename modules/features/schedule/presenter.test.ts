@@ -6,9 +6,13 @@ import type {
   ScheduleBoardState,
   ScheduleLoadState,
 } from '@/modules/shared/gateways';
-import { aMatch } from '@/modules/shared/shared.harness';
+import { aMatch, hoursFromNow } from '@/modules/shared/shared.harness';
 
-import type { ScheduleClock } from './contracts';
+import type {
+  ScheduleClock,
+  SchedulePresenter,
+  StatusFilter,
+} from './contracts';
 import { useDisclosureExpansion } from './hooks/use-disclosure-expansion';
 import { useFailedUrls } from './hooks/use-failed-logo-urls';
 import { useIsClient } from './hooks/use-is-client';
@@ -16,6 +20,8 @@ import { useSchedulePresenter } from './presenter';
 import { useScheduleRouter } from './router';
 import {
   mixedGameCatalog,
+  statusFilterBoard,
+  statusFilterDayBoard,
   stubGameCatalog,
   stubMatchCatalog,
   stubScheduleClock,
@@ -100,7 +106,7 @@ describe('useSchedulePresenter', () => {
   it('defaults an invalid game filter to all', async () => {
     const presenter = await present({ gameFilter: 'chess' });
 
-    expect(presenter.selectedChip).toBe('all');
+    expect(presenter.selectedGameChip).toBe('all');
   });
 
   it('maps a loading board into notice copy', async () => {
@@ -232,4 +238,92 @@ describe('useSchedulePresenter', () => {
       stubScheduleClock().calendar.heading('2026-03-14')
     );
   });
+
+  it('defaults status to All and lists the day matches', async () => {
+    const presenter = await present({
+      matches: stubMatchCatalog({ list: statusFilterBoard }),
+    });
+
+    expect(presenter.selectedStatusChip).toBe('all');
+    expect(presenter.groups[0].matches.map((match) => match.id)).toEqual([
+      'live',
+      'soon',
+      'upcoming',
+    ]);
+  });
+
+  it('filters the listed groups when Live or Upcoming is chosen', async () => {
+    const { result } = await presentHook({
+      matches: stubMatchCatalog({ list: statusFilterBoard }),
+    });
+
+    await act(() => {
+      pressStatusChip(result.current, 'live');
+    });
+
+    expect(result.current.selectedStatusChip).toBe('live');
+    expect(result.current.groups[0].matches.map((match) => match.id)).toEqual([
+      'live',
+    ]);
+
+    await act(() => {
+      pressStatusChip(result.current, 'upcoming');
+    });
+
+    expect(result.current.selectedStatusChip).toBe('upcoming');
+    expect(result.current.groups[0].matches.map((match) => match.id)).toEqual([
+      'soon',
+      'upcoming',
+    ]);
+  });
+
+  it('labels the Live chip with the day and game live count', async () => {
+    const presenter = await present({
+      matches: stubMatchCatalog({ list: statusFilterBoard }),
+    });
+
+    expect(
+      presenter.statusChips.find((chip) => chip.id === 'live')?.label
+    ).toBe('Live (1)');
+  });
+
+  it('intersects game and status filters', async () => {
+    const { result } = await presentHook({
+      games: mixedGameCatalog(),
+      gameFilter: 'lol',
+      matches: stubMatchCatalog({ list: statusFilterDayBoard }),
+    });
+
+    await act(() => {
+      pressStatusChip(result.current, 'live');
+    });
+
+    expect(result.current.groups[0].matches.map((match) => match.id)).toEqual([
+      'live-lol',
+    ]);
+    expect(
+      result.current.statusChips.find((chip) => chip.id === 'live')?.label
+    ).toBe('Live (1)');
+  });
+
+  it('keeps the empty message when the status filter intersection is empty', async () => {
+    const { result } = await presentHook({
+      matches: stubMatchCatalog({
+        list: () => [aMatch({ id: 'soon', startsAt: hoursFromNow(0.5) })],
+      }),
+    });
+
+    await act(() => {
+      pressStatusChip(result.current, 'live');
+    });
+
+    expect(result.current.groups).toEqual([]);
+    expect(result.current.emptyMessage).toBe('No upcoming matches.');
+  });
 });
+
+function pressStatusChip(presenter: SchedulePresenter, id: StatusFilter) {
+  const chip = presenter.statusChips.find((statusChip) => statusChip.id === id);
+
+  chip?.onPress();
+}
