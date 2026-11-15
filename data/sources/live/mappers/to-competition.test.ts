@@ -11,11 +11,11 @@ describe('toCompetition', () => {
     expect(
       toCompetition({
         title: 'LEC · Spring',
-        imageUrl: 'https://cdn.example/lec.png',
+        imageUrl: 'https://cdn.pandascore.co/images/league/image/1/lec.png',
       })
     ).toEqual({
       title: 'LEC · Spring',
-      imageUrl: 'https://cdn.example/lec.png',
+      imageUrl: 'https://cdn.pandascore.co/images/league/image/1/lec.png',
     });
   });
 
@@ -23,7 +23,18 @@ describe('toCompetition', () => {
     expect(toCompetition({ title: '  ' })).toBeNull();
   });
 
-  it('rejects a blank image url', () => {
-    expect(toCompetition({ title: 'LEC · Spring', imageUrl: '  ' })).toBeNull();
+  it('omits a blank image url', () => {
+    expect(toCompetition({ title: 'LEC · Spring', imageUrl: '  ' })).toEqual({
+      title: 'LEC · Spring',
+    });
+  });
+
+  it('omits an image url that is not on an allowed host', () => {
+    expect(
+      toCompetition({
+        title: 'LEC · Spring',
+        imageUrl: 'https://127.0.0.1/lec.png',
+      })
+    ).toEqual({ title: 'LEC · Spring' });
   });
 });

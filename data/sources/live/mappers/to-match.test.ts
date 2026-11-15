@@ -17,7 +17,7 @@ describe('toMatch', () => {
       winnerId: 'g2',
       competition: {
         title: 'LEC · Spring Playoffs',
-        imageUrl: 'https://cdn.example/lec.png',
+        imageUrl: 'https://cdn.pandascore.co/images/league/image/1/lec.png',
       },
     };
 
@@ -64,7 +64,7 @@ describe('toMatch', () => {
           id: 'g2',
           name: 'G2 Esports',
           shortName: 'G2',
-          imageUrl: 'https://cdn.example/g2.png',
+          imageUrl: 'https://cdn.pandascore.co/images/team/image/g2/g2.png',
         },
         { id: 'fnc', name: 'Fnatic', shortName: 'FNC' },
       ],
@@ -73,7 +73,7 @@ describe('toMatch', () => {
     expect(toMatch(match)).toEqual(match);
   });
 
-  it('rejects a blank team image url', () => {
+  it('omits a blank team image url', () => {
     const match = {
       ...G2_VS_FNC,
       teams: [
@@ -83,10 +83,17 @@ describe('toMatch', () => {
           shortName: 'G2',
           imageUrl: '  ',
         },
+        { id: 'fnc', name: 'Fnatic', shortName: 'FNC' },
       ],
     };
 
-    expect(toMatch(match)).toBeNull();
+    expect(toMatch(match)).toEqual({
+      ...G2_VS_FNC,
+      teams: [
+        { id: 'g2', name: 'G2 Esports', shortName: 'G2' },
+        { id: 'fnc', name: 'Fnatic', shortName: 'FNC' },
+      ],
+    });
   });
 
   it('rejects a blank team id', () => {

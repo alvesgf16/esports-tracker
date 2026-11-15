@@ -1,3 +1,4 @@
+import { allowedUrlFrom } from '@/data/mappers/allowed-url-from';
 import { asOrNull } from '@/data/mappers/as-or-null';
 import { parseAll } from '@/data/mappers/parse-all';
 import { parseOptional } from '@/data/mappers/parse-optional';
@@ -65,9 +66,11 @@ function teamFrom(record: Record<string, unknown>): Team | null {
   const name = asOrNull.string(record.name);
   const shortName = asOrNull.string(record.shortName);
   const id = parseOptional(record.id, asOrNull.string);
-  const imageUrl = parseOptional(record.imageUrl, asOrNull.string);
+  const imageUrl = allowedUrlFrom(
+    parseOptional(record.imageUrl, asOrNull.string) ?? undefined
+  );
 
-  return name && shortName && id !== null && imageUrl !== null
+  return name && shortName && id !== null
     ? teamWithOptionals({ id, name, shortName, imageUrl })
     : null;
 }
