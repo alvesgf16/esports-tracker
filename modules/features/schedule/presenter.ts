@@ -3,6 +3,9 @@ import { notice } from '@/modules/shared/mappers/notice';
 
 import type { ScheduleClock, SchedulePresenter } from './contracts';
 import { useDayKey } from './hooks/use-day-key';
+import { useDisclosureExpansion } from './hooks/use-disclosure-expansion';
+import { useFailedUrls } from './hooks/use-failed-logo-urls';
+import { useIsClient } from './hooks/use-is-client';
 import { competitionDisclosures } from './mappers/competition-disclosures';
 import { dayPager } from './mappers/day-pager';
 import { emptyMessage } from './mappers/empty-message';
@@ -20,6 +23,9 @@ export function useSchedulePresenter(
 
   const { gameFilter, setGameFilter } = useScheduleRouter();
   const { dayKey, selectDayFromKey } = useDayKey(todayKey);
+  const isClient = useIsClient();
+  const { failedUrls, markAsFailed } = useFailedUrls();
+  const expansion = useDisclosureExpansion();
 
   const listedGames = games.list();
   const selectedGame = selectGameFromFilter(gameFilter, listedGames);
@@ -33,7 +39,13 @@ export function useSchedulePresenter(
     selectedChip,
     chips: gameChips(listedGames, setGameFilter),
     dayPager: dayPager(dayKey, clock, selectDayFromKey),
-    groups: competitionDisclosures(listedMatches, games, clock),
+    groups: competitionDisclosures({
+      matches: listedMatches,
+      games,
+      clock,
+      logos: { isClient, failedUrls, markAsFailed },
+      expansion,
+    }),
     emptyMessage: emptyMessage(selectedChip, listedGames),
     notice: notice(loadState),
   };

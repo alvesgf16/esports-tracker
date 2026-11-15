@@ -1,12 +1,13 @@
 import type { Match } from '@/modules/shared/entities';
 import { matchDisplayStatus } from '@/modules/shared/use-cases/match-display-status';
 
-import type { MatchLabels, MatchRowModel } from '../contracts';
+import type { LogoFilter, MatchLabels, MatchRowModel } from '../contracts';
 import { sidesFor } from './sides-for';
 
 type MatchContext = {
   referenceTime: number;
   labels: MatchLabels;
+  logos: LogoFilter;
 };
 
 type TimeColumn = {
@@ -17,10 +18,10 @@ type TimeColumn = {
 
 export function matchRow(match: Match, context: MatchContext): MatchRowModel {
   const { format, id, startsAt, status } = match;
-  const { labels, referenceTime } = context;
+  const { labels, logos, referenceTime } = context;
 
   const displayStatus = matchDisplayStatus(startsAt, referenceTime, status);
-  const { left, right } = sidesFor(match, referenceTime);
+  const { left, right } = sidesFor(match, referenceTime, logos);
   const timeColumn = buildTimeColumn(displayStatus, startsAt, labels);
 
   return {

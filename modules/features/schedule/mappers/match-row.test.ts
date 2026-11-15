@@ -2,7 +2,7 @@ import type { Match } from '@/modules/shared/entities';
 import { aMatch, FIXED_NOW } from '@/modules/shared/shared.harness';
 
 import type { MatchRowModel, MatchSideModel, SideEmphasis } from '../contracts';
-import { stubScheduleClock } from '../schedule.harness';
+import { stubLogos, stubScheduleClock } from '../schedule.harness';
 import { matchRow } from './match-row';
 
 function presentedRow(match: Match): MatchRowModel {
@@ -11,6 +11,7 @@ function presentedRow(match: Match): MatchRowModel {
   return matchRow(match, {
     referenceTime: clock.now,
     labels: clock.labels,
+    logos: stubLogos(),
   });
 }
 

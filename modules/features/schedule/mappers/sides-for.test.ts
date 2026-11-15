@@ -2,10 +2,11 @@ import type { Match } from '@/modules/shared/entities';
 import { aMatch, FIXED_NOW } from '@/modules/shared/shared.harness';
 
 import type { MatchSideModel, SideEmphasis } from '../contracts';
+import { stubLogos } from '../schedule.harness';
 import { sidesFor } from './sides-for';
 
 function presentedSides(match: Match) {
-  return sidesFor(match, FIXED_NOW);
+  return sidesFor(match, FIXED_NOW, stubLogos());
 }
 
 function aSide(

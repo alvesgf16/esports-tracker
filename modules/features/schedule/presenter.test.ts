@@ -9,6 +9,9 @@ import type {
 import { aMatch } from '@/modules/shared/shared.harness';
 
 import type { ScheduleClock } from './contracts';
+import { useDisclosureExpansion } from './hooks/use-disclosure-expansion';
+import { useFailedUrls } from './hooks/use-failed-logo-urls';
+import { useIsClient } from './hooks/use-is-client';
 import { useSchedulePresenter } from './presenter';
 import { useScheduleRouter } from './router';
 import {
@@ -21,6 +24,18 @@ import {
 
 jest.mock('./router', () => ({
   useScheduleRouter: jest.fn(),
+}));
+
+jest.mock('./hooks/use-is-client', () => ({
+  useIsClient: jest.fn(),
+}));
+
+jest.mock('./hooks/use-failed-logo-urls', () => ({
+  useFailedUrls: jest.fn(),
+}));
+
+jest.mock('./hooks/use-disclosure-expansion', () => ({
+  useDisclosureExpansion: jest.fn(),
 }));
 
 const NEXT_NOON = Date.UTC(2026, 2, 16, 12, 0, 0, 0);
@@ -53,6 +68,15 @@ async function presentHook(overrides: PresentOverrides = {}) {
   jest.mocked(useScheduleRouter).mockReturnValue({
     gameFilter: overrides.gameFilter,
     setGameFilter: jest.fn(),
+  });
+  jest.mocked(useIsClient).mockReturnValue(true);
+  jest.mocked(useFailedUrls).mockReturnValue({
+    failedUrls: new Set(),
+    markAsFailed: jest.fn(),
+  });
+  jest.mocked(useDisclosureExpansion).mockReturnValue({
+    isExpanded: () => true,
+    toggle: jest.fn(),
   });
 
   return renderHook(
