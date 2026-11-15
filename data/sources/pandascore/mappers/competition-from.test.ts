@@ -46,19 +46,32 @@ describe('competitionFrom', () => {
   it('maps a league image url', () => {
     const competition = competitionFrom(
       aVendorMatch({
-        league: { name: 'LEC', image_url: 'https://cdn.example/lec.png' },
+        league: {
+          name: 'LEC',
+          image_url: 'https://cdn.pandascore.co/images/league/image/1/lec.png',
+        },
       })
     );
 
     expect(competition).toEqual({
       title: 'LEC · Spring',
-      imageUrl: 'https://cdn.example/lec.png',
+      imageUrl: 'https://cdn.pandascore.co/images/league/image/1/lec.png',
     });
   });
 
   it('omits a blank league image url', () => {
     expect(
       competitionFrom(aVendorMatch({ league: { name: 'LEC', image_url: '' } }))
+    ).toEqual({ title: 'LEC · Spring' });
+  });
+
+  it('omits a league image url that is not on an allowed host', () => {
+    expect(
+      competitionFrom(
+        aVendorMatch({
+          league: { name: 'LEC', image_url: 'https://127.0.0.1/lec.png' },
+        })
+      )
     ).toEqual({ title: 'LEC · Spring' });
   });
 });

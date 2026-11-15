@@ -1,3 +1,4 @@
+import { allowedUrlFrom } from '@/data/mappers/allowed-url-from';
 import { asOrNull } from '@/data/mappers/as-or-null';
 import { competitionWithOptionalImage } from '@/data/mappers/competition-with-optional-image';
 import type { Competition } from '@/modules/shared/entities';
@@ -7,7 +8,9 @@ import type { VendorMatch } from '../vendor-types';
 export function competitionFrom(match: VendorMatch): Competition {
   return competitionWithOptionalImage({
     title: competitionTitleFrom(match),
-    imageUrl: asOrNull.string(match.league?.image_url) ?? undefined,
+    imageUrl: allowedUrlFrom(
+      asOrNull.string(match.league?.image_url) ?? undefined
+    ),
   });
 }
 

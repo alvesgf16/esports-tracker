@@ -29,12 +29,26 @@ describe('teamsFrom', () => {
 
   it('maps team image urls when present', () => {
     const [alpha, beta] = teamsFrom([
-      aVendorOpponent('Alpha', 'ALP', 11, 'https://cdn.example/alpha.png'),
-      aVendorOpponent('Beta', 'BET', 22, 'https://cdn.example/beta.png'),
+      aVendorOpponent(
+        'Alpha',
+        'ALP',
+        11,
+        'https://cdn.pandascore.co/images/team/image/11/alpha.png'
+      ),
+      aVendorOpponent(
+        'Beta',
+        'BET',
+        22,
+        'https://cdn.pandascore.co/images/team/image/22/beta.png'
+      ),
     ]);
 
-    expect(alpha.imageUrl).toBe('https://cdn.example/alpha.png');
-    expect(beta.imageUrl).toBe('https://cdn.example/beta.png');
+    expect(alpha.imageUrl).toBe(
+      'https://cdn.pandascore.co/images/team/image/11/alpha.png'
+    );
+    expect(beta.imageUrl).toBe(
+      'https://cdn.pandascore.co/images/team/image/22/beta.png'
+    );
   });
 
   it('omits blank team image urls', () => {
@@ -47,6 +61,14 @@ describe('teamsFrom', () => {
       { id: '11', name: 'Alpha', shortName: 'ALP' },
       { id: '22', name: 'Beta', shortName: 'BET' },
     ]);
+  });
+
+  it('omits a team image url that is not on an allowed host', () => {
+    expect(
+      teamsFrom([
+        aVendorOpponent('Alpha', 'ALP', 11, 'https://127.0.0.1/alpha.png'),
+      ])
+    ).toEqual([{ id: '11', name: 'Alpha', shortName: 'ALP' }]);
   });
 
   it('skips opponents without a name', () => {
