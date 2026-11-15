@@ -39,13 +39,13 @@ function filterMatchesByStatus(
     return matches;
   }
 
-  const byStatus = (match: Match) =>
-    statusFor(match, statusFilter, referenceTime);
+  const hasMatchingStatus = (match: Match) =>
+    hasSelectedStatus(match, statusFilter, referenceTime);
 
-  return matches.filter(byStatus);
+  return matches.filter(hasMatchingStatus);
 }
 
-function statusFor(
+function hasSelectedStatus(
   match: Match,
   statusFilter: ActiveStatusFilter,
   referenceTime: number
