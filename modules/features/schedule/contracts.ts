@@ -12,6 +12,11 @@ export type DayKeyState = {
   selectDayFromKey: (dayKey: string) => void;
 };
 
+export type StatusFilterState = {
+  statusFilter: StatusFilter;
+  setStatusFilter: (status: StatusFilter) => void;
+};
+
 export type DayCalendar = {
   dayKey: (instant: string | number) => string;
   todayKey: (now: number) => string;
@@ -82,8 +87,10 @@ export type CompetitionDisclosureModel = {
 };
 
 export type SchedulePresenter = {
-  selectedChip: GameFilter;
-  chips: ChipModel[];
+  selectedGameChip: GameFilter;
+  gameChips: ChipModel[];
+  selectedStatusChip: StatusFilter;
+  statusChips: ChipModel[];
   dayPager: DayPagerModel;
   groups: CompetitionDisclosureModel[];
   emptyMessage: string;
