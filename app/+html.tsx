@@ -39,6 +39,7 @@ function DocumentHead({ headNodes }: DocumentHeadProps) {
         content="width=device-width, initial-scale=1, shrink-to-fit=no"
       />
       <meta name="theme-color" content="#0E1116" />
+      <meta httpEquiv="Content-Security-Policy" content={logoImageCsp} />
       <link rel="manifest" href="/manifest.json" />
       <ScrollViewStyleReset />
       <style dangerouslySetInnerHTML={{ __html: responsiveBackground }} />
@@ -46,6 +47,10 @@ function DocumentHead({ headNodes }: DocumentHeadProps) {
     </>
   );
 }
+
+// Keep in sync with ALLOWED_LOGO_HOSTS in data/mappers/allowed-url-from.ts.
+const logoImageCsp =
+  "img-src 'self' data: blob: https://cdn.pandascore.co https://static.wikia.nocookie.net";
 
 const responsiveBackground = `
 body {

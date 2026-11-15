@@ -19,6 +19,7 @@ function isAllowed(url: URL) {
   return (
     url.protocol === 'https:' &&
     !url.username &&
+    url.port === '' &&
     ALLOWED_LOGO_HOSTS.has(url.hostname)
   );
 }

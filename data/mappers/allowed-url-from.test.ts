@@ -23,6 +23,12 @@ describe('allowedUrlFrom', () => {
     expect(allowedUrlFrom('https://cdn.example/a.png')).toBeUndefined();
   });
 
+  it('omits non-default https ports', () => {
+    expect(
+      allowedUrlFrom('https://cdn.pandascore.co:8443/a.png')
+    ).toBeUndefined();
+  });
+
   it('omits blank and malformed values', () => {
     expect(allowedUrlFrom(undefined)).toBeUndefined();
     expect(allowedUrlFrom('  ')).toBeUndefined();
