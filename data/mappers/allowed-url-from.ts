@@ -1,5 +1,6 @@
 const ALLOWED_LOGO_HOSTS = new Set([
   'cdn.pandascore.co',
+  'cdn-api.pandascore.co',
   'static.wikia.nocookie.net',
 ]);
 
