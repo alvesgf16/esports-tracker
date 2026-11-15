@@ -31,6 +31,12 @@ export type ScheduleClock = {
   labels: MatchLabels;
 };
 
+export type LogoFilter = {
+  isClient: boolean;
+  failedUrls: ReadonlySet<string>;
+  markAsFailed: (url: string) => void;
+};
+
 export type ChipModel = {
   id: GameFilter;
   label: string;
