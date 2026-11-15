@@ -637,12 +637,12 @@ module.exports = defineConfig([
                 '@/lib/**',
                 '@/modules/features',
                 '@/modules/features/**',
-                '@/modules/shared/components',
-                '@/modules/shared/components/**',
-                '@/modules/shared/use-cases',
-                '@/modules/shared/use-cases/**',
-                '@/modules/shared/*.harness',
               ],
+              message:
+                'data/ implements gateways; import entities and gateways only.',
+            },
+            {
+              regex: '^@/modules/shared/(?!entities$|gateways$)',
               message:
                 'data/ implements gateways; import entities and gateways only.',
             },
