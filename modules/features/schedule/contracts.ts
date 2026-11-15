@@ -1,5 +1,7 @@
 export type GameFilter = string | 'all';
 
+export type StatusFilter = 'all' | 'live' | 'upcoming';
+
 export type ScheduleRouter = {
   gameFilter?: string;
   setGameFilter: (game: GameFilter) => void;
@@ -38,7 +40,7 @@ export type LogoFilter = {
 };
 
 export type ChipModel = {
-  id: GameFilter;
+  id: GameFilter | StatusFilter;
   label: string;
   onPress: () => void;
 };

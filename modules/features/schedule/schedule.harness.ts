@@ -46,6 +46,14 @@ export function todayAndTomorrowMatches(): Match[] {
   ];
 }
 
+export function statusFilterBoard(): Match[] {
+  return [
+    aMatch({ id: 'live', startsAt: hoursFromNow(-0.5), status: 'running' }),
+    aMatch({ id: 'soon', startsAt: hoursFromNow(0.5) }),
+    aMatch({ id: 'upcoming', startsAt: hoursFromNow(2) }),
+  ];
+}
+
 function stubDayCalendar(timezone = TEST_TIME_ZONE): DayCalendar {
   return calendarDay.forZone(timezone);
 }
