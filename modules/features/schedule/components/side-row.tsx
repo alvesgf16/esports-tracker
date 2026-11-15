@@ -14,6 +14,7 @@ type SideScoreProps = {
 
 type SideLogoProps = {
   uri: string | null;
+  onError?: () => void;
 };
 
 export default function SideRow({ side }: Props) {
@@ -21,29 +22,14 @@ export default function SideRow({ side }: Props) {
 
   return (
     <View className="flex-row items-center gap-2">
-      {side.imageUrl !== undefined ? <SideLogo uri={side.imageUrl} /> : null}
+      {side.imageUrl !== undefined && (
+        <SideLogo uri={side.imageUrl} onError={side.onLogoError} />
+      )}
       <Text className={`min-w-0 flex-1 text-[15px] ${tone}`} numberOfLines={1}>
         {side.name}
       </Text>
       <SideScore score={side.score} tone={tone} />
     </View>
-  );
-}
-
-function SideLogo({ uri }: SideLogoProps) {
-  return (
-    <View
-      className="items-center justify-center"
-      style={{ width: 32, height: 32 }}
-    >
-      {uri ? <RemoteLogo key={uri} uri={uri} /> : null}
-    </View>
-  );
-}
-
-function SideScore({ score, tone }: SideScoreProps) {
-  return (
-    <Text className={`w-6 text-right text-[15px] ${tone}`}>{score ?? ''}</Text>
   );
 }
 
@@ -57,4 +43,21 @@ function sideTone(emphasis: SideEmphasis): string {
   }
 
   return 'font-semibold text-foreground';
+}
+
+function SideLogo({ uri, onError }: SideLogoProps) {
+  return (
+    <View
+      className="items-center justify-center"
+      style={{ width: 32, height: 32 }}
+    >
+      {uri && onError && <RemoteLogo key={uri} uri={uri} onError={onError} />}
+    </View>
+  );
+}
+
+function SideScore({ score, tone }: SideScoreProps) {
+  return (
+    <Text className={`w-6 text-right text-[15px] ${tone}`}>{score ?? ''}</Text>
+  );
 }

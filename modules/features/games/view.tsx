@@ -17,7 +17,7 @@ export default function GamesView({ presenter }: Props) {
       className="flex-1 bg-background"
       contentContainerClassName="gap-2.5 p-4"
     >
-      {notice ? <NoticeBanner text={notice} className="mb-1" /> : null}
+      {notice && <NoticeBanner text={notice} className="mb-1" />}
       {rows.map((row) => (
         <GameRow key={row.id} row={row} />
       ))}

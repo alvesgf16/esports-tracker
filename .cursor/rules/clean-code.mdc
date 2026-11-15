@@ -62,7 +62,7 @@ Separate construction from use. Builders in `app/` inject the loaded board and c
 - Presenter → use cases, shared entities/gateways/mappers, contracts, feature `router`, `hooks/`, `mappers/` — no `react-native` / `expo-router` / `data/` / `lib/` / sibling features. Mappers do not import `lib/`; the Builder binds `scheduleClock` and injects it.
 - Use cases → entities, gateway ports, and other use cases; never `data/`, sibling features, `lib/`, or React
 - Feature hooks → React state for that feature (`useDayKey`); contracts and use cases — no `react-native` / `expo-router` / `data/` / `lib/` / sibling features / mappers
-- View → presenter types + `constants/` + `modules/shared`
+- View → presenter types + `constants/` + `modules/shared`. Views and `components/` must not call React or feature hooks (`use*`); Presenter owns hooks and puts state on the view model.
 - `data/` → shared `entities` + `gateways` only (outer `sources/` / catalogs / mappers)
 - `lib/board/use-schedule-board` → `ScheduleBoardSource`; Builders pass `scheduleSource()` into `useScheduleSnapshot`, then pass loaded `board` and `scheduleClock(now, timezone)` into presenters
 

@@ -1,13 +1,19 @@
 import { Image } from 'expo-image';
-import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
 
 type Props = {
   uri: string;
+  onError: () => void;
   size?: number;
 };
 
 type LogoFrameProps = {
+  size: number;
+  children: ReactNode;
+};
+
+type LogoImageProps = {
   uri: string;
   size: number;
   onError: () => void;
@@ -16,28 +22,39 @@ type LogoFrameProps = {
 const TEAM_LOGO_SIZE = 24;
 const LOGO_INSET = 4;
 
-export default function RemoteLogo({ uri, size = TEAM_LOGO_SIZE }: Props) {
-  const [failed, setFailed] = useState(false);
-  const handleError = () => setFailed(true);
-
-  return !failed && <LogoFrame uri={uri} size={size} onError={handleError} />;
+export default function RemoteLogo({
+  uri,
+  onError,
+  size = TEAM_LOGO_SIZE,
+}: Props) {
+  return (
+    <LogoFrame size={size}>
+      <LogoImage uri={uri} size={size} onError={onError} />
+    </LogoFrame>
+  );
 }
 
-function LogoFrame({ uri, size, onError }: LogoFrameProps) {
+function LogoImage({ uri, size, onError }: LogoImageProps) {
   const artwork = { width: size, height: size };
 
+  return (
+    <Image
+      accessible={false}
+      source={uri}
+      style={artwork}
+      contentFit="contain"
+      onError={onError}
+    />
+  );
+}
+
+function LogoFrame({ size, children }: LogoFrameProps) {
   return (
     <View
       className="items-center justify-center overflow-hidden rounded-full bg-foreground"
       style={frameSize(size)}
     >
-      <Image
-        accessible={false}
-        source={uri}
-        style={artwork}
-        contentFit="contain"
-        onError={onError}
-      />
+      {children}
     </View>
   );
 }

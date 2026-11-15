@@ -8,7 +8,11 @@ type Props = {
   isLast: boolean;
 };
 
-type MatchRowContentProps = {
+type MatchKickoffProps = {
+  match: MatchRowModel;
+};
+
+type MatchBodyProps = {
   match: MatchRowModel;
 };
 
@@ -23,7 +27,7 @@ export default function MatchRow({ match, isLast }: Props) {
   );
 }
 
-function MatchKickoffColumn({ match }: MatchRowContentProps) {
+function MatchKickoffColumn({ match }: MatchKickoffProps) {
   const kickoffTone = match.isLive ? 'text-live' : 'text-foreground';
 
   return (
@@ -31,16 +35,16 @@ function MatchKickoffColumn({ match }: MatchRowContentProps) {
       <Text className={`text-sm font-bold ${kickoffTone}`}>
         {match.kickoffLabel}
       </Text>
-      {match.countdownLabel ? (
+      {match.countdownLabel && (
         <Text className="mt-0.5 text-xs font-semibold text-muted">
           {match.countdownLabel}
         </Text>
-      ) : null}
+      )}
     </View>
   );
 }
 
-function MatchBody({ match }: MatchRowContentProps) {
+function MatchBody({ match }: MatchBodyProps) {
   return (
     <View className="flex-1 gap-0.5">
       <SideRow side={match.left} />

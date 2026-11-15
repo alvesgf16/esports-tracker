@@ -568,6 +568,23 @@ module.exports = defineConfig([
     },
   },
   {
+    files: [
+      'modules/features/**/view.tsx',
+      'modules/features/**/components/**/*.{ts,tsx}',
+      'modules/shared/**/components/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.name=/^use[A-Z]/]",
+          message:
+            'Views and components must not call hooks; Presenter owns hooks.',
+        },
+      ],
+    },
+  },
+  {
     files: ['modules/features/**/*.tsx'],
     rules: {
       'no-restricted-imports': ['error', viewImports(siblingFeatures)],
