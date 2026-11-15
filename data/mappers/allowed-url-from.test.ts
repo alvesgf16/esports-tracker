@@ -7,6 +7,13 @@ describe('allowedUrlFrom', () => {
     expect(allowedUrlFrom(url)).toBe(url);
   });
 
+  it('keeps a pandascore api-cdn https url', () => {
+    const url =
+      'https://cdn-api.pandascore.co/images/team/image/135126/forze.png';
+
+    expect(allowedUrlFrom(url)).toBe(url);
+  });
+
   it('keeps a sample wikia https url', () => {
     expect(
       allowedUrlFrom(

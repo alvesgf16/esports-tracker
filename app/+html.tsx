@@ -50,7 +50,7 @@ function DocumentHead({ headNodes }: DocumentHeadProps) {
 
 // Keep in sync with ALLOWED_LOGO_HOSTS in data/mappers/allowed-url-from.ts.
 const logoImageCsp =
-  "img-src 'self' data: blob: https://cdn.pandascore.co https://static.wikia.nocookie.net";
+  "img-src 'self' data: blob: https://cdn.pandascore.co https://cdn-api.pandascore.co https://static.wikia.nocookie.net";
 
 const responsiveBackground = `
 body {
