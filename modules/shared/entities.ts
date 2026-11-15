@@ -10,6 +10,12 @@ export type Team = {
   id?: string;
   name: string;
   shortName: string;
+  imageUrl?: string;
+};
+
+export type Competition = {
+  title: string;
+  imageUrl?: string;
 };
 
 export type SeriesScore = {
@@ -21,7 +27,7 @@ export type Match = {
   id: string;
   game: string;
   name: string;
-  tournament: string;
+  competition: Competition;
   format: string;
   startsAt: string;
   teams: Team[];

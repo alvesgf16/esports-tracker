@@ -1,8 +1,8 @@
-import type { Match } from '@/modules/shared/entities';
+import type { Competition, Match } from '@/modules/shared/entities';
 
 export type CompetitionGroup = {
   id: string;
   game: string;
-  tournament: string;
+  competition: Competition;
   matches: Match[];
 };

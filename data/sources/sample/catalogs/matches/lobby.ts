@@ -1,5 +1,6 @@
 import type { Match } from '@/modules/shared/entities';
 
+import { competition } from '../../competition';
 import { sampleKickoff } from '../../sample-kickoff';
 import { team } from '../../team';
 
@@ -28,7 +29,7 @@ export const LOBBY_MATCHES: Match[] = [
     id: 'pubg-lobby',
     game: 'pubg',
     name: 'Group A — Match 3',
-    tournament: 'PGS · Global Series',
+    competition: competition('PGS · Global Series'),
     format: 'Maps',
     startsAt: sampleKickoff.onTheHour(10),
     teams: PUBG_LOBBY,

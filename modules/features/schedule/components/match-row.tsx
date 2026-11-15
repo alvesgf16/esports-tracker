@@ -1,23 +1,19 @@
 import { Text, View } from 'react-native';
 
-import type { MatchRowModel, MatchSideModel, SideEmphasis } from '../contracts';
+import type { MatchRowModel } from '../contracts';
+import SideRow from './side-row';
 
 type Props = {
   match: MatchRowModel;
   isLast: boolean;
 };
 
-type MatchRowContentProps = {
+type MatchKickoffProps = {
   match: MatchRowModel;
 };
 
-type SideRowProps = {
-  side: MatchSideModel;
-};
-
-type SideScoreProps = {
-  score: string | null;
-  tone: string;
+type MatchBodyProps = {
+  match: MatchRowModel;
 };
 
 export default function MatchRow({ match, isLast }: Props) {
@@ -31,7 +27,7 @@ export default function MatchRow({ match, isLast }: Props) {
   );
 }
 
-function MatchKickoffColumn({ match }: MatchRowContentProps) {
+function MatchKickoffColumn({ match }: MatchKickoffProps) {
   const kickoffTone = match.isLive ? 'text-live' : 'text-foreground';
 
   return (
@@ -39,16 +35,16 @@ function MatchKickoffColumn({ match }: MatchRowContentProps) {
       <Text className={`text-sm font-bold ${kickoffTone}`}>
         {match.kickoffLabel}
       </Text>
-      {match.countdownLabel ? (
+      {match.countdownLabel && (
         <Text className="mt-0.5 text-xs font-semibold text-muted">
           {match.countdownLabel}
         </Text>
-      ) : null}
+      )}
     </View>
   );
 }
 
-function MatchBody({ match }: MatchRowContentProps) {
+function MatchBody({ match }: MatchBodyProps) {
   return (
     <View className="flex-1 gap-0.5">
       <SideRow side={match.left} />
@@ -58,35 +54,4 @@ function MatchBody({ match }: MatchRowContentProps) {
       </Text>
     </View>
   );
-}
-
-function SideRow({ side }: SideRowProps) {
-  const tone = sideTone(side.emphasis);
-
-  return (
-    <View className="flex-row items-center gap-2">
-      <Text className={`min-w-0 flex-1 text-[15px] ${tone}`} numberOfLines={1}>
-        {side.name}
-      </Text>
-      <SideScore score={side.score} tone={tone} />
-    </View>
-  );
-}
-
-function SideScore({ score, tone }: SideScoreProps) {
-  return (
-    <Text className={`w-6 text-right text-[15px] ${tone}`}>{score ?? ''}</Text>
-  );
-}
-
-function sideTone(emphasis: SideEmphasis): string {
-  if (emphasis === 'winner') {
-    return 'font-bold text-foreground';
-  }
-
-  if (emphasis === 'loser') {
-    return 'font-semibold text-muted';
-  }
-
-  return 'font-semibold text-foreground';
 }

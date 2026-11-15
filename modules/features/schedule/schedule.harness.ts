@@ -9,7 +9,7 @@ import {
   TEST_TIME_ZONE,
 } from '@/modules/shared/shared.harness';
 
-import type { DayCalendar, ScheduleClock } from './contracts';
+import type { DayCalendar, LogoFilter, ScheduleClock } from './contracts';
 
 const lol: Game = {
   id: 'lol',
@@ -60,6 +60,15 @@ export function stubScheduleClock(
       kickoff: (startingTime) => `kickoff:${startingTime}`,
       countdown: (startingTime) => `countdown:${startingTime}`,
     },
+    ...overrides,
+  };
+}
+
+export function stubLogos(overrides: Partial<LogoFilter> = {}): LogoFilter {
+  return {
+    isClient: true,
+    failedUrls: new Set(),
+    markAsFailed: jest.fn(),
     ...overrides,
   };
 }

@@ -18,7 +18,7 @@ function aBoardMatch(overrides: Partial<Match>): Match {
     id: 'm1',
     game: 'lol',
     name: 'Alpha vs Beta',
-    tournament: 'LEC · Spring',
+    competition: { title: 'LEC · Spring' },
     format: 'Bo3',
     startsAt: '2026-03-15T14:00:00.000Z',
     teams: [],

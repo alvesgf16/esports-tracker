@@ -1,30 +1,48 @@
-import { aMatch } from '@/modules/shared/shared.harness';
+import { aCompetition, aMatch } from '@/modules/shared/shared.harness';
 
 import { groupByCompetition } from './group-by-competition';
 
 describe('groupByCompetition', () => {
   it('keeps mixed titles in separate sections', () => {
     const matches = [
-      aMatch({ id: 'lec', tournament: 'LEC · Spring' }),
+      aMatch({ id: 'lec', competition: aCompetition('LEC · Spring') }),
       aMatch({
         id: 'blast',
         game: 'cs2',
-        tournament: 'BLAST · Open',
+        competition: aCompetition('BLAST · Open'),
       }),
     ];
 
     const groups = groupByCompetition(matches);
 
-    expect(groups.map((group) => group.tournament)).toEqual([
+    expect(groups.map((group) => group.competition.title)).toEqual([
       'LEC · Spring',
       'BLAST · Open',
     ]);
   });
 
+  it('lifts a competition image from any match in the group', () => {
+    const groups = groupByCompetition([
+      aMatch({ id: 'a' }),
+      aMatch({
+        id: 'b',
+        competition: aCompetition(
+          'LEC · Spring',
+          'https://cdn.example/lec.png'
+        ),
+      }),
+    ]);
+
+    expect(groups[0].competition).toEqual({
+      title: 'LEC · Spring',
+      imageUrl: 'https://cdn.example/lec.png',
+    });
+  });
+
   it('keeps matches that share a competition in one section', () => {
     const matches = [
       aMatch({ id: 'a' }),
-      aMatch({ id: 'other', tournament: 'LCK · Cup' }),
+      aMatch({ id: 'other', competition: aCompetition('LCK · Cup') }),
       aMatch({ id: 'b' }),
     ];
 
@@ -34,10 +52,18 @@ describe('groupByCompetition', () => {
     expect(groups[0].matches.map((match) => match.id)).toEqual(['a', 'b']);
   });
 
-  it('treats the same tournament name on different games as distinct', () => {
+  it('treats the same competition title on different games as distinct', () => {
     const matches = [
-      aMatch({ id: 'lol', game: 'lol', tournament: 'ESL · Open' }),
-      aMatch({ id: 'cs', game: 'cs2', tournament: 'ESL · Open' }),
+      aMatch({
+        id: 'lol',
+        game: 'lol',
+        competition: aCompetition('ESL · Open'),
+      }),
+      aMatch({
+        id: 'cs',
+        game: 'cs2',
+        competition: aCompetition('ESL · Open'),
+      }),
     ];
 
     const groups = groupByCompetition(matches);
@@ -47,8 +73,16 @@ describe('groupByCompetition', () => {
 
   it('keeps competitions distinct when titles share a colon', () => {
     const matches = [
-      aMatch({ id: 'a', game: 'lol', tournament: 'LEC:Spring' }),
-      aMatch({ id: 'b', game: 'lol:LEC', tournament: 'Spring' }),
+      aMatch({
+        id: 'a',
+        game: 'lol',
+        competition: aCompetition('LEC:Spring'),
+      }),
+      aMatch({
+        id: 'b',
+        game: 'lol:LEC',
+        competition: aCompetition('Spring'),
+      }),
     ];
 
     const groups = groupByCompetition(matches);

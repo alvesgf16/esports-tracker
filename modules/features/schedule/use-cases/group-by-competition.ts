@@ -1,4 +1,4 @@
-import type { Match } from '@/modules/shared/entities';
+import type { Competition, Match } from '@/modules/shared/entities';
 
 import type { CompetitionGroup } from '../entities';
 
@@ -11,11 +11,23 @@ export function groupByCompetition(matches: Match[]): CompetitionGroup[] {
 }
 
 function competitionKey(match: Match): string {
-  return JSON.stringify([match.game, match.tournament]);
+  return JSON.stringify([match.game, match.competition.title]);
 }
 
 function toCompetitionGroup([id, matches]: CompetitionEntry): CompetitionGroup {
-  const [{ game, tournament }] = matches;
+  const [{ game }] = matches;
+  const competition = competitionFrom(matches);
 
-  return { id, game, tournament, matches };
+  return { id, game, competition, matches };
+}
+
+function competitionFrom(matches: Match[]): Competition {
+  const { title } = matches[0].competition;
+  const { imageUrl } = matches.find(hasCompetitionImage)?.competition ?? {};
+
+  return imageUrl ? { title, imageUrl } : { title };
+}
+
+function hasCompetitionImage(match: Match): boolean {
+  return Boolean(match.competition.imageUrl);
 }

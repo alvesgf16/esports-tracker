@@ -10,6 +10,12 @@ export type VendorOpponentBody = {
   id?: number | null;
   name: string | null;
   acronym?: string | null;
+  image_url?: string | null;
+};
+
+type VendorLeague = {
+  name: string | null;
+  image_url?: string | null;
 };
 
 export type VendorOpponent = {
@@ -34,7 +40,7 @@ export type VendorMatch = {
   opponents: VendorOpponent[];
   results?: VendorResult[] | null;
   winner_id?: number | null;
-  league: { name: string | null } | null;
+  league: VendorLeague | null;
   tournament: { name: string | null } | null;
   videogame: { name: string; slug: string } | null;
   videogame_title: { name: string | null } | null;

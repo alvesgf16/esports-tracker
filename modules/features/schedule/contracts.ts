@@ -31,6 +31,12 @@ export type ScheduleClock = {
   labels: MatchLabels;
 };
 
+export type LogoFilter = {
+  isClient: boolean;
+  failedUrls: ReadonlySet<string>;
+  markAsFailed: (url: string) => void;
+};
+
 export type ChipModel = {
   id: GameFilter;
   label: string;
@@ -49,6 +55,8 @@ export type MatchSideModel = {
   name: string;
   score: string | null;
   emphasis: SideEmphasis;
+  imageUrl?: string | null;
+  onLogoError?: () => void;
 };
 
 export type MatchRowModel = {
@@ -64,6 +72,10 @@ export type MatchRowModel = {
 export type CompetitionDisclosureModel = {
   id: string;
   label: string;
+  imageUrl?: string;
+  onLogoError?: () => void;
+  expanded: boolean;
+  onToggle: () => void;
   matches: MatchRowModel[];
 };
 

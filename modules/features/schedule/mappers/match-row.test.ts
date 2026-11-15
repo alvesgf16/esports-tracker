@@ -2,7 +2,7 @@ import type { Match } from '@/modules/shared/entities';
 import { aMatch, FIXED_NOW } from '@/modules/shared/shared.harness';
 
 import type { MatchRowModel, MatchSideModel, SideEmphasis } from '../contracts';
-import { stubScheduleClock } from '../schedule.harness';
+import { stubLogos, stubScheduleClock } from '../schedule.harness';
 import { matchRow } from './match-row';
 
 function presentedRow(match: Match): MatchRowModel {
@@ -11,6 +11,7 @@ function presentedRow(match: Match): MatchRowModel {
   return matchRow(match, {
     referenceTime: clock.now,
     labels: clock.labels,
+    logos: stubLogos(),
   });
 }
 
@@ -19,7 +20,7 @@ function aSide(
   score: string | null = null,
   emphasis: SideEmphasis = 'undecided'
 ): MatchSideModel {
-  return { name, score, emphasis };
+  return { name, score, emphasis, imageUrl: null };
 }
 
 describe('matchRow', () => {
@@ -75,7 +76,7 @@ describe('matchRow', () => {
       aMatch({
         id: 'lobby-1',
         name: 'Group A — Match 3',
-        tournament: 'PGS · Global Series',
+        competition: { title: 'PGS · Global Series' },
         format: 'Maps',
         teams: [
           { name: 'Alpha', shortName: 'ALP' },

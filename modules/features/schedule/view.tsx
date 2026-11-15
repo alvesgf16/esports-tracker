@@ -16,9 +16,9 @@ export default function ScheduleView({ presenter }: Props) {
     <View className="flex-1 bg-background">
       <GameChips chips={presenter.chips} selected={presenter.selectedChip} />
       <DayPager pager={presenter.dayPager} />
-      {presenter.notice ? (
+      {presenter.notice && (
         <NoticeBanner text={presenter.notice} className="px-4 pb-1" />
-      ) : null}
+      )}
       <MatchDayList
         groups={presenter.groups}
         emptyMessage={presenter.emptyMessage}

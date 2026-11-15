@@ -8,7 +8,7 @@ export const G2_VS_FNC = {
   id: 'g2-fnc',
   game: 'lol',
   name: 'G2 Esports vs Fnatic',
-  tournament: 'LEC · Spring Playoffs',
+  competition: { title: 'LEC · Spring Playoffs' },
   format: 'Bo5',
   startsAt: '2026-03-15T18:00:00.000Z',
   teams: [

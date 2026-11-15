@@ -1,7 +1,10 @@
-import type { Match, SeriesScore, Team } from '@/modules/shared/entities';
+import type { Match, Team } from '@/modules/shared/entities';
 import { matchDisplayStatus } from '@/modules/shared/use-cases/match-display-status';
 
-import type { MatchSideModel, SideEmphasis } from '../contracts';
+import type { LogoFilter, MatchSideModel } from '../contracts';
+import { sideEmphasis } from './side-emphasis';
+import { sideLogo } from './side-logo';
+import { sideScore } from './side-score';
 
 type MatchSides = {
   left: MatchSideModel;
@@ -10,13 +13,17 @@ type MatchSides = {
 
 type DisplayStatus = 'live' | 'soon' | 'upcoming' | 'finished';
 
-export function sidesFor(match: Match, referenceTime: number): MatchSides {
+export function sidesFor(
+  match: Match,
+  referenceTime: number,
+  logos: LogoFilter
+): MatchSides {
   const { name, startsAt, status, teams } = match;
   const displayStatus = matchDisplayStatus(startsAt, referenceTime, status);
 
   return teams.length > 2
     ? lobbySides(name, teams.length)
-    : duelSides(match, displayStatus);
+    : duelSides(match, displayStatus, logos);
 }
 
 function lobbySides(name: string, teamCount: number): MatchSides {
@@ -30,92 +37,36 @@ function plainSide(text: string): MatchSideModel {
   return { name: text, score: null, emphasis: 'undecided' };
 }
 
-function duelSides(match: Match, displayStatus: DisplayStatus): MatchSides {
+function duelSides(
+  match: Match,
+  displayStatus: DisplayStatus,
+  logos: LogoFilter
+): MatchSides {
   const { teams } = match;
 
   return {
-    left: sideFor(teams[0], match, displayStatus),
-    right: sideFor(teams[1], match, displayStatus),
+    left: sideFor({ team: teams[0], match, displayStatus, logos }),
+    right: sideFor({ team: teams[1], match, displayStatus, logos }),
   };
 }
 
-function sideFor(
-  team: Team | undefined,
-  match: Match,
-  displayStatus: DisplayStatus
-): MatchSideModel {
+type SideInput = {
+  team: Team | undefined;
+  match: Match;
+  displayStatus: DisplayStatus;
+  logos: LogoFilter;
+};
+
+function sideFor({
+  team,
+  match,
+  displayStatus,
+  logos,
+}: SideInput): MatchSideModel {
   return {
     name: team?.name ?? 'TBD',
-    score: scoreLabel(team, match, displayStatus),
-    emphasis: emphasisFor(team, match.winnerId),
+    score: sideScore(team, match, displayStatus),
+    emphasis: sideEmphasis(team, match.winnerId),
+    ...sideLogo(team?.imageUrl, logos),
   };
-}
-
-function scoreLabel(
-  team: Team | undefined,
-  match: Match,
-  displayStatus: DisplayStatus
-): string | null {
-  return shouldShowScore(match, displayStatus)
-    ? mappedScore(team, match.scores)
-    : null;
-}
-
-function shouldShowScore(match: Match, displayStatus: DisplayStatus): boolean {
-  return isTwoTeamSeries(match) && hasStarted(match, displayStatus);
-}
-
-function isTwoTeamSeries(match: Match) {
-  return match.teams.length === 2 && Boolean(match.scores?.length);
-}
-
-function hasStarted(match: Match, displayStatus: DisplayStatus) {
-  return (
-    hasProgress(match) ||
-    (!isNotStarted(match) && isLiveOrFinished(displayStatus))
-  );
-}
-
-function hasProgress(match: Match) {
-  return (
-    Boolean(match.winnerId) || (match.scores?.some(isPositiveScore) ?? false)
-  );
-}
-
-function isPositiveScore(entry: SeriesScore): boolean {
-  return entry.score > 0;
-}
-
-function isNotStarted(match: Match) {
-  return match.status === 'not_started';
-}
-
-function isLiveOrFinished(displayStatus: string) {
-  return displayStatus === 'live' || displayStatus === 'finished';
-}
-
-function mappedScore(
-  team: Team | undefined,
-  scores: SeriesScore[] | undefined
-): string | null {
-  const teamId = team?.id;
-  const forTeam = (entry: SeriesScore) => entry.teamId === teamId;
-  const entry = teamId ? scores?.find(forTeam) : undefined;
-
-  return entry ? String(entry.score) : null;
-}
-
-function emphasisFor(
-  team: Team | undefined,
-  winnerId: string | undefined
-): SideEmphasis {
-  if (!winnerId || !team?.id) {
-    return 'undecided';
-  }
-
-  if (team.id === winnerId) {
-    return 'winner';
-  }
-
-  return 'loser';
 }

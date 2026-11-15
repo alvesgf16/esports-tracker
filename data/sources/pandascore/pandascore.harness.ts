@@ -27,11 +27,12 @@ export function aVendorVideogame(
 export function aVendorOpponent(
   name: string | null,
   acronym?: string | null,
-  id?: number | null
+  id?: number | null,
+  imageUrl?: string | null
 ): VendorOpponent {
   return {
     type: 'Team',
-    opponent: { id, name, acronym },
+    opponent: { id, name, acronym, image_url: imageUrl },
   };
 }
 

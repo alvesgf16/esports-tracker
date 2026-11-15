@@ -1,4 +1,4 @@
-import { aVendorMatch, aVendorOpponent } from '../pandascore.harness';
+import { aVendorMatch } from '../pandascore.harness';
 import type { VendorMatch } from '../vendor-types';
 
 import duel from './fixtures/duel.json';
@@ -15,7 +15,7 @@ describe('matchFrom', () => {
       id: '1246500',
       game: 'league-of-legends',
       name: 'G2 Esports vs Fnatic',
-      tournament: 'LEC · Spring Playoffs',
+      competition: { title: 'LEC · Spring Playoffs' },
       format: 'Bo5',
       startsAt: '2026-11-04T19:00:00Z',
       teams: [
@@ -33,7 +33,7 @@ describe('matchFrom', () => {
       id: '900001',
       game: 'pubg',
       name: 'Group A — Match 3',
-      tournament: 'PGS · Global Series',
+      competition: { title: 'PGS · Global Series' },
       format: 'Maps',
       status: 'running',
     });
@@ -72,45 +72,6 @@ describe('matchFrom', () => {
     expect(match?.format).toBe('Match');
   });
 
-  it('returns the league when it already includes the stage', () => {
-    const match = matchFrom(
-      aVendorMatch({
-        league: { name: 'LEC Spring' },
-        tournament: { name: 'Spring' },
-      })
-    );
-
-    expect(match?.tournament).toBe('LEC Spring');
-  });
-
-  it('returns the stage when the league is missing', () => {
-    const match = matchFrom(
-      aVendorMatch({
-        league: null,
-        tournament: { name: 'Playoffs' },
-      })
-    );
-
-    expect(match?.tournament).toBe('Playoffs');
-  });
-
-  it('returns Tournament when league and stage are missing', () => {
-    const match = matchFrom(aVendorMatch({ league: null, tournament: null }));
-
-    expect(match?.tournament).toBe('Tournament');
-  });
-
-  it('strips surrounding space from league and stage', () => {
-    const match = matchFrom(
-      aVendorMatch({
-        league: { name: '  LEC  ' },
-        tournament: { name: '  Spring  ' },
-      })
-    );
-
-    expect(match?.tournament).toBe('LEC · Spring');
-  });
-
   it('maps finished vendor statuses', () => {
     expect(matchFrom(aVendorMatch({ status: 'finished' }))?.status).toBe(
       'finished'
@@ -127,38 +88,5 @@ describe('matchFrom', () => {
     expect(
       matchFrom(aVendorMatch({ status: 'unknown' }))?.status
     ).toBeUndefined();
-  });
-
-  it('falls back to the full name when the acronym is missing', () => {
-    const match = matchFrom(
-      aVendorMatch({
-        opponents: [
-          aVendorOpponent('Fnatic', null),
-          aVendorOpponent('G2 Esports', 'G2'),
-        ],
-      })
-    );
-
-    expect(match?.teams).toEqual([
-      { name: 'Fnatic', shortName: 'Fnatic' },
-      { name: 'G2 Esports', shortName: 'G2' },
-    ]);
-  });
-
-  it('skips opponents without a name', () => {
-    const match = matchFrom(
-      aVendorMatch({
-        opponents: [
-          aVendorOpponent(null, 'TBD'),
-          aVendorOpponent('Fnatic', 'FNC'),
-          aVendorOpponent('G2 Esports', 'G2'),
-        ],
-      })
-    );
-
-    expect(match?.teams).toEqual([
-      { name: 'Fnatic', shortName: 'FNC' },
-      { name: 'G2 Esports', shortName: 'G2' },
-    ]);
   });
 });

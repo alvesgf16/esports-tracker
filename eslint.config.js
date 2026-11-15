@@ -568,6 +568,23 @@ module.exports = defineConfig([
     },
   },
   {
+    files: [
+      'modules/features/**/view.tsx',
+      'modules/features/**/components/**/*.{ts,tsx}',
+      'modules/shared/**/components/**/*.{ts,tsx}',
+    ],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.name=/^use[A-Z]/]",
+          message:
+            'Views and components must not call hooks; Presenter owns hooks.',
+        },
+      ],
+    },
+  },
+  {
     files: ['modules/features/**/*.tsx'],
     rules: {
       'no-restricted-imports': ['error', viewImports(siblingFeatures)],
@@ -637,12 +654,12 @@ module.exports = defineConfig([
                 '@/lib/**',
                 '@/modules/features',
                 '@/modules/features/**',
-                '@/modules/shared/components',
-                '@/modules/shared/components/**',
-                '@/modules/shared/use-cases',
-                '@/modules/shared/use-cases/**',
-                '@/modules/shared/*.harness',
               ],
+              message:
+                'data/ implements gateways; import entities and gateways only.',
+            },
+            {
+              regex: '^@/modules/shared/(?!entities$|gateways$)',
               message:
                 'data/ implements gateways; import entities and gateways only.',
             },
