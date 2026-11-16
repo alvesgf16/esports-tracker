@@ -27,7 +27,8 @@ describe('scheduleSource', () => {
   it('returns the sample board when live schedule is off', () => {
     restoreLiveFlag(undefined);
 
-    expect(scheduleSource()).toEqual({ initial: sampleBoard });
+    expect(scheduleSource().initial).toBe(sampleBoard);
+    expect(scheduleSource()).toBe(scheduleSource());
   });
 
   it('starts loading when live schedule is on', () => {

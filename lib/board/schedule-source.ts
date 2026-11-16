@@ -25,10 +25,14 @@ const liveBoardSource: ScheduleBoardSource = {
   load: loadLiveBoard,
 };
 
+const sampleBoardSource: ScheduleBoardSource = {
+  initial: sampleBoard,
+};
+
 export function scheduleSource(): ScheduleBoardSource {
   return process.env.EXPO_PUBLIC_LIVE_SCHEDULE === '1'
     ? liveBoardSource
-    : { initial: sampleBoard };
+    : sampleBoardSource;
 }
 
 async function loadLiveBoard(): Promise<ScheduleBoardState> {

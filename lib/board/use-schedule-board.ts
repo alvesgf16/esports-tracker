@@ -1,39 +1,103 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 
 import type {
   ScheduleBoardSource,
   ScheduleBoardState,
 } from '@/modules/shared/gateways';
 
+type Listener = () => void;
+
+type BoardStore = {
+  board: ScheduleBoardState;
+  listeners: Set<Listener>;
+  pendingLoad: Promise<void> | null;
+};
+
+const stores = new WeakMap<ScheduleBoardSource, BoardStore>();
+
 export function useScheduleBoard(
   source: ScheduleBoardSource
 ): ScheduleBoardState {
-  const [board, setBoard] = useState(source.initial);
+  const store = storeFor(source);
 
   useEffect(() => {
-    if (!source.load) {
-      return;
+    if (source.load) {
+      loadBoardIfNeeded(store, source.load);
     }
+  }, [source, store]);
 
-    return subscribeBoard(source.load, setBoard);
-  }, [source]);
+  const subscribeToStore = (listener: Listener) => subscribeTo(store, listener);
 
-  return board;
+  return useSyncExternalStore(
+    subscribeToStore,
+    () => store.board,
+    () => source.initial
+  );
 }
 
-function subscribeBoard(
-  load: () => Promise<ScheduleBoardState>,
-  setBoard: (next: ScheduleBoardState) => void
-): () => void {
-  let cancelled = false;
+function storeFor(source: ScheduleBoardSource): BoardStore {
+  const existing = stores.get(source);
 
-  void load().then((next) => {
-    if (!cancelled) {
-      setBoard(next);
-    }
-  });
+  if (existing) {
+    return existing;
+  }
+
+  const created: BoardStore = {
+    board: source.initial,
+    listeners: new Set(),
+    pendingLoad: null,
+  };
+
+  stores.set(source, created);
+
+  return created;
+}
+
+function loadBoardIfNeeded(
+  store: BoardStore,
+  load: () => Promise<ScheduleBoardState>
+): void {
+  if (store.pendingLoad || !needsLoading(store.board)) {
+    return;
+  }
+
+  store.pendingLoad = loadBoardInto(store, load);
+}
+
+function needsLoading(board: ScheduleBoardState): boolean {
+  const { status } = board.loadState;
+
+  return status === 'loading' || status === 'error';
+}
+
+async function loadBoardInto(
+  store: BoardStore,
+  load: () => Promise<ScheduleBoardState>
+): Promise<void> {
+  try {
+    const nextBoard = await load();
+
+    replaceBoardIn(store, nextBoard);
+  } finally {
+    store.pendingLoad = null;
+  }
+}
+
+function replaceBoardIn(store: BoardStore, board: ScheduleBoardState): void {
+  store.board = board;
+  notifyListenersOf(store);
+}
+
+function notifyListenersOf(store: BoardStore): void {
+  for (const listener of store.listeners) {
+    listener();
+  }
+}
+
+function subscribeTo(store: BoardStore, listener: Listener): () => void {
+  store.listeners.add(listener);
 
   return () => {
-    cancelled = true;
+    store.listeners.delete(listener);
   };
 }
