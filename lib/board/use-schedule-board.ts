@@ -57,14 +57,14 @@ function loadBoardIfNeeded(
   store: BoardStore,
   load: () => Promise<ScheduleBoardState>
 ): void {
-  if (store.pendingLoad || !needsLoading(store.board)) {
+  if (store.pendingLoad || !shouldLoad(store.board)) {
     return;
   }
 
   store.pendingLoad = loadBoardInto(store, load);
 }
 
-function needsLoading(board: ScheduleBoardState): boolean {
+function shouldLoad(board: ScheduleBoardState): boolean {
   const { status } = board.loadState;
 
   return status === 'loading' || status === 'error';
