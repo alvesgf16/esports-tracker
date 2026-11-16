@@ -22,14 +22,16 @@ describe('useScheduleBoard', () => {
   });
 
   it('replaces the board when load resolves', async () => {
-    const source: ScheduleBoardSource = {
+    await expectBoardLoads({
       initial,
       load: () => Promise.resolve(loaded),
-    };
-    const { result } = await renderHook(() => useScheduleBoard(source));
+    });
+  });
 
-    await waitFor(() => {
-      expect(result.current).toBe(loaded);
+  it('loads even when the initial board is already ok', async () => {
+    await expectBoardLoads({
+      initial: board({ status: 'ok' }),
+      load: () => Promise.resolve(loaded),
     });
   });
 
@@ -66,6 +68,14 @@ describe('useScheduleBoard', () => {
     });
   });
 });
+
+async function expectBoardLoads(source: ScheduleBoardSource) {
+  const { result } = await renderHook(() => useScheduleBoard(source));
+
+  await waitFor(() => {
+    expect(result.current).toBe(loaded);
+  });
+}
 
 function board(loadState: ScheduleLoadState): ScheduleBoardState {
   return {

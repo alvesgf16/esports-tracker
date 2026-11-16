@@ -11,6 +11,7 @@ type BoardStore = {
   board: ScheduleBoardState;
   listeners: Set<Listener>;
   pendingLoad: Promise<void> | null;
+  hasSettledLoad: boolean;
 };
 
 const stores = new WeakMap<ScheduleBoardSource, BoardStore>();
@@ -46,6 +47,7 @@ function storeFor(source: ScheduleBoardSource): BoardStore {
     board: source.initial,
     listeners: new Set(),
     pendingLoad: null,
+    hasSettledLoad: false,
   };
 
   stores.set(source, created);
@@ -57,17 +59,11 @@ function loadBoardIfNeeded(
   store: BoardStore,
   load: () => Promise<ScheduleBoardState>
 ): void {
-  if (store.pendingLoad || !shouldLoad(store.board)) {
+  if (store.pendingLoad || store.hasSettledLoad) {
     return;
   }
 
   store.pendingLoad = loadBoardInto(store, load);
-}
-
-function shouldLoad(board: ScheduleBoardState): boolean {
-  const { status } = board.loadState;
-
-  return status === 'loading' || status === 'error';
 }
 
 async function loadBoardInto(
@@ -78,6 +74,7 @@ async function loadBoardInto(
     const nextBoard = await load();
 
     replaceBoardIn(store, nextBoard);
+    store.hasSettledLoad = nextBoard.loadState.status !== 'error';
   } finally {
     store.pendingLoad = null;
   }
