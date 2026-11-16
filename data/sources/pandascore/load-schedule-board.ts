@@ -40,7 +40,21 @@ async function loadMatches(token: string): Promise<Match[]> {
     token
   );
 
-  return mappedMatches([...running, ...upcoming, ...past]);
+  return mappedMatches(withoutDuplicateIds([...running, ...upcoming, ...past]));
+}
+
+function withoutDuplicateIds(vendorMatches: VendorMatch[]): VendorMatch[] {
+  const seen = new Set<number>();
+
+  return vendorMatches.filter((vendorMatch) => {
+    if (seen.has(vendorMatch.id)) {
+      return false;
+    }
+
+    seen.add(vendorMatch.id);
+
+    return true;
+  });
 }
 
 function mappedMatches(vendorMatches: VendorMatch[]): Match[] {

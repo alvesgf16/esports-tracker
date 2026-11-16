@@ -112,6 +112,32 @@ describe('loadScheduleBoard', () => {
     expect(board.matches.map((match) => match.id)).toEqual(['2']);
   });
 
+  it('keeps one row when the same match is running and past', async () => {
+    stubPandaScoreRoutes(fetchMock, {
+      [VIDEOGAMES_PAGE_1]: [aVendorVideogame()],
+      '/matches/running?per_page=100': [
+        aVendorMatch({
+          id: 7,
+          status: 'running',
+          begin_at: '2026-11-04T10:00:00Z',
+        }),
+      ],
+      '/matches/upcoming?per_page=100': [],
+      '/matches/past?per_page=100': [
+        aVendorMatch({
+          id: 7,
+          status: 'finished',
+          begin_at: '2026-11-04T10:00:00Z',
+        }),
+      ],
+    });
+
+    const board = await loadScheduleBoard('secret');
+
+    expect(board.matches).toHaveLength(1);
+    expect(board.matches[0]).toMatchObject({ id: '7', status: 'running' });
+  });
+
   it('fails the load when past returns 429', async () => {
     stubPandaScoreRoutes(fetchMock, {
       [VIDEOGAMES_PAGE_1]: [aVendorVideogame()],

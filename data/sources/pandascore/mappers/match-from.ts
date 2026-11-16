@@ -6,9 +6,17 @@ import { isSimulatedSport } from './is-simulated-sport';
 import { seriesFrom } from './series-from';
 import { teamsFrom } from './team-from';
 
-const FINISHED = new Set(['finished', 'canceled', 'postponed']);
+const DROPPED_STATUSES = new Set(['canceled', 'postponed']);
 
 export function matchFrom(match: VendorMatch): Match | null {
+  return isDroppedStatus(match.status) ? null : mappedMatch(match);
+}
+
+function isDroppedStatus(status: string): boolean {
+  return DROPPED_STATUSES.has(status);
+}
+
+function mappedMatch(match: VendorMatch): Match | null {
   const slug = gameSlugFrom(match);
   const startsAt = startsAtFrom(match);
   const teams = teamsFrom(match.opponents);
@@ -77,7 +85,7 @@ function statusFrom(status: string): MatchStatus | undefined {
     return 'not_started';
   }
 
-  if (FINISHED.has(status)) {
+  if (status === 'finished') {
     return 'finished';
   }
 

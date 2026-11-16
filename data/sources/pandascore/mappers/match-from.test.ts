@@ -72,16 +72,15 @@ describe('matchFrom', () => {
     expect(match?.format).toBe('Match');
   });
 
-  it('maps finished vendor statuses', () => {
+  it('maps finished vendor status', () => {
     expect(matchFrom(aVendorMatch({ status: 'finished' }))?.status).toBe(
       'finished'
     );
-    expect(matchFrom(aVendorMatch({ status: 'canceled' }))?.status).toBe(
-      'finished'
-    );
-    expect(matchFrom(aVendorMatch({ status: 'postponed' }))?.status).toBe(
-      'finished'
-    );
+  });
+
+  it('drops canceled and postponed matches', () => {
+    expect(matchFrom(aVendorMatch({ status: 'canceled' }))).toBeNull();
+    expect(matchFrom(aVendorMatch({ status: 'postponed' }))).toBeNull();
   });
 
   it('omits status for an unknown vendor status', () => {
