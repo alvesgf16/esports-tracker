@@ -3,6 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react-native';
 import { gameCatalog } from '@/data/catalogs/game-catalog';
 import { matchCatalog } from '@/data/catalogs/match-catalog';
 import type {
+  ScheduleBoardSource,
   ScheduleBoardState,
   ScheduleLoadState,
 } from '@/modules/shared/gateways';
@@ -14,29 +15,89 @@ const loaded = board({ status: 'ok' });
 
 describe('useScheduleBoard', () => {
   it('keeps the initial snapshot when the source has no loader', async () => {
-    const { result } = await renderHook(() => useScheduleBoard({ initial }));
+    const source: ScheduleBoardSource = { initial };
+    const { result } = await renderHook(() => useScheduleBoard(source));
 
     expect(result.current).toBe(initial);
   });
 
   it('replaces the board when load resolves', async () => {
-    const { result } = await renderHook(() =>
-      useScheduleBoard({
-        initial,
-        load: () => Promise.resolve(loaded),
-      })
-    );
+    await expectBoardLoads({
+      initial,
+      load: () => Promise.resolve(loaded),
+    });
+  });
+
+  it('loads even when the initial board is already ok', async () => {
+    await expectBoardLoads({
+      initial: board({ status: 'ok' }),
+      load: () => Promise.resolve(loaded),
+    });
+  });
+
+  it('shares one loaded board across subscribers', async () => {
+    const { load, resolveLoad } = deferredLoad();
+    const source: ScheduleBoardSource = { initial, load };
+    const first = await renderHook(() => useScheduleBoard(source));
+    const second = await renderHook(() => useScheduleBoard(source));
+
+    expect(load).toHaveBeenCalledTimes(1);
+    resolveLoad(0, loaded);
 
     await waitFor(() => {
-      expect(result.current).toBe(loaded);
+      expect(first.result.current).toBe(loaded);
+    });
+
+    expect(second.result.current).toBe(loaded);
+  });
+
+  it('keeps a resolve after the first subscriber unmounts', async () => {
+    const { load, resolveLoad } = deferredLoad();
+    const source: ScheduleBoardSource = { initial, load };
+    const first = await renderHook(() => useScheduleBoard(source));
+
+    first.unmount();
+
+    const second = await renderHook(() => useScheduleBoard(source));
+
+    expect(load).toHaveBeenCalledTimes(1);
+    resolveLoad(0, loaded);
+
+    await waitFor(() => {
+      expect(second.result.current).toBe(loaded);
     });
   });
 });
+
+async function expectBoardLoads(source: ScheduleBoardSource) {
+  const { result } = await renderHook(() => useScheduleBoard(source));
+
+  await waitFor(() => {
+    expect(result.current).toBe(loaded);
+  });
+}
 
 function board(loadState: ScheduleLoadState): ScheduleBoardState {
   return {
     games: gameCatalog([]),
     matches: matchCatalog([]),
     loadState,
+  };
+}
+
+function deferredLoad() {
+  const resolvers: ((next: ScheduleBoardState) => void)[] = [];
+  const load = jest.fn(
+    () =>
+      new Promise<ScheduleBoardState>((resolve) => {
+        resolvers.push(resolve);
+      })
+  );
+
+  return {
+    load,
+    resolveLoad: (index: number, next: ScheduleBoardState) => {
+      resolvers[index](next);
+    },
   };
 }
