@@ -22,7 +22,7 @@ describe('listMatchesFor', () => {
         matches,
         clock: stubScheduleClock(),
       }).map((match) => match.id)
-    ).toEqual(['today']);
+    ).toEqual(['finished', 'today']);
   });
 
   it('keeps only live rows when status is Live', () => {

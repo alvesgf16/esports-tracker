@@ -29,21 +29,26 @@ describe('visibleMatchesFor', () => {
     ).toEqual(['sooner', 'later']);
   });
 
-  it('hides finished matches past the live window', () => {
-    const matches = [aMatch({ startsAt: hoursFromNow(-4) })];
+  it('keeps finished matches past the live window', () => {
+    const matches = [aMatch({ id: 'past-window', startsAt: hoursFromNow(-4) })];
 
-    expect(visibleMatchesFor(null, snapshot(matches))).toEqual([]);
+    expect(
+      visibleMatchesFor(null, snapshot(matches)).map((match) => match.id)
+    ).toEqual(['past-window']);
   });
 
-  it('hides matches marked finished even inside the live window', () => {
+  it('keeps matches marked finished even inside the live window', () => {
     const matches = [
       aMatch({
+        id: 'finished-status',
         startsAt: hoursFromNow(-1),
         status: 'finished',
       }),
     ];
 
-    expect(visibleMatchesFor(null, snapshot(matches))).toEqual([]);
+    expect(
+      visibleMatchesFor(null, snapshot(matches)).map((match) => match.id)
+    ).toEqual(['finished-status']);
   });
 
   it('keeps long-running matches via status', () => {

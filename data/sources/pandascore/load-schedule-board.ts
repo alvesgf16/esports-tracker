@@ -35,8 +35,26 @@ async function loadMatches(token: string): Promise<Match[]> {
     `/matches/upcoming?per_page=${PAGE_SIZE}`,
     token
   );
+  const past = await getJson<VendorMatch[]>(
+    `/matches/past?per_page=${PAGE_SIZE}`,
+    token
+  );
 
-  return mappedMatches([...running, ...upcoming]);
+  return mappedMatches(withoutDuplicateIds([...running, ...upcoming, ...past]));
+}
+
+function withoutDuplicateIds(vendorMatches: VendorMatch[]): VendorMatch[] {
+  const seen = new Set<number>();
+
+  return vendorMatches.filter((vendorMatch) => {
+    if (seen.has(vendorMatch.id)) {
+      return false;
+    }
+
+    seen.add(vendorMatch.id);
+
+    return true;
+  });
 }
 
 function mappedMatches(vendorMatches: VendorMatch[]): Match[] {

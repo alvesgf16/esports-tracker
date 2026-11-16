@@ -1,11 +1,18 @@
-import type { MatchesSnapshot } from '@/modules/shared/entities';
+import type { Match, MatchesSnapshot } from '@/modules/shared/entities';
+import { matchDisplayStatus } from '@/modules/shared/use-cases/match-display-status';
 import { visibleMatchesFor } from '@/modules/shared/use-cases/visible-matches-for';
 
 export function countUpcomingMatchesFor(
   gameId: string,
   matchesSnapshot: MatchesSnapshot
 ): number {
-  const upcomingMatches = visibleMatchesFor(gameId, matchesSnapshot);
+  const isNotFinished = (match: Match): boolean =>
+    matchDisplayStatus(
+      match.startsAt,
+      matchesSnapshot.referenceTime,
+      match.status
+    ) !== 'finished';
 
-  return upcomingMatches.length;
+  return visibleMatchesFor(gameId, matchesSnapshot).filter(isNotFinished)
+    .length;
 }
