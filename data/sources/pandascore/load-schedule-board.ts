@@ -35,8 +35,12 @@ async function loadMatches(token: string): Promise<Match[]> {
     `/matches/upcoming?per_page=${PAGE_SIZE}`,
     token
   );
+  const past = await getJson<VendorMatch[]>(
+    `/matches/past?per_page=${PAGE_SIZE}`,
+    token
+  );
 
-  return mappedMatches([...running, ...upcoming]);
+  return mappedMatches([...running, ...upcoming, ...past]);
 }
 
 function mappedMatches(vendorMatches: VendorMatch[]): Match[] {

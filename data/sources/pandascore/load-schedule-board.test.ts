@@ -20,6 +20,7 @@ describe('loadScheduleBoard', () => {
       ],
       '/matches/running?per_page=100': [],
       '/matches/upcoming?per_page=100': [],
+      '/matches/past?per_page=100': [],
     });
 
     const board = await loadScheduleBoard('secret');
@@ -31,10 +32,11 @@ describe('loadScheduleBoard', () => {
       VIDEOGAMES_PAGE_1,
       '/matches/running?per_page=100',
       '/matches/upcoming?per_page=100',
+      '/matches/past?per_page=100',
     ]);
   });
 
-  it('loads running and upcoming matches', async () => {
+  it('loads running, upcoming, and past matches', async () => {
     stubPandaScoreRoutes(fetchMock, {
       [VIDEOGAMES_PAGE_1]: [aVendorVideogame()],
       '/matches/running?per_page=100': [
@@ -51,11 +53,23 @@ describe('loadScheduleBoard', () => {
           begin_at: '2026-11-04T12:00:00Z',
         }),
       ],
+      '/matches/past?per_page=100': [
+        aVendorMatch({
+          id: 3,
+          name: 'Earlier',
+          status: 'finished',
+          begin_at: '2026-11-04T08:00:00Z',
+        }),
+      ],
     });
 
     const board = await loadScheduleBoard('secret');
 
-    expect(board.matches.map((match) => match.id).sort()).toEqual(['1', '2']);
+    expect(board.matches.map((match) => match.id).sort()).toEqual([
+      '1',
+      '2',
+      '3',
+    ]);
   });
 
   it('drops matches whose game is not on the board', async () => {
@@ -68,6 +82,7 @@ describe('loadScheduleBoard', () => {
         }),
       ],
       '/matches/upcoming?per_page=100': [aVendorMatch()],
+      '/matches/past?per_page=100': [],
     });
 
     const board = await loadScheduleBoard('secret');
@@ -85,6 +100,7 @@ describe('loadScheduleBoard', () => {
         }),
       ],
       '/matches/upcoming?per_page=100': [],
+      '/matches/past?per_page=100': [],
     });
 
     const board = await loadScheduleBoard('secret');
@@ -94,5 +110,27 @@ describe('loadScheduleBoard', () => {
       'cs-go',
     ]);
     expect(board.matches.map((match) => match.id)).toEqual(['2']);
+  });
+
+  it('fails the load when past returns 429', async () => {
+    stubPandaScoreRoutes(fetchMock, {
+      [VIDEOGAMES_PAGE_1]: [aVendorVideogame()],
+      '/matches/running?per_page=100': [],
+      '/matches/upcoming?per_page=100': [],
+      '/matches/past?per_page=100': [],
+    });
+    const stubbed = fetchMock.getMockImplementation()!;
+
+    fetchMock.mockImplementation((url: string, init?: RequestInit) => {
+      if (pandascorePath([url]) === '/matches/past?per_page=100') {
+        return Promise.resolve({ ok: false, status: 429 });
+      }
+
+      return stubbed(url, init);
+    });
+
+    await expect(loadScheduleBoard('secret')).rejects.toThrow(
+      'PandaScore /matches/past?per_page=100 failed: 429'
+    );
   });
 });
