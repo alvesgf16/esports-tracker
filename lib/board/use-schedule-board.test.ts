@@ -37,19 +37,18 @@ describe('useScheduleBoard', () => {
 
   it('shares one loaded board across subscribers', async () => {
     const { load, resolveLoad } = deferredLoad();
-    const loadSpy = jest.fn(load);
-    const source: ScheduleBoardSource = { initial, load: loadSpy };
+    const source: ScheduleBoardSource = { initial, load };
     const first = await renderHook(() => useScheduleBoard(source));
     const second = await renderHook(() => useScheduleBoard(source));
 
-    resolveLoad(loaded);
+    expect(load).toHaveBeenCalledTimes(1);
+    resolveLoad(0, loaded);
 
     await waitFor(() => {
       expect(first.result.current).toBe(loaded);
     });
 
     expect(second.result.current).toBe(loaded);
-    expect(loadSpy).toHaveBeenCalledTimes(1);
   });
 
   it('keeps a resolve after the first subscriber unmounts', async () => {
@@ -61,7 +60,8 @@ describe('useScheduleBoard', () => {
 
     const second = await renderHook(() => useScheduleBoard(source));
 
-    resolveLoad(loaded);
+    expect(load).toHaveBeenCalledTimes(1);
+    resolveLoad(0, loaded);
 
     await waitFor(() => {
       expect(second.result.current).toBe(loaded);
@@ -86,14 +86,18 @@ function board(loadState: ScheduleLoadState): ScheduleBoardState {
 }
 
 function deferredLoad() {
-  let resolveLoad!: (next: ScheduleBoardState) => void;
-  const load = () =>
-    new Promise<ScheduleBoardState>((resolve) => {
-      resolveLoad = resolve;
-    });
+  const resolvers: ((next: ScheduleBoardState) => void)[] = [];
+  const load = jest.fn(
+    () =>
+      new Promise<ScheduleBoardState>((resolve) => {
+        resolvers.push(resolve);
+      })
+  );
 
   return {
     load,
-    resolveLoad: (next: ScheduleBoardState) => resolveLoad(next),
+    resolveLoad: (index: number, next: ScheduleBoardState) => {
+      resolvers[index](next);
+    },
   };
 }
